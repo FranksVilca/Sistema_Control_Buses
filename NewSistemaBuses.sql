@@ -1,19 +1,28 @@
--- Crear tabla para Turno
-CREATE TABLE Trabajador (
-    Codigo_Trabajador INT PRIMARY KEY,
-    Nombre VARCHAR(100),
-    Nombre_Usuario VARCHAR(100),
-    Contraselas VARCHAR(100),
-    DNI VARCHAR(100),
-    Cargo VARCHAR(100),
-    Edad INT,
-    Sexo Boolean,
-    Celular INT,
-    Email VARCHAR(100),
-    Direccion VARCHAR(100),
-    EstadoRegistro VARCHAR(100),
+
+-- Crear tabla para Cargo
+CREATE TABLE Cargo (
+    Codigo_Cargo INT PRIMARY KEY,
+    Descripcion VARCHAR(100) NOT NULL
 );
 
+-- Crear tabla para Usuario
+CREATE TABLE Usuario (
+    Codigo_Usuario INT PRIMARY KEY,
+    Nombre VARCHAR(100),
+    Nombre_Usuario VARCHAR(100),
+    Contrasena VARCHAR(100),
+    DNI VARCHAR(20),
+    Codigo_Cargo INT,
+    Edad INT,
+    Sexo BOOLEAN,
+    Celular VARCHAR(15),
+    Email VARCHAR(100),
+    Direccion VARCHAR(100),
+    EstadoRegistro VARCHAR(1),
+    FOREIGN KEY (Codigo_Cargo) REFERENCES Cargo(Codigo_Cargo)
+);
+
+-- Crear tabla para Turno
 CREATE TABLE Turno (
     Codigo_Turno INT PRIMARY KEY,
     IDRuta INT,
@@ -26,14 +35,14 @@ CREATE TABLE Turno (
 CREATE TABLE Ruta (
     IDRuta INT PRIMARY KEY,
     PuntoSalida VARCHAR(100),
-    PuntoLlegada VARCHAR(100),
+    PuntoLlegada VARCHAR(100)
 );
 
 -- Crear tabla para Horario
 CREATE TABLE Horario (
     IDHorario INT PRIMARY KEY,
-    Fecha Time,
-    Hora_salida TIME,
+    Fecha DATE,
+    Hora_Salida TIME,
     Hora_Llegada TIME
 );
 
@@ -41,18 +50,16 @@ CREATE TABLE Horario (
 CREATE TABLE Bus (
     IDBus INT PRIMARY KEY,
     Num_Asientos INT,
-    Estado Registro VARCHAR(100),
+    EstadoRegistro VARCHAR(1),
     Modelo VARCHAR(100),
     Marca VARCHAR(100),
-    Placa VARCHAR(100)
+    Placa VARCHAR(10)
 );
 
 -- Crear tabla para Reporte
 CREATE TABLE Reporte (
-    Encargado_de_reporte VARCHAR(100),
-    FechaDia INT,
-    FechaMes INT,
-    FechaAño INT,
+    Encargado_de_Reporte VARCHAR(100),
+    Fecha DATE,
     Codigo_Turno INT,
     FOREIGN KEY (Codigo_Turno) REFERENCES Turno(Codigo_Turno)
 );
@@ -77,4 +84,14 @@ CREATE TABLE Turno_Bus (
     IDBus INT,
     FOREIGN KEY (Codigo_Turno) REFERENCES Turno(Codigo_Turno),
     FOREIGN KEY (IDBus) REFERENCES Bus(IDBus)
+);
+
+-- Crear tabla para Asistencia
+CREATE TABLE Asistencia (
+    Codigo_Asistencia INT AUTO_INCREMENT PRIMARY KEY,
+    Codigo_Turno INT,
+    Codigo_Usuario INT,
+    Asistencia BOOLEAN,
+    FOREIGN KEY (Codigo_Turno) REFERENCES Turno(Codigo_Turno),
+    FOREIGN KEY (Codigo_Usuario) REFERENCES Usuario(Codigo_Usuario)
 );
