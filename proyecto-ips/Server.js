@@ -1,8 +1,8 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const app = express();
-const port = 3306;
+const port = 3001;
 
 // Configurar la conexión a MySQL
 const db = mysql.createConnection({
@@ -14,15 +14,15 @@ const db = mysql.createConnection({
 
 db.connect(err => {
   if (err) {
-    console.error('Error connecting to the database:', err);
+    console.error('Error al conectar a la Base de Datos', err);
     return;
   }
-  console.log('Connected to the database');
+  console.log('Connectado a la Base de Datos');
 });
 
 // Rutas API
 app.get('/api/data', (req, res) => {
-  db.query('SELECT * FROM tu_tabla', (err, results) => {
+  db.query('SELECT * FROM Usuario', (err, results) => {
     if (err) {
       res.status(500).send(err);
       return;
@@ -32,5 +32,5 @@ app.get('/api/data', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Servidor funcionando correctamente`);
 });
