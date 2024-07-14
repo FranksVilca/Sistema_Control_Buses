@@ -1,24 +1,50 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate para redirección
 
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const navigate = useNavigate(); // Hook useNavigate para redirección
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/data"); // Ajusta la URL según corresponda
-        if (!response.ok) {
-          throw new Error("La respuesta de la API no fue exitosa");
-        }
-        const data = await response.json();
-        setUsuarios(data);
-      } catch (error) {
-        console.error("Error al obtener la lista de usuarios:", error);
-      }
-    };
-
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/data");
+      if (!response.ok) {
+        throw new Error("Error al obtener los datos");
+      }
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error al obtener la lista de usuarios:", error);
+    }
+  };
+
+  const handleDelete = async (codigoUsuario) => {
+    console.log("Código de usuario a eliminar:", codigoUsuario); // <-- Añade esto
+    if (window.confirm("¿Estás seguro que deseas eliminar este usuario?")) {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/delete/${codigoUsuario}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Error al eliminar el usuario");
+        }
+        fetchData(); // Actualiza la lista después de eliminar
+      } catch (error) {
+        console.error("Error al eliminar el usuario:", error);
+      }
+    }
+  };
+
+  const handleEdit = (codigoUsuario) => {
+    navigate(`/editar/${codigoUsuario}`); // Redirige a la página de edición
+  };
 
   return (
     <div>
@@ -36,6 +62,7 @@ const ComponenteGestorUsuarios = () => {
             <th>Celular</th>
             <th>Email</th>
             <th>Dirección</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -51,6 +78,14 @@ const ComponenteGestorUsuarios = () => {
               <td>{usuario.Celular}</td>
               <td>{usuario.Email}</td>
               <td>{usuario.Direccion}</td>
+              <td>
+                <button onClick={() => handleDelete(usuario.Codigo_Usuario)}>
+                  Eliminar
+                </button>
+                <button onClick={() => handleEdit(usuario.Codigo_Usuario)}>
+                  Editar
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
