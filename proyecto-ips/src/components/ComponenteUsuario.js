@@ -1,60 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import "./PrimerComponente.css";
+import CryptoJS from "crypto-js";
 
 const ComponenteUsuario = () => {
-  const [usuarios, setUsuarios] = useState([]);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/data"); // Esta ruta debe coincidir con la ruta en tu servidor
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de usuarios");
-        }
-        const data = await response.json();
-        setUsuarios(data);
-      } catch (error) {
-        console.error("Error al obtener la lista de usuarios:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      password,
+      "your-secret-key"
+    ).toString();
+    console.log("Login:", { username, password: encryptedPassword });
+  };
 
   return (
-    <div>
-      <h2>Lista de Usuarios</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Código de Usuario</th>
-            <th>Nombre</th>
-            <th>Nombre de Usuario</th>
-            <th>DNI</th>
-            <th>Código de Cargo</th>
-            <th>Edad</th>
-            <th>Sexo</th>
-            <th>Celular</th>
-            <th>Email</th>
-            <th>Dirección</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.map((usuario) => (
-            <tr key={usuario.Codigo_Usuario}>
-              <td>{usuario.Codigo_Usuario}</td>
-              <td>{usuario.Nombre}</td>
-              <td>{usuario.Nombre_Usuario}</td>
-              <td>{usuario.DNI}</td>
-              <td>{usuario.Codigo_Cargo}</td>
-              <td>{usuario.Edad}</td>
-              <td>{usuario.Sexo}</td>
-              <td>{usuario.Celular}</td>
-              <td>{usuario.Email}</td>
-              <td>{usuario.Direccion}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="login-container">
+      <h1>Este es el segundo Componente</h1>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 };
