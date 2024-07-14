@@ -1,6 +1,6 @@
+// src/components/ComponenteUsuario.js
 import React, { useState } from "react";
 import "./PrimerComponente.css";
-import CryptoJS from "crypto-js";
 
 const ComponenteUsuario = () => {
   const [username, setUsername] = useState("");
@@ -8,16 +8,12 @@ const ComponenteUsuario = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      password,
-      "your-secret-key"
-    ).toString();
-    console.log("Login:", { username, password: encryptedPassword });
+    console.log("Login:", { username, password });
   };
 
   return (
     <div className="login-container">
-      <h1>Este es el segundo Componente</h1>
+      <h1>Este es el segundo Compoenente</h1>
       <form onSubmit={handleLogin}>
         <div>
           <label htmlFor="username">Username:</label>

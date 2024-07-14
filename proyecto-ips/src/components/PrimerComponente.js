@@ -35,7 +35,6 @@ const PrimerComponente = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     const encryptedPassword = CryptoJS.AES.encrypt(password, 'your-secret-key').toString();
-    console.log('Login:', { username, password: encryptedPassword });
   };
 
   return (
