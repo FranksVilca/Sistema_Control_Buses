@@ -1,22 +1,22 @@
 import React, { useState, useRef } from 'react';
 import './PrimerComponente.css';
 import ReCAPTCHA from "react-google-recaptcha";
+import CryptoJS from "crypto-js";
 
 const PrimerComponente = () => {
   const [captchavalido, cambiarcaptchavalido] = useState(null);
   const [usuariovalido, cambiarusuariovalido] = useState(false);
 
   const captcha = useRef(null);
-  
+
   const onChange = () => {
-    if(captcha.current.getValue()){
+    if (captcha.current.getValue()) {
       console.log("El usuario es valido");
       cambiarcaptchavalido(true);
     }
   }
 
   const submit = (e) => {
-    //Hacer comprobaciones del login
     e.preventDefault();
     if (captcha.current.getValue()) {
       console.log("El usuario es valido");
@@ -28,13 +28,15 @@ const PrimerComponente = () => {
       cambiarcaptchavalido(false);
     }
   };
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Login:', { username, password });
+    const encryptedPassword = CryptoJS.AES.encrypt(password, 'your-secret-key').toString();
+    console.log('Login:', { username, password: encryptedPassword });
   };
-
 
   return (
     <div className="login-container">
@@ -70,7 +72,7 @@ const PrimerComponente = () => {
               />
             </div>
             {captchavalido === false && <div className='error-captcha'>
-             Por favor acepta el captcha
+              Por favor acepta el captcha
             </div>}
             <button type="submit">Login</button>
           </form>

@@ -1,23 +1,20 @@
-// src/components/ComponenteUsuario.js
 import React, { useState } from "react";
 import "./PrimerComponente.css";
-import ReCAPTCHA from "react-google-recaptcha";
+import CryptoJS from "crypto-js";
 
 const ComponenteUsuario = () => {
-  const onChange = () => {
-    console.log("Hubo un Cambio");
-  }
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login:", { username, password });
+    const encryptedPassword = CryptoJS.AES.encrypt(password, 'your-secret-key').toString();
+    console.log("Login:", { username, password: encryptedPassword });
   };
 
   return (
     <div className="login-container">
-      <h1>Este es el segundo Compoenente</h1>
+      <h1>Este es el segundo Componente</h1>
       <form onSubmit={handleLogin}>
         <div>
           <label htmlFor="username">Username:</label>
@@ -38,12 +35,6 @@ const ComponenteUsuario = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
-        <div className="recaptcha">
-          <ReCAPTCHA
-            sitekey="6Lf0ew8qAAAAAC8TIhRBOmlUgkbESMIu655rY2_W"
-            onChange={onChange}
-          />,
         </div>
         <button type="submit">Login</button>
       </form>
