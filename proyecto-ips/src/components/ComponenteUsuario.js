@@ -1,8 +1,12 @@
 // src/components/ComponenteUsuario.js
 import React, { useState } from "react";
 import "./PrimerComponente.css";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const ComponenteUsuario = () => {
+  const onChange = () => {
+    console.log("Hubo un Cambio");
+  }
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,6 +38,12 @@ const ComponenteUsuario = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+        </div>
+        <div className="recaptcha">
+          <ReCAPTCHA
+            sitekey="6Lf0ew8qAAAAAC8TIhRBOmlUgkbESMIu655rY2_W"
+            onChange={onChange}
+          />,
         </div>
         <button type="submit">Login</button>
       </form>
