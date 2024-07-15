@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const PaginaEdicionUsuario = () => {
-  const { codigoUsuario } = useParams();
+const PaginaInsertarUsuario = () => {
   const [usuario, setUsuario] = useState({
     Nombre: "",
     Nombre_Usuario: "",
@@ -20,20 +19,6 @@ const PaginaEdicionUsuario = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/data/${codigoUsuario}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Convertir el valor de Sexo de 1/0 a Masculino/Femenino
-        data.Sexo = data.Sexo === 1 ? "Masculino" : "Femenino";
-        setUsuario(data);
-      })
-      .catch((error) => console.error("Error al obtener el usuario:", error));
-
     fetch(`http://localhost:3001/api/cargos`)
       .then((response) => {
         if (!response.ok) {
@@ -43,7 +28,7 @@ const PaginaEdicionUsuario = () => {
       })
       .then((data) => setCargos(data))
       .catch((error) => console.error("Error al obtener los cargos:", error));
-  }, [codigoUsuario]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,37 +53,53 @@ const PaginaEdicionUsuario = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const getMaxCodigoUsuario = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/update/${codigoUsuario}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(usuario),
-        }
+        `http://localhost:3001/api/maxCodigoUsuario`
       );
       if (!response.ok) {
-        throw new Error("Error al actualizar el usuario");
+        throw new Error("Error al obtener el máximo código de usuario");
       }
-      alert("Usuario actualizado exitosamente");
-      navigate("/GestionarUsuarios");
+      const data = await response.json();
+      return data.maxCodigoUsuario;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al obtener el máximo código de usuario:", error);
+      return null;
     }
   };
 
-  // Verificar si usuario está cargado completamente antes de renderizar el formulario
-  if (!usuario.Nombre) {
-    return <p>Cargando...</p>;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const maxCodigoUsuario = await getMaxCodigoUsuario();
+      if (maxCodigoUsuario !== null) {
+        const nuevoCodigoUsuario = maxCodigoUsuario + 1;
+        const usuarioConCodigo = {
+          ...usuario,
+          Codigo_Usuario: nuevoCodigoUsuario,
+        };
+        const response = await fetch(`http://localhost:3001/api/insert`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(usuarioConCodigo),
+        });
+        if (!response.ok) {
+          throw new Error("Error al insertar el usuario");
+        }
+        alert("Usuario insertado exitosamente");
+        navigate("/GestionarUsuarios");
+      }
+    } catch (error) {
+      console.error("Error al insertar el usuario:", error);
+    }
+  };
 
   return (
     <div>
-      <h2>Editar Usuario</h2>
+      <h2>Insertar Nuevo Usuario</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Nombre:
@@ -207,10 +208,10 @@ const PaginaEdicionUsuario = () => {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Actualizar</button>
+        <button type="submit">Insertar</button>
       </form>
     </div>
   );
 };
 
-export default PaginaEdicionUsuario;
+export default PaginaInsertarUsuario;

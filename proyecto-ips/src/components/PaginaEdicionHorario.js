@@ -27,14 +27,12 @@ const PaginaEdicionUsuario = () => {
         }
         return response.json();
       })
-      .then((data) => {
-        // Convertir el valor de Sexo de 1/0 a Masculino/Femenino
-        data.Sexo = data.Sexo === 1 ? "Masculino" : "Femenino";
-        setUsuario(data);
-      })
+      .then((data) => setUsuario(data))
       .catch((error) => console.error("Error al obtener el usuario:", error));
+  }, [codigoUsuario]);
 
-    fetch(`http://localhost:3001/api/cargos`)
+  useEffect(() => {
+    fetch("http://localhost:3001/api/cargos")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -43,28 +41,13 @@ const PaginaEdicionUsuario = () => {
       })
       .then((data) => setCargos(data))
       .catch((error) => console.error("Error al obtener los cargos:", error));
-  }, [codigoUsuario]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUsuario((prevState) => ({
       ...prevState,
       [name]: value,
-    }));
-  };
-
-  const handleCargoChange = (e) => {
-    setUsuario((prevState) => ({
-      ...prevState,
-      Codigo_Cargo: e.target.value,
-    }));
-  };
-
-  const handleSexoChange = (e) => {
-    const sexoValue = e.target.value === "Masculino" ? 1 : 0;
-    setUsuario((prevState) => ({
-      ...prevState,
-      Sexo: sexoValue,
     }));
   };
 
@@ -91,11 +74,6 @@ const PaginaEdicionUsuario = () => {
     }
   };
 
-  // Verificar si usuario está cargado completamente antes de renderizar el formulario
-  if (!usuario.Nombre) {
-    return <p>Cargando...</p>;
-  }
-
   return (
     <div>
       <h2>Editar Usuario</h2>
@@ -105,7 +83,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="Nombre"
-            value={usuario.Nombre || ""}
+            value={usuario.Nombre}
             onChange={handleChange}
           />
         </label>
@@ -114,7 +92,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="Nombre_Usuario"
-            value={usuario.Nombre_Usuario || ""}
+            value={usuario.Nombre_Usuario}
             onChange={handleChange}
           />
         </label>
@@ -123,7 +101,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="password"
             name="Contrasena"
-            value={usuario.Contrasena || ""}
+            value={usuario.Contrasena}
             onChange={handleChange}
           />
         </label>
@@ -132,7 +110,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="DNI"
-            value={usuario.DNI || ""}
+            value={usuario.DNI}
             onChange={handleChange}
           />
         </label>
@@ -141,9 +119,8 @@ const PaginaEdicionUsuario = () => {
           <select
             name="Codigo_Cargo"
             value={usuario.Codigo_Cargo}
-            onChange={handleCargoChange}
+            onChange={handleChange}
           >
-            <option value="">Seleccione un cargo</option>
             {cargos.map((cargo) => (
               <option key={cargo.Codigo_Cargo} value={cargo.Codigo_Cargo}>
                 {cargo.Descripcion}
@@ -156,19 +133,15 @@ const PaginaEdicionUsuario = () => {
           <input
             type="number"
             name="Edad"
-            value={usuario.Edad || ""}
+            value={usuario.Edad}
             onChange={handleChange}
           />
         </label>
         <label>
           Sexo:
-          <select
-            name="Sexo"
-            value={usuario.Sexo === 1 ? "Masculino" : "Femenino"}
-            onChange={handleSexoChange}
-          >
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
+          <select name="Sexo" value={usuario.Sexo} onChange={handleChange}>
+            <option value={1}>Masculino</option>
+            <option value={0}>Femenino</option>
           </select>
         </label>
         <label>
@@ -176,7 +149,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="Celular"
-            value={usuario.Celular || ""}
+            value={usuario.Celular}
             onChange={handleChange}
           />
         </label>
@@ -185,7 +158,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="email"
             name="Email"
-            value={usuario.Email || ""}
+            value={usuario.Email}
             onChange={handleChange}
           />
         </label>
@@ -194,7 +167,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="Direccion"
-            value={usuario.Direccion || ""}
+            value={usuario.Direccion}
             onChange={handleChange}
           />
         </label>
@@ -203,7 +176,7 @@ const PaginaEdicionUsuario = () => {
           <input
             type="text"
             name="EstadoRegistro"
-            value={usuario.EstadoRegistro || ""}
+            value={usuario.EstadoRegistro}
             onChange={handleChange}
           />
         </label>

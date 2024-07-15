@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate para redirección
+import { useNavigate } from "react-router-dom";
 
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
-  const navigate = useNavigate(); // Hook useNavigate para redirección
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -23,7 +23,7 @@ const ComponenteGestorUsuarios = () => {
   };
 
   const handleDelete = async (codigoUsuario) => {
-    console.log("Código de usuario a eliminar:", codigoUsuario); // <-- Añade esto
+    console.log("Código de usuario a eliminar:", codigoUsuario);
     if (window.confirm("¿Estás seguro que deseas eliminar este usuario?")) {
       try {
         const response = await fetch(
@@ -35,7 +35,7 @@ const ComponenteGestorUsuarios = () => {
         if (!response.ok) {
           throw new Error("Error al eliminar el usuario");
         }
-        fetchData(); // Actualiza la lista después de eliminar
+        fetchData();
       } catch (error) {
         console.error("Error al eliminar el usuario:", error);
       }
@@ -43,11 +43,18 @@ const ComponenteGestorUsuarios = () => {
   };
 
   const handleEdit = (codigoUsuario) => {
-    navigate(`/editar/${codigoUsuario}`); // Redirige a la página de edición
+    navigate(`/editar/${codigoUsuario}`);
+  };
+
+  const renderSexo = (sexo) => {
+    return sexo ? "Masculino" : "Femenino";
   };
 
   return (
     <div>
+      <button onClick={() => navigate("/InsertarUsuario")}>
+        Insertar Usuario
+      </button>
       <h2>Lista de Usuarios</h2>
       <table>
         <thead>
@@ -74,7 +81,7 @@ const ComponenteGestorUsuarios = () => {
               <td>{usuario.DNI}</td>
               <td>{usuario.Codigo_Cargo}</td>
               <td>{usuario.Edad}</td>
-              <td>{usuario.Sexo}</td>
+              <td>{renderSexo(usuario.Sexo)}</td>
               <td>{usuario.Celular}</td>
               <td>{usuario.Email}</td>
               <td>{usuario.Direccion}</td>

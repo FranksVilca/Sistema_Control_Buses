@@ -1,3 +1,4 @@
+//D:\Nueva carpeta\Sistema_Control_Buses\proyecto-ips\Server.js
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -42,6 +43,35 @@ app.get("/api/data", (req, res) => {
   });
 });
 
+// Ruta para obtener el máximo código de usuario
+app.get("/api/maxCodigoUsuario", (req, res) => {
+  db.query(
+    "SELECT MAX(Codigo_Usuario) AS maxCodigoUsuario FROM Usuario",
+    (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+        return;
+      }
+      const maxCodigoUsuario = results[0].maxCodigoUsuario || 0; // Si no hay usuarios, devuelve 0
+      res.json({ maxCodigoUsuario });
+    }
+  );
+});
+
+app.post("/api/insert", (req, res) => {
+  const nuevoUsuario = req.body; // Datos del usuario a insertar
+
+  db.query("INSERT INTO Usuario SET ?", nuevoUsuario, (err, result) => {
+    if (err) {
+      console.error("Error al insertar usuario:", err);
+      res.status(500).send("Error al insertar usuario");
+      return;
+    }
+    console.log("Usuario insertado correctamente");
+    res.send("Usuario insertado exitosamente");
+  });
+});
+
 // Ruta para obtener un usuario por su código
 app.get("/api/data/:codigoUsuario", (req, res) => {
   const codigoUsuario = req.params.codigoUsuario;
@@ -81,10 +111,6 @@ app.put("/api/update/:codigoUsuario", (req, res) => {
 });
 
 app.delete("/api/delete/:codigoUsuario", (req, res) => {
-  console.log(
-    "Ruta llamada para eliminar usuario con código:",
-    req.params.codigoUsuario
-  ); // <-- Añade esto
   const codigoUsuario = req.params.codigoUsuario;
 
   db.query(
@@ -102,6 +128,16 @@ app.delete("/api/delete/:codigoUsuario", (req, res) => {
       res.send("Usuario eliminado exitosamente");
     }
   );
+});
+
+app.get("/api/cargos", (req, res) => {
+  db.query("SELECT Codigo_Cargo, Descripcion FROM Cargo", (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.json(results);
+  });
 });
 
 app.listen(port, () => {
