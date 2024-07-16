@@ -148,3 +148,6 @@ a{
     text-decoration: none;
     color: black;
 }
+.recaptcha {
+    z-index: 1; /* Asegúrate de que esté en el fondo */
+}
