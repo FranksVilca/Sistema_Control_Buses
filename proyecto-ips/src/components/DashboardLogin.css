@@ -149,5 +149,10 @@ a{
     color: black;
 }
 .recaptcha {
-    z-index: 1; /* Asegúrate de que esté en el fondo */
+    position:relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
 }

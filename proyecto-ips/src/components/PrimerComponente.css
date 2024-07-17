@@ -42,3 +42,6 @@
     background-color: #0056b3;
   }
   
+  .recaptcha {
+    z-index: 1; /* Asegúrate de que esté en el fondo */
+}

@@ -1,31 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const PaginaEdicionHorario = () => {
-  const { idHorario } = useParams();
+const PaginaInsertarHorario = () => {
   const [horario, setHorario] = useState({
     Fecha: "",
     Hora_Salida: "",
     Hora_Llegada: "",
   });
+
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchHorario();
-  }, [idHorario]);
-
-  const fetchHorario = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/horario/${idHorario}`);
-      if (!response.ok) {
-        throw new Error("Error al obtener el horario");
-      }
-      const data = await response.json();
-      setHorario(data);
-    } catch (error) {
-      console.error("Error al obtener el horario:", error);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,34 +29,26 @@ const PaginaEdicionHorario = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/update/horario/${idHorario}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(horario),
-        }
-      );
+      const response = await fetch(`http://localhost:3001/api/insert/horario`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(horario),
+      });
       if (!response.ok) {
-        throw new Error("Error al actualizar el horario");
+        throw new Error("Error al insertar el horario");
       }
-      alert("Horario actualizado exitosamente");
+      alert("Horario insertado exitosamente");
       navigate("/GestionarHorarios");
     } catch (error) {
-      console.error("Error al actualizar el horario:", error);
+      console.error("Error al insertar el horario:", error);
     }
   };
 
-  // Verificar si el horario está cargado completamente antes de renderizar el formulario
-  if (!horario.Fecha) {
-    return <p>Cargando...</p>;
-  }
-
   return (
     <div>
-      <h2>Editar Horario</h2>
+      <h2>Insertar Nuevo Horario</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Fecha:
@@ -105,10 +80,10 @@ const PaginaEdicionHorario = () => {
             required // Campo obligatorio
           />
         </label>
-        <button type="submit">Actualizar</button>
+        <button type="submit">Insertar</button>
       </form>
     </div>
   );
 };
 
-export default PaginaEdicionHorario;
+export default PaginaInsertarHorario;

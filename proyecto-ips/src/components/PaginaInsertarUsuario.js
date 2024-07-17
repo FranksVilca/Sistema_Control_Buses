@@ -72,6 +72,30 @@ const PaginaInsertarUsuario = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Validación de campos obligatorios
+      if (
+        !usuario.Nombre ||
+        !usuario.Nombre_Usuario ||
+        !usuario.Contrasena ||
+        !usuario.DNI ||
+        !usuario.Codigo_Cargo ||
+        !usuario.Edad ||
+        !usuario.Sexo ||
+        !usuario.Celular ||
+        !usuario.Email ||
+        !usuario.Direccion ||
+        !usuario.EstadoRegistro
+      ) {
+        throw new Error("Por favor complete todos los campos");
+      }
+
+      // Validación de rango de edad
+      const edad = parseInt(usuario.Edad);
+      if (edad < 18 || edad > 60) {
+        throw new Error("La edad debe estar entre 18 y 60 años");
+      }
+
+      // Insertar usuario
       const maxCodigoUsuario = await getMaxCodigoUsuario();
       if (maxCodigoUsuario !== null) {
         const nuevoCodigoUsuario = maxCodigoUsuario + 1;
@@ -108,6 +132,7 @@ const PaginaInsertarUsuario = () => {
             name="Nombre"
             value={usuario.Nombre || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -117,6 +142,7 @@ const PaginaInsertarUsuario = () => {
             name="Nombre_Usuario"
             value={usuario.Nombre_Usuario || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -126,6 +152,7 @@ const PaginaInsertarUsuario = () => {
             name="Contrasena"
             value={usuario.Contrasena || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -135,6 +162,7 @@ const PaginaInsertarUsuario = () => {
             name="DNI"
             value={usuario.DNI || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -143,6 +171,7 @@ const PaginaInsertarUsuario = () => {
             name="Codigo_Cargo"
             value={usuario.Codigo_Cargo}
             onChange={handleCargoChange}
+            required // Campo obligatorio
           >
             <option value="">Seleccione un cargo</option>
             {cargos.map((cargo) => (
@@ -159,6 +188,9 @@ const PaginaInsertarUsuario = () => {
             name="Edad"
             value={usuario.Edad || ""}
             onChange={handleChange}
+            required // Campo obligatorio
+            min="18"
+            max="60"
           />
         </label>
         <label>
@@ -167,7 +199,9 @@ const PaginaInsertarUsuario = () => {
             name="Sexo"
             value={usuario.Sexo === 1 ? "Masculino" : "Femenino"}
             onChange={handleSexoChange}
+            required // Campo obligatorio
           >
+            <option value="">Seleccione el sexo</option>
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
           </select>
@@ -179,6 +213,7 @@ const PaginaInsertarUsuario = () => {
             name="Celular"
             value={usuario.Celular || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -188,6 +223,7 @@ const PaginaInsertarUsuario = () => {
             name="Email"
             value={usuario.Email || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
@@ -197,16 +233,22 @@ const PaginaInsertarUsuario = () => {
             name="Direccion"
             value={usuario.Direccion || ""}
             onChange={handleChange}
+            required // Campo obligatorio
           />
         </label>
         <label>
           Estado de Registro:
-          <input
-            type="text"
+          <select
             name="EstadoRegistro"
             value={usuario.EstadoRegistro || ""}
             onChange={handleChange}
-          />
+            required // Campo obligatorio
+          >
+            <option value="">Seleccione el estado</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+            <option value="Pendiente">Pendiente</option>
+          </select>
         </label>
         <button type="submit">Insertar</button>
       </form>
