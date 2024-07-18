@@ -15,7 +15,8 @@ import PaginaInsertarHorarios from "./components/PaginaInsertarHorario";
 import PaginaEdicionHorarios from "./components/PaginaEdicionHorario";
 import TrabajadorTurno from "./components/TrabajadorTurno";
 import TrabajadorPerfil from './components/TrabajadorPerfil';
-
+import GestionarBuses from './willy/GestionarBuses';
+import GestionarRuta from './willy/GestionarRuta';
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
         <Route path="/PaginaEdicionHorarios" element={<PaginaEdicionHorarios />} />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
         <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
+        <Route path="/GestionarBuses" element={<GestionarBuses />} />
+        <Route path="/GestionarRuta" element={<GestionarRuta />} />
       </Routes>
     </BrowserRouter>
   );
