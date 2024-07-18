@@ -13,6 +13,9 @@ import PaginaEdicionRuta from "./components/PaginaEdicionRuta";
 import ComponenteGestorHorarios from "./components/ComponenteGestorHorario";
 import PaginaInsertarHorarios from "./components/PaginaInsertarHorario";
 import PaginaEdicionHorarios from "./components/PaginaEdicionHorario";
+import TrabajadorTurno from "./components/TrabajadorTurno";
+import TrabajadorPerfil from './components/TrabajadorPerfil';
+
 
 function App() {
   return (
@@ -26,7 +29,6 @@ function App() {
         />
         <Route path="/InsertarUsuario" element={<PaginaInsertarUsuario />} />
         <Route path="/InsertarBus" element={<PaginaInsertarBuses/>} />
-
         <Route path="/ComponenteGestorBuses" element={<ComponenteGestorBuses />} />
         <Route path="/PaginaEdicionBus" element={<PaginaEdicionBus />} />
         <Route path="/PaginaInsertarRuta" element={<PaginaInsertarRuta />} />
@@ -35,6 +37,8 @@ function App() {
         <Route path="/PaginaInsertarHorarios" element={<PaginaInsertarHorarios />} />
         <Route path="/ComponenteGestorHorarios" element={<ComponenteGestorHorarios />} />
         <Route path="/PaginaEdicionHorarios" element={<PaginaEdicionHorarios />} />
+        <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
+        <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
       </Routes>
     </BrowserRouter>
   );
