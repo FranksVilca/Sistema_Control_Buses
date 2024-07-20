@@ -1,29 +1,27 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLogin from "./components/DashboardLogin";
-import ComponenteUsuario from "./components/ComponenteUsuario";
-import ComponenteGestorUsuarios from "./components/ComponenteGestorUsuarios";
-import PaginaInsertarUsuario from "./components/PaginaInsertarUsuario";
-import ComponenteGestorBuses from "./components/ComponenteGestorBuses";
-import PaginaInsertarBuses from "./components/PaginaInsertarBuses";
-import PaginaEdicionBus from "./components/PaginaEdicionBuses";
-import ComponenteGestorRuta from "./components/ComponenteGestorRuta";
-import PaginaInsertarRuta from "./components/PaginaInsertarRuta";
-import PaginaEdicionRuta from "./components/PaginaEdicionRuta";
-import ComponenteGestorHorarios from "./components/ComponenteGestorHorario";
-import PaginaInsertarHorarios from "./components/PaginaInsertarHorario";
-import PaginaEdicionHorarios from "./components/PaginaEdicionHorario";
-import TrabajadorTurno from "./components/TrabajadorTurno";
-import TrabajadorPerfil from './components/TrabajadorPerfil';
-import GestionarBuses from './willy/GestionarBuses';
-import GestionarRuta from './willy/GestionarRuta';
+import ComponenteGestorUsuarios from "./Usuario/ComponenteGestorUsuarios";
+import PaginaInsertarUsuario from "./Usuario/PaginaInsertarUsuario";
+import ComponenteGestorBuses from "./Buses/ComponenteGestorBuses";
+import PaginaInsertarBuses from "./Buses/PaginaInsertarBuses";
+import PaginaEdicionBus from "./Buses/PaginaEdicionBuses";
+import ComponenteGestorRuta from "./Rutas/ComponenteGestorRuta";
+import PaginaInsertarRuta from "./Rutas/PaginaInsertarRuta";
+import PaginaEdicionRuta from "./Rutas/PaginaEdicionRuta";
+import ComponenteGestorHorarios from "./Horarios/ComponenteGestorHorario";
+import PaginaInsertarHorarios from "./Horarios/PaginaInsertarHorario";
+import PaginaEdicionHorarios from "./Horarios/PaginaEdicionHorario";
+import TrabajadorTurno from "./Turno/TrabajadorTurno";
+import TrabajadorPerfil from './Perfiles/TrabajadorPerfil';
+import GestionarBuses from './Vistas/GestionarBuses';
+import GestionarRuta from './Vistas/GestionarRuta';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<DashboardLogin />} />
-        <Route path="/usuarios" element={<ComponenteUsuario />} />
         <Route
           path="/GestionarUsuarios"
           element={<ComponenteGestorUsuarios />}
