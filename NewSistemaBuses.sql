@@ -18,7 +18,7 @@ CREATE TABLE Usuario (
     Celular VARCHAR(15),
     Email VARCHAR(100),
     Direccion VARCHAR(100),
-    EstadoRegistro VARCHAR(1),
+    EstadoRegistro VARCHAR(50),
     FOREIGN KEY (Codigo_Cargo) REFERENCES Cargo(Codigo_Cargo)
 );
 

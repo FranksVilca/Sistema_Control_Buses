@@ -9,6 +9,7 @@ import PaginaEdicionBus from "./Buses/PaginaEdicionBuses";
 import ComponenteGestorRuta from "./Rutas/ComponenteGestorRuta";
 import PaginaInsertarRuta from "./Rutas/PaginaInsertarRuta";
 import PaginaEdicionRuta from "./Rutas/PaginaEdicionRuta";
+import TrabajadorRuta from "./Rutas/TrabajadorRuta";
 import ComponenteGestorHorarios from "./Horarios/ComponenteGestorHorario";
 import PaginaInsertarHorarios from "./Horarios/PaginaInsertarHorario";
 import PaginaEdicionHorarios from "./Horarios/PaginaEdicionHorario";
@@ -61,6 +62,7 @@ function App() {
         />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
         <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
+        <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
         <Route path="/GestionarBuses" element={<GestionarBuses />} />
         <Route path="/GestionarRuta" element={<GestionarRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />

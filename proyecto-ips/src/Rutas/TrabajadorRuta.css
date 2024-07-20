@@ -1,0 +1,10 @@
+
+.map-container {
+    width: 90%; /* Aumentamos el ancho */
+    height: 700px; /* Aumentamos la altura */
+    margin: 150px auto; /* Aumentamos el margen superior para centrarlo mejor */
+    background-color: #f3f3f3;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}

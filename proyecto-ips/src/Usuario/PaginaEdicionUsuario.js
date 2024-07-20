@@ -15,8 +15,10 @@ const PaginaEdicionUsuario = () => {
     Email: "",
     Direccion: "",
     EstadoRegistro: "",
+    img: null, // Añadido para la imagen
   });
   const [cargos, setCargos] = useState([]);
+  const [imgPreview, setImgPreview] = useState(null); // Vista previa de la imagen
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +33,10 @@ const PaginaEdicionUsuario = () => {
         // Convertir el valor de Sexo de 1/0 a Masculino/Femenino
         data.Sexo = data.Sexo === 1 ? "Masculino" : "Femenino";
         setUsuario(data);
+        // Mostrar vista previa de la imagen si existe
+        if (data.img) {
+          setImgPreview(`http://localhost:3001/api/images/${data.img}`); // Ajustar URL según tu configuración
+        }
       })
       .catch((error) => console.error("Error al obtener el usuario:", error));
 
@@ -53,6 +59,18 @@ const PaginaEdicionUsuario = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Mostrar vista previa de la imagen
+      setImgPreview(URL.createObjectURL(file));
+      setUsuario((prevState) => ({
+        ...prevState,
+        img: file,
+      }));
+    }
+  };
+
   const handleCargoChange = (e) => {
     setUsuario((prevState) => ({
       ...prevState,
@@ -71,14 +89,27 @@ const PaginaEdicionUsuario = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("Nombre", usuario.Nombre);
+      formData.append("Nombre_Usuario", usuario.Nombre_Usuario);
+      formData.append("Contrasena", usuario.Contrasena);
+      formData.append("DNI", usuario.DNI);
+      formData.append("Codigo_Cargo", usuario.Codigo_Cargo);
+      formData.append("Edad", usuario.Edad);
+      formData.append("Sexo", usuario.Sexo);
+      formData.append("Celular", usuario.Celular);
+      formData.append("Email", usuario.Email);
+      formData.append("Direccion", usuario.Direccion);
+      formData.append("EstadoRegistro", usuario.EstadoRegistro);
+      if (usuario.img) {
+        formData.append("img", usuario.img);
+      }
+
       const response = await fetch(
         `http://localhost:3001/api/update/${codigoUsuario}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(usuario),
+          body: formData,
         }
       );
       if (!response.ok) {
@@ -207,6 +238,16 @@ const PaginaEdicionUsuario = () => {
             onChange={handleChange}
           />
         </label>
+        <label>
+          Imagen:
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+        </label>
+        {imgPreview && (
+          <div>
+            <h3>Vista Previa:</h3>
+            <img src={imgPreview} alt="Vista previa" width="200" />
+          </div>
+        )}
         <button type="submit">Actualizar</button>
       </form>
     </div>

@@ -1,5 +1,7 @@
+// D:\Nueva carpeta\Sistema_Control_Buses\proyecto-ips\src\Usuario\PaginaInsertarUsuario.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { fileTypeFromBuffer } from "file-type";
 
 const PaginaInsertarUsuario = () => {
   const [usuario, setUsuario] = useState({
@@ -9,11 +11,12 @@ const PaginaInsertarUsuario = () => {
     DNI: "",
     Codigo_Cargo: "",
     Edad: "",
-    Sexo: "",
+    Sexo: "", // Inicialmente vacío
     Celular: "",
     Email: "",
     Direccion: "",
     EstadoRegistro: "",
+    img: null, // Añadido para la imagen
   });
   const [cargos, setCargos] = useState([]);
   const navigate = useNavigate();
@@ -38,6 +41,22 @@ const PaginaInsertarUsuario = () => {
     }));
   };
 
+  const validateImageFile = async (fileBuffer) => {
+    if (fileBuffer) {
+      const fileType = await fileTypeFromBuffer(fileBuffer);
+      if (!fileType || !fileType.mime.startsWith("image/")) {
+        throw new Error("El archivo subido no es una imagen válida");
+      }
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setUsuario((prevState) => ({
+      ...prevState,
+      img: e.target.files[0], // Guardar el archivo seleccionado
+    }));
+  };
+
   const handleCargoChange = (e) => {
     setUsuario((prevState) => ({
       ...prevState,
@@ -46,7 +65,13 @@ const PaginaInsertarUsuario = () => {
   };
 
   const handleSexoChange = (e) => {
-    const sexoValue = e.target.value === "Masculino" ? 1 : 0;
+    // Asegúrate de que los valores sean 'Masculino' o 'Femenino'
+    const sexoValue =
+      e.target.value === "Masculino"
+        ? 1
+        : e.target.value === "Femenino"
+        ? 0
+        : 2;
     setUsuario((prevState) => ({
       ...prevState,
       Sexo: sexoValue,
@@ -80,35 +105,54 @@ const PaginaInsertarUsuario = () => {
         !usuario.DNI ||
         !usuario.Codigo_Cargo ||
         !usuario.Edad ||
-        !usuario.Sexo ||
+        usuario.Sexo === "" || // Asegúrate de que el campo Sexo tenga un valor válido
         !usuario.Celular ||
         !usuario.Email ||
         !usuario.Direccion ||
+        !usuario.img ||
         !usuario.EstadoRegistro
       ) {
         throw new Error("Por favor complete todos los campos");
       }
 
+      // Validación del valor de Sexo
+      if (usuario.Sexo === 2) {
+        throw new Error("El valor del sexo no es válido");
+      }
+
       // Validación de rango de edad
       const edad = parseInt(usuario.Edad);
-      if (edad < 18 || edad > 60) {
+      if (isNaN(edad) || edad < 18 || edad > 60) {
         throw new Error("La edad debe estar entre 18 y 60 años");
       }
 
-      // Insertar usuario
+      // Validación del archivo de imagen
+      const file = usuario.img;
+      if (file) {
+        const buffer = await file.arrayBuffer();
+        const type = await fileTypeFromBuffer(new Uint8Array(buffer));
+        if (!type || !type.mime.startsWith("image/")) {
+          alert("El archivo subido no es una imagen válida");
+          return;
+        }
+      }
+
+      // Obtener el máximo código de usuario
       const maxCodigoUsuario = await getMaxCodigoUsuario();
       if (maxCodigoUsuario !== null) {
         const nuevoCodigoUsuario = maxCodigoUsuario + 1;
-        const usuarioConCodigo = {
-          ...usuario,
-          Codigo_Usuario: nuevoCodigoUsuario,
-        };
+
+        // Crear un FormData para enviar los datos junto con la imagen
+        const formData = new FormData();
+        formData.append("Codigo_Usuario", nuevoCodigoUsuario);
+        for (const key in usuario) {
+          formData.append(key, usuario[key]);
+        }
+
+        // Realizar la solicitud para insertar el usuario
         const response = await fetch(`http://localhost:3001/api/insert`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(usuarioConCodigo),
+          body: formData,
         });
         if (!response.ok) {
           throw new Error("Error al insertar el usuario");
@@ -117,6 +161,7 @@ const PaginaInsertarUsuario = () => {
         navigate("/GestionarUsuarios");
       }
     } catch (error) {
+      alert(`Error al insertar el usuario: ${error.message}`); // Mostrar error en alerta
       console.error("Error al insertar el usuario:", error);
     }
   };
@@ -197,7 +242,13 @@ const PaginaInsertarUsuario = () => {
           Sexo:
           <select
             name="Sexo"
-            value={usuario.Sexo === 1 ? "Masculino" : "Femenino"}
+            value={
+              usuario.Sexo === 1
+                ? "Masculino"
+                : usuario.Sexo === 0
+                ? "Femenino"
+                : ""
+            }
             onChange={handleSexoChange}
             required // Campo obligatorio
           >
@@ -244,13 +295,21 @@ const PaginaInsertarUsuario = () => {
             onChange={handleChange}
             required // Campo obligatorio
           >
-            <option value="">Seleccione el estado</option>
+            <option value="">Seleccione un estado</option>
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
-            <option value="Pendiente">Pendiente</option>
           </select>
         </label>
-        <button type="submit">Insertar</button>
+        <label>
+          Imagen:
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
+          />
+        </label>
+        <button type="submit">Insertar Usuario</button>
       </form>
     </div>
   );
