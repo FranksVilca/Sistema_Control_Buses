@@ -23,10 +23,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<DashboardLogin />} />
-        <Route
-          path="/GestionarUsuarios"
-          element={<ComponenteGestorUsuarios />}
-        />
+        <Route path="/GestionarUsuarios" element={<ComponenteGestorUsuarios />} />
         <Route path="/InsertarUsuario" element={<PaginaInsertarUsuario />} />
         <Route path="/PaginaEdicionUsuario" element={<PaginaEdicionUsuario />} />
         <Route path="/InsertarBus" element={<PaginaInsertarBuses/>} />
