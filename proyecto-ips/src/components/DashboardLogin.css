@@ -109,6 +109,7 @@ input{
     display: block;
     width: 100%;
     outline: 0;
+    position: relative;
     border-radius: 10px;
     align-items: center;
     justify-content: center;
