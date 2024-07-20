@@ -13,33 +13,57 @@ import ComponenteGestorHorarios from "./Horarios/ComponenteGestorHorario";
 import PaginaInsertarHorarios from "./Horarios/PaginaInsertarHorario";
 import PaginaEdicionHorarios from "./Horarios/PaginaEdicionHorario";
 import TrabajadorTurno from "./Turno/TrabajadorTurno";
-import TrabajadorPerfil from './Perfiles/TrabajadorPerfil';
-import GestionarBuses from './Vistas/GestionarBuses';
-import GestionarRuta from './Vistas/GestionarRuta';
+import TrabajadorPerfil from "./Perfiles/TrabajadorPerfil";
+import GestionarBuses from "./Vistas/GestionarBuses";
+import GestionarRuta from "./Vistas/GestionarRuta";
+import VistaAdmin from "./Vistas/VistaAdmin";
+import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<DashboardLogin />} />
+
         <Route
           path="/GestionarUsuarios"
           element={<ComponenteGestorUsuarios />}
         />
         <Route path="/InsertarUsuario" element={<PaginaInsertarUsuario />} />
-        <Route path="/InsertarBus" element={<PaginaInsertarBuses/>} />
-        <Route path="/ComponenteGestorBuses" element={<ComponenteGestorBuses />} />
+        <Route
+          path="/editar/:codigoUsuario"
+          element={<PaginaEdicionUsuario />}
+        />
+        <Route path="/InsertarBus" element={<PaginaInsertarBuses />} />
+        <Route
+          path="/ComponenteGestorBuses"
+          element={<ComponenteGestorBuses />}
+        />
+
         <Route path="/PaginaEdicionBus" element={<PaginaEdicionBus />} />
         <Route path="/PaginaInsertarRuta" element={<PaginaInsertarRuta />} />
-        <Route path="/ComponenteGestorRuta" element={<ComponenteGestorRuta />} />
+        <Route
+          path="/ComponenteGestorRuta"
+          element={<ComponenteGestorRuta />}
+        />
         <Route path="/PaginaEdicionRuta" element={<PaginaEdicionRuta />} />
-        <Route path="/PaginaInsertarHorarios" element={<PaginaInsertarHorarios />} />
-        <Route path="/ComponenteGestorHorarios" element={<ComponenteGestorHorarios />} />
-        <Route path="/PaginaEdicionHorarios" element={<PaginaEdicionHorarios />} />
+        <Route
+          path="/PaginaInsertarHorarios"
+          element={<PaginaInsertarHorarios />}
+        />
+        <Route
+          path="/ComponenteGestorHorarios"
+          element={<ComponenteGestorHorarios />}
+        />
+        <Route
+          path="/PaginaEdicionHorarios"
+          element={<PaginaEdicionHorarios />}
+        />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
         <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
         <Route path="/GestionarBuses" element={<GestionarBuses />} />
         <Route path="/GestionarRuta" element={<GestionarRuta />} />
+        <Route path="/VistaAdmin" element={<VistaAdmin />} />
       </Routes>
     </BrowserRouter>
   );
