@@ -140,6 +140,22 @@ app.get("/api/cargos", (req, res) => {
   });
 });
 
+// Ruta para obtener todas las asistencias por código de turno
+app.get("/api/Asistencias/:codigoTurno", (req, res) => {
+  const codigoTurno = req.params.codigoTurno;
+  db.query(
+      "SELECT a.Codigo_Asistencia, a.Codigo_Usuario, a.Asistencia, u.Nombre_Usuario FROM Asistencia a JOIN Usuario u ON a.Codigo_Usuario = u.Codigo_Usuario WHERE a.Codigo_Turno = ?",
+      [codigoTurno],
+      (err, results) => {
+          if (err) {
+              res.status(500).send(err);
+              return;
+          }
+          res.json(results);
+      }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Servidor funcionando en http://localhost:${port}`);
 });

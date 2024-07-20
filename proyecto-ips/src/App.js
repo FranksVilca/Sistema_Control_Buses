@@ -18,6 +18,7 @@ import GestionarBuses from "./Vistas/GestionarBuses";
 import GestionarRuta from "./Vistas/GestionarRuta";
 import VistaAdmin from "./Vistas/VistaAdmin";
 import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
+import Asistencia from "./Asistencias/MarcarAsistencias";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
         <Route path="/GestionarBuses" element={<GestionarBuses />} />
         <Route path="/GestionarRuta" element={<GestionarRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />
+        <Route path="/Asistencia/:codigoTurno" element={<Asistencia/>} />
       </Routes>
     </BrowserRouter>
   );
