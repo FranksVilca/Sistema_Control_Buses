@@ -16,6 +16,7 @@ import TrabajadorTurno from "./Turno/TrabajadorTurno";
 import TrabajadorPerfil from './Perfiles/TrabajadorPerfil';
 import GestionarBuses from './Vistas/GestionarBuses';
 import GestionarRuta from './Vistas/GestionarRuta';
+import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           element={<ComponenteGestorUsuarios />}
         />
         <Route path="/InsertarUsuario" element={<PaginaInsertarUsuario />} />
+        <Route path="/PaginaEdicionUsuario" element={<PaginaEdicionUsuario />} />
         <Route path="/InsertarBus" element={<PaginaInsertarBuses/>} />
         <Route path="/ComponenteGestorBuses" element={<ComponenteGestorBuses />} />
         <Route path="/PaginaEdicionBus" element={<PaginaEdicionBus />} />

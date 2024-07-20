@@ -43,7 +43,7 @@ const ComponenteGestorUsuarios = () => {
   };
 
   const handleEdit = (codigoUsuario) => {
-    navigate(`/editar/${codigoUsuario}`);
+    navigate(`/PaginaEdicionUsuario/${codigoUsuario}`);
   };
 
   const renderSexo = (sexo) => {
