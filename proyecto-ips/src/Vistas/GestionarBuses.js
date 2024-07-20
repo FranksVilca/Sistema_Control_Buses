@@ -14,6 +14,7 @@ const GestionarBuses = ({ className = "" }) => {
 		<li><a href="#" class="crear">Crear Turno</a></li>
 		<li><a href="#" class="crear">Crear Usuario</a></li>
 	 </ul>
+   
     </nav>
 </header>
 <div class="container">
