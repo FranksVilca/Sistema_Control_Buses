@@ -264,20 +264,54 @@ app.get("/api/cargos", (req, res) => {
 });
 
 // Ruta para obtener todas las asistencias por código de turno
-app.get("/api/Asistencias/:codigoTurno", (req, res) => {
+app.get("/api/asistencias/:codigoTurno", (req, res) => {
   const codigoTurno = req.params.codigoTurno;
   db.query(
-      "SELECT a.Codigo_Asistencia, a.Codigo_Usuario, a.Asistencia, u.Nombre_Usuario FROM Asistencia a JOIN Usuario u ON a.Codigo_Usuario = u.Codigo_Usuario WHERE a.Codigo_Turno = ?",
-      [codigoTurno],
-      (err, results) => {
-          if (err) {
-              res.status(500).send(err);
-              return;
-          }
-          res.json(results);
+    `SELECT a.Codigo_Asistencia, a.Codigo_Usuario, u.Nombre
+     FROM asistencia a
+     JOIN usuario u ON a.Codigo_Usuario = u.Codigo_Usuario
+     WHERE a.Codigo_Turno = ?`,
+    [codigoTurno],
+    (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+        return;
       }
+      res.json(results);
+    }
   );
 });
+
+//Modificar Asistencias
+// Ruta para actualizar la asistencia
+app.put('/api/Asistencia/:codigoAsistencia', (req, res) => {
+  const { codigoAsistencia } = req.params;
+  const { Asistencia } = req.body;
+
+  // Validar el valor de Asistencia
+  if (Asistencia !== 1 && Asistencia !== 0) {
+    return res.status(400).json({ error: 'Invalid Asistencia value' });
+  }
+
+  // Actualizar el registro en la base de datos
+  db.query(
+    'UPDATE asistencia SET Asistencia = ? WHERE Codigo_Asistencia = ?',
+    [Asistencia, codigoAsistencia],
+    (err, result) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Asistencia not found' });
+      }
+      
+      res.status(200).json({ message: 'Asistencia updated successfully' });
+    }
+  );
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor funcionando en http://localhost:${port}`);

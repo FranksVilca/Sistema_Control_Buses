@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; // Importa useParams para acceder a parámetros de URL
 
-const MarcarAsistencias = () => {
-    const { codigoTurno } = useParams(); 
-    const [turnos, setTurnos] = useState([]);
+const Asistencia = () => {
+    const [turnos, setTurnos] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { codigoTurno } = useParams(); // Obtiene codigoTurno de la URL
+
     useEffect(() => {
         const fetchAsistencias = async () => {
+            console.log('Fetching asistencias for codigoTurno:', codigoTurno); // Log del código del turno
             try {
                 const response = await axios.get(`http://localhost:3001/api/Asistencias/${codigoTurno}`);
+                console.log('Response data:', response.data); // Log de los datos obtenidos
                 const agrupadoPorTurno = agruparPorTurno(response.data);
+                console.log('Grouped by turno:', agrupadoPorTurno); // Log de los datos agrupados
                 setTurnos(agrupadoPorTurno);
                 setLoading(false);
             } catch (err) {
+                console.error('Error fetching asistencias:', err); // Log del error
                 setError(err);
                 setLoading(false);
             }
         };
 
-        fetchAsistencias();
-    }, [codigoTurno]);
+        if (codigoTurno) {
+            fetchAsistencias();
+        }
+    }, [codigoTurno]); // Dependencia en codigoTurno para volver a ejecutar cuando cambie
+
     const agruparPorTurno = (asistencias) => {
+        console.log('Grouping asistencias:', asistencias); // Log de las asistencias antes de agrupar
         return asistencias.reduce((acc, asistencia) => {
             const { Codigo_Turno } = asistencia;
             if (!acc[Codigo_Turno]) {
@@ -33,28 +42,32 @@ const MarcarAsistencias = () => {
         }, {});
     };
 
-    const handleAsistenciaChange = async (codigoAsistencia, codigoUsuario, newValue) => {
+    const handleAsistenciaChange = async (codigoAsistencia, newValue) => {
+        console.log('Updating asistencia:', { codigoAsistencia, newValue });
         try {
-            await axios.put(`http://localhost:3001/api/Asistencias/${codigoAsistencia}`, { Codigo_Usuario: codigoUsuario, Asistencia: newValue });
+            const intValue = newValue ? 1 : 0; // Convertir el booleano a un valor numérico
+            await axios.put(`http://localhost:3001/api/Asistencia/${codigoAsistencia}`, { Asistencia: intValue });
+            console.log('Asistencia updated successfully');
             setTurnos((prevTurnos) =>
                 Object.fromEntries(
                     Object.entries(prevTurnos).map(([turno, asistencias]) => [
                         turno,
                         asistencias.map((asistencia) =>
-                            asistencia.Codigo_Asistencia === codigoAsistencia && asistencia.Codigo_Usuario === codigoUsuario
-                                ? { ...asistencia, Asistencia: newValue }
+                            asistencia.Codigo_Asistencia === codigoAsistencia
+                                ? { ...asistencia, Asistencia: intValue }
                                 : asistencia
                         )
                     ])
                 )
             );
         } catch (err) {
+            console.error('Error updating asistencia:', err);
             setError(err);
         }
     };
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading data</p>;
+    if (error) return <p>Error loading data: {error.message}</p>;
 
     return (
         <div>
@@ -72,14 +85,14 @@ const MarcarAsistencias = () => {
                         </thead>
                         <tbody>
                             {asistencias.map((asistencia) => (
-                                <tr key={asistencia.Codigo_Usuario}>
+                                <tr key={asistencia.Codigo_Asistencia}>
                                     <td>{asistencia.Codigo_Usuario}</td>
-                                    <td>{asistencia.Nombre_Usuario}</td>
+                                    <td>{asistencia.Nombre}</td>
                                     <td>
                                         <select
                                             value={asistencia.Asistencia ? 1 : 0}
                                             onChange={(e) =>
-                                                handleAsistenciaChange(asistencia.Codigo_Asistencia, asistencia.Codigo_Usuario, e.target.value === '1')
+                                                handleAsistenciaChange(asistencia.Codigo_Asistencia, e.target.value === '1')
                                             }
                                         >
                                             <option value="1">Asistió</option>
@@ -96,4 +109,4 @@ const MarcarAsistencias = () => {
     );
 };
 
-export default MarcarAsistencias;
+export default Asistencia;
