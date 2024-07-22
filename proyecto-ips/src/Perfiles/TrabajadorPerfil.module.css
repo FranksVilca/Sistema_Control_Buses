@@ -84,3 +84,22 @@ body {
 .acrear:hover {
     background-color: rgb(20, 92, 163);
 }
+
+.profileContainer {
+    padding: 20px;
+    margin-top: 160px;
+}
+
+.profileHeader {
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
