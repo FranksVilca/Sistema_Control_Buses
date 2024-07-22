@@ -53,24 +53,24 @@ const DashboardLogin = ({ className = "" }) => {
         cambiarusuariovalido(false);
       } else {
         localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
-        redirectToPage(data.Codigo_Cargo);
+        redirectToPage(data.Codigo_Cargo, data.Codigo_Usuario);
       }
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred. Please try again.');
     }
   };
-
-  const redirectToPage = (Codigo_Cargo) => {
+  
+  const redirectToPage = (Codigo_Cargo, Codigo_Usuario) => {
     switch(Codigo_Cargo) {
       case 1:
-        navigate('/VistaAdmin'); // Reemplaza con la ruta de la ventana 1
+        navigate(`/VistaAdmin/${Codigo_Usuario}`); // Redirige a la vista de administrador con el ID del usuario
         break;
       case 2:
-        navigate('/VistaChofer'); 
+        navigate(`/VistaChofer/${Codigo_Usuario}`); // Redirige a la vista del chofer con el ID del usuario
         break;
       case 3:
-        navigate('/VistaUsuario'); 
+        navigate(`/VistaUsuario/${Codigo_Usuario}`); // Redirige a la vista del usuario con el ID del usuario
         break;
       default:
         alert('Código de cargo no reconocido');
