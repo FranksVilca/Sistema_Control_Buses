@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './ComponenteGestorBuses.module.css';
 
 const ComponenteGestorBuses = () => {
   const [buses, setBuses] = useState([]);
@@ -47,12 +48,26 @@ const ComponenteGestorBuses = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => navigate("/InsertarBus")}>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.gestorBus}>
+      <div className={style.gestorBusBotonInsertar}>
+      <button className={style.gestorBusBoton} onClick={() => navigate("/InsertarBus")}>
         Insertar Bus
       </button>
-      <h2>Lista de Buses</h2>
-      <table>
+      </div>
+      <h2 className={style.gestorBusTitulo}>Lista de Buses</h2>
+      <table className={style.gestorBusTabla}>
         <thead>
           <tr>
             <th>ID de Bus</th>
@@ -85,6 +100,7 @@ const ComponenteGestorBuses = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
