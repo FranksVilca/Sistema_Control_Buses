@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './ComponenteGestorHorario.module.css';
 
 const ComponenteGestorHorarios = () => {
   const [horarios, setHorarios] = useState([]);
@@ -47,12 +48,26 @@ const ComponenteGestorHorarios = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => navigate("/InsertarHorario")}>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.gestorHorario}>
+      <div className={style.gestorHorarioBotonInsertar}>
+      <button className={style.gestorHorarioBoton} onClick={() => navigate("/InsertarHorario")}>
         Insertar Horario
       </button>
-      <h2>Lista de Horarios</h2>
-      <table>
+      </div>
+      <h2 className={style.gestorHorarioTitulo}>Lista de Horarios</h2>
+      <table className={style.gestorHorarioTabla}>
         <thead>
           <tr>
             <th>ID de Horario</th>
@@ -81,6 +96,7 @@ const ComponenteGestorHorarios = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
