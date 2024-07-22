@@ -15,8 +15,6 @@ import PaginaInsertarHorarios from "./Horarios/PaginaInsertarHorario";
 import PaginaEdicionHorarios from "./Horarios/PaginaEdicionHorario";
 import TrabajadorTurno from "./Turno/TrabajadorTurno";
 import TrabajadorPerfil from "./Perfiles/TrabajadorPerfil";
-import GestionarBuses from "./Vistas/GestionarBuses";
-import GestionarRuta from "./Vistas/GestionarRuta";
 import VistaAdmin from "./Vistas/VistaAdmin";
 import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
@@ -63,8 +61,6 @@ function App() {
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
         <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
         <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
-        <Route path="/GestionarBuses" element={<GestionarBuses />} />
-        <Route path="/GestionarRuta" element={<GestionarRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />
         <Route path="/Asistencia/:codigoTurno" element={<Asistencia/>} />
       </Routes>
