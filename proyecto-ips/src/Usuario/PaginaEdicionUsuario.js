@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import style from './PaginaEdicionUsuario.module.css';
 
 const PaginaEdicionUsuario = () => {
   const { codigoUsuario } = useParams();
@@ -128,48 +129,61 @@ const PaginaEdicionUsuario = () => {
   }
 
   return (
-    <div>
-      <h2>Editar Usuario</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.edicionUsuario}>
+      <form className={style.formEdicionUsuario} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Editar Usuario</h2>
+      <div className={style.campos}>
+        <label className={style.label1}>
           Nombre:
-          <input
+          <input className={style.input}
             type="text"
             name="Nombre"
             value={usuario.Nombre || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Nombre de Usuario:
-          <input
+          <input className={style.input}
             type="text"
             name="Nombre_Usuario"
             value={usuario.Nombre_Usuario || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Contraseña:
-          <input
+          <input className={style.input}
             type="password"
             name="Contrasena"
             value={usuario.Contrasena || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           DNI:
-          <input
+          <input className={style.input}
             type="text"
             name="DNI"
             value={usuario.DNI || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Código de Cargo:
-          <select
+          <select className={style.select} 
             name="Codigo_Cargo"
             value={usuario.Codigo_Cargo}
             onChange={handleCargoChange}
@@ -182,18 +196,18 @@ const PaginaEdicionUsuario = () => {
             ))}
           </select>
         </label>
-        <label>
+        <label className={style.label1}>
           Edad:
-          <input
+          <input className={style.input}
             type="number"
             name="Edad"
             value={usuario.Edad || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Sexo:
-          <select
+          <select className={style.select} 
             name="Sexo"
             value={usuario.Sexo === 1 ? "Masculino" : "Femenino"}
             onChange={handleSexoChange}
@@ -202,54 +216,59 @@ const PaginaEdicionUsuario = () => {
             <option value="Femenino">Femenino</option>
           </select>
         </label>
-        <label>
+        <label className={style.label1}>
           Celular:
-          <input
+          <input className={style.input}
             type="text"
             name="Celular"
             value={usuario.Celular || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Email:
-          <input
+          <input className={style.input}
             type="email"
             name="Email"
             value={usuario.Email || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Dirección:
-          <input
+          <input className={style.input}
             type="text"
             name="Direccion"
             value={usuario.Direccion || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Estado de Registro:
-          <input
+          <input className={style.input}
             type="text"
             name="EstadoRegistro"
             value={usuario.EstadoRegistro || ""}
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Imagen:
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input className={style.input} type="file" accept="image/*" onChange={handleFileChange} />
         </label>
+        </div>
         {imgPreview && (
           <div>
             <h3>Vista Previa:</h3>
             <img src={imgPreview} alt="Vista previa" width="200" />
           </div>
         )}
-        <button type="submit">Actualizar</button>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Actualizar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
