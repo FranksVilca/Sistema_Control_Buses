@@ -131,3 +131,9 @@ body {
 .profileAbout p, .profileDetails p {
     margin: 10px 0;
 }
+
+@media (max-width: 768px) {
+    .profileAbout, .profileDetails {
+        width: 100%;
+    }
+}
