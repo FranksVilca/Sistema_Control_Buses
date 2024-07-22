@@ -66,3 +66,21 @@ body {
 .aopciones:hover {
     background-color: #2391ec;
 }
+
+.acrear {
+    font-family: 'Inter', sans-serif;
+    font-size: medium;
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    width: 150px;
+    text-align: center;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 5px 0px;
+    background-color: dodgerblue;
+}
+
+.acrear:hover {
+    background-color: rgb(20, 92, 163);
+}
