@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fileTypeFromBuffer } from "file-type";
+import style from './PaginaInsertarUsuario.module.css';
 
 const PaginaInsertarUsuario = () => {
   const [usuario, setUsuario] = useState({
@@ -167,12 +168,25 @@ const PaginaInsertarUsuario = () => {
   };
 
   return (
-    <div>
-      <h2>Insertar Nuevo Usuario</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.insertarUsuario}>
+      <form className={style.formInsertarUsuario} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Insertar Nuevo Usuario</h2>
+      <div className={style.campos}>
+        <label className={style.label1}>
           Nombre:
-          <input
+          <input className={style.input}
             type="text"
             name="Nombre"
             value={usuario.Nombre || ""}
@@ -180,9 +194,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Nombre de Usuario:
-          <input
+          <input className={style.input}
             type="text"
             name="Nombre_Usuario"
             value={usuario.Nombre_Usuario || ""}
@@ -190,9 +204,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Contraseña:
-          <input
+          <input className={style.input}
             type="password"
             name="Contrasena"
             value={usuario.Contrasena || ""}
@@ -200,9 +214,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           DNI:
-          <input
+          <input className={style.input}
             type="text"
             name="DNI"
             value={usuario.DNI || ""}
@@ -210,9 +224,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Código de Cargo:
-          <select
+          <select className={style.select} 
             name="Codigo_Cargo"
             value={usuario.Codigo_Cargo}
             onChange={handleCargoChange}
@@ -226,9 +240,9 @@ const PaginaInsertarUsuario = () => {
             ))}
           </select>
         </label>
-        <label>
+        <label className={style.label1}>
           Edad:
-          <input
+          <input className={style.input}
             type="number"
             name="Edad"
             value={usuario.Edad || ""}
@@ -238,9 +252,9 @@ const PaginaInsertarUsuario = () => {
             max="60"
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Sexo:
-          <select
+          <select className={style.select}  
             name="Sexo"
             value={
               usuario.Sexo === 1
@@ -257,9 +271,9 @@ const PaginaInsertarUsuario = () => {
             <option value="Femenino">Femenino</option>
           </select>
         </label>
-        <label>
+        <label className={style.label1}>
           Celular:
-          <input
+          <input className={style.input}
             type="text"
             name="Celular"
             value={usuario.Celular || ""}
@@ -267,9 +281,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Email:
-          <input
+          <input className={style.input}
             type="email"
             name="Email"
             value={usuario.Email || ""}
@@ -277,9 +291,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Dirección:
-          <input
+          <input className={style.input}
             type="text"
             name="Direccion"
             value={usuario.Direccion || ""}
@@ -287,9 +301,9 @@ const PaginaInsertarUsuario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Estado de Registro:
-          <select
+          <select className={style.select} 
             name="EstadoRegistro"
             value={usuario.EstadoRegistro || ""}
             onChange={handleChange}
@@ -300,17 +314,22 @@ const PaginaInsertarUsuario = () => {
             <option value="Inactivo">Inactivo</option>
           </select>
         </label>
-        <label>
+        <label className={style.label1}>
           Imagen:
-          <input
+          <input className={style.input}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             required
           />
         </label>
-        <button type="submit">Insertar Usuario</button>
+        </div>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Insertar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
