@@ -1,5 +1,4 @@
 import React from 'react';
-import './TrabajadorTurno.css';
 
 const TrabajadorTurno = () => {
     return (

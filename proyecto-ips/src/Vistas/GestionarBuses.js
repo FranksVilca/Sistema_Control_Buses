@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import "./GestionarBuses.css";
 
 const GestionarBuses = ({ className = "" }) => {
   return (   
