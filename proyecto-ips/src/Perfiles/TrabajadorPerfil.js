@@ -1,5 +1,5 @@
 import React from 'react';
-import './TrabajadorPerfil.css';
+import style from './TrabajadorPerfil.module.css';
 
 const TrabajadorPerfil = () => {
     // Datos del trabajador (simulación)
