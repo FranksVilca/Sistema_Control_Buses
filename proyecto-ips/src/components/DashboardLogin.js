@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import style from './DashboardLogin.module.css';
 import ReCAPTCHA from "react-google-recaptcha";
 import CryptoJS from "crypto-js";
+import { useNavigate } from 'react-router-dom';
 
 const DashboardLogin = ({ className = "" }) => {
   const [captchavalido, cambiarcaptchavalido] = useState(null);
   const [usuariovalido, cambiarusuariovalido] = useState(false);
   const captcha = useRef(null);
+  const navigate = useNavigate();
 
   const onChange = () => {
     if (captcha.current.getValue()) {
@@ -35,13 +37,48 @@ const DashboardLogin = ({ className = "" }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const encryptedPassword = CryptoJS.AES.encrypt(password, 'your-secret-key').toString();
-    // Aquí puedes almacenar el token en localStorage en lugar de cookies
-    localStorage.setItem('token', 'your-token-value');
-    // Lógica adicional para manejar el inicio de sesión con username y encryptedPassword
+  
+    try {
+      const response = await fetch('http://localhost:3001/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Nombre_Usuario: username, Contrasena: encryptedPassword })
+      });
+      const data = await response.json();
+      
+      if (data.error) {
+        alert(data.error);
+        cambiarusuariovalido(false);
+      } else {
+        localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
+        redirectToPage(data.Codigo_Cargo);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
+  const redirectToPage = (Codigo_Cargo) => {
+    switch(Codigo_Cargo) {
+      case 1:
+        navigate('/VistaAdmin'); // Reemplaza con la ruta de la ventana 1
+        break;
+      case 2:
+        navigate('/VistaChofer'); 
+        break;
+      case 3:
+        navigate('/VistaUsuario'); 
+        break;
+      default:
+        alert('Código de cargo no reconocido');
+    }
   };
 
   return (
-    <div className={style.dashboard}>
+    <div className={`${style.dashboard} ${className}`}>
       <div className={style.bgcontainer}>
         <img className={style.bgicon} alt="" src="/bg.svg" />
       </div>
