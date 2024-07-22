@@ -21,3 +21,13 @@ body {
     background-attachment: fixed;
     background-size: cover;
 }
+
+.header {
+    background: rgb(0, 0, 0);
+    width: 100%;
+    min-width: 500px;
+    position: fixed;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
