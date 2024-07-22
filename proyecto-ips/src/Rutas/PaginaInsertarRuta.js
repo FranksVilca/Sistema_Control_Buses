@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './PaginaInsertarRuta.module.css';
+
 
 const PaginaInsertarRuta = () => {
   const [ruta, setRuta] = useState({
@@ -66,12 +68,25 @@ const PaginaInsertarRuta = () => {
   };
 
   return (
-    <div>
-      <h2>Insertar Nueva Ruta</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.insertarRuta}>
+      <form className={style.formInsertarRuta} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Insertar Nueva Ruta</h2>
+      <div className={style.campos}>
+        <label className={style.label1}>
           Punto de Salida:
-          <input
+          <input className={style.input}
             type="text"
             name="PuntoSalida"
             value={ruta.PuntoSalida}
@@ -79,9 +94,9 @@ const PaginaInsertarRuta = () => {
             required
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Punto de Llegada:
-          <input
+          <input className={style.input}
             type="text"
             name="PuntoLlegada"
             value={ruta.PuntoLlegada}
@@ -89,8 +104,13 @@ const PaginaInsertarRuta = () => {
             required
           />
         </label>
-        <button type="submit">Insertar</button>
+        </div>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Insertar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
