@@ -1,5 +1,4 @@
 import React from 'react';
-import './TrabajadorRuta.css';
 
 const TrabajadorRuta = () => {
     return (
