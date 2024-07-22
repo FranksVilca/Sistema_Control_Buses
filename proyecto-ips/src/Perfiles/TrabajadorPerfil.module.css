@@ -5,3 +5,29 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
 }
+
+.fondo {
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 500px;
+    height: 100vh;
+    overflow: auto;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    background-image: url('../../public/vector.svg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.header {
+    background: rgb(0, 0, 0);
+    width: 100%;
+    min-width: 500px;
+    position: fixed;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
