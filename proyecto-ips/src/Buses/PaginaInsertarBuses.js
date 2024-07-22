@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './PaginaInsertarBuses.module.css';
 
 const PaginaInsertarBus = () => {
   const [bus, setBus] = useState({
@@ -41,12 +42,26 @@ const PaginaInsertarBus = () => {
   };
 
   return (
-    <div>
-      <h2>Insertar Nuevo Bus</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.insertarBus}>
+      <form className={style.formInsertarBus} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Insertar Nuevo Bus</h2>
+      <div className={style.campos}>
+      <div className={style.campo1}>
+        <label className={style.label1}>
           Número de Asientos:
-          <input
+          <input className={style.input}
             type="number"
             name="Num_Asientos"
             value={bus.Num_Asientos}
@@ -56,9 +71,9 @@ const PaginaInsertarBus = () => {
             max="50"
           />
         </label>
-        <label>
+        <label className={style.label2}>
           Estado de Registro:
-          <select
+          <select className={style.select} 
             name="EstadoRegistro"
             value={bus.EstadoRegistro}
             onChange={handleChange}
@@ -70,9 +85,10 @@ const PaginaInsertarBus = () => {
             <option value="En Mantenimiento">En Mantenimiento</option>
           </select>
         </label>
-        <label>
+        </div>
+        <label className={style.label1}>
           Modelo:
-          <input
+          <input className={style.input}
             type="text"
             name="Modelo"
             value={bus.Modelo}
@@ -80,9 +96,10 @@ const PaginaInsertarBus = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <div className={style.campo1}>
+        <label className={style.label1}>
           Marca:
-          <input
+          <input className={style.input}
             type="text"
             name="Marca"
             value={bus.Marca}
@@ -90,9 +107,9 @@ const PaginaInsertarBus = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label2}>
           Placa (formato AAA-123):
-          <input
+          <input className={style.input}
             type="text"
             name="Placa"
             value={bus.Placa}
@@ -102,8 +119,14 @@ const PaginaInsertarBus = () => {
             required // Campo obligatorio
           />
         </label>
-        <button type="submit">Insertar</button>
+        </div>
+        </div>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Insertar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
