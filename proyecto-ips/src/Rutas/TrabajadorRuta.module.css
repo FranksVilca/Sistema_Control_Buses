@@ -84,3 +84,13 @@ body {
 .acrear:hover {
     background-color: rgb(20, 92, 163);
 }
+
+.mapContainer {
+    width: 90%;
+    height: 700px;
+    margin: 150px auto;
+    background-color: #f3f3f3;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
