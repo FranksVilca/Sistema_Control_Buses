@@ -85,12 +85,12 @@ body {
     background-color: rgb(20, 92, 163);
 }
 
-.profileContainer {
+.workerView {
     padding: 20px;
     margin-top: 160px;
 }
 
-.profileHeader {
+.turnoHeader {
     text-align: center;
     margin-bottom: 20px;
     background-color: white;
@@ -104,14 +104,14 @@ body {
     z-index: 99;
 }
 
-.profileContent {
+.infoSection {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     margin-top: 20px;
 }
 
-.profileAbout, .profileDetails {
+.infoCard, .driverCard {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -120,20 +120,21 @@ body {
     margin-bottom: 20px;
 }
 
-.profileImage {
+.driverImage {
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    display: block;
-    margin: 0 auto 20px auto;
 }
 
-.profileAbout p, .profileDetails p {
-    margin: 10px 0;
+.busInfo {
+    text-align: center;
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {
-    .profileAbout, .profileDetails {
+    .infoCard, .driverCard {
         width: 100%;
     }
 }
