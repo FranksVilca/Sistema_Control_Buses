@@ -31,3 +31,21 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.nav {
+    float: right;
+}
+
+.ul {
+    list-style: none;
+    overflow: hidden;
+    display: flex;
+    min-width: 500px;
+}
+
+.li {
+    float: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-top: 10px;
+}
