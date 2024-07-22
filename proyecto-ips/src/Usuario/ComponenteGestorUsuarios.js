@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './ComponenteGestorUsuario.module.css';
 
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -51,12 +52,26 @@ const ComponenteGestorUsuarios = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => navigate("/InsertarUsuario")}>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.gestorUsuarios}>
+      <div className={style.gestorUsuariosBotonInsertar}>
+      <button className={style.gestorUsuariosBoton} onClick={() => navigate("/InsertarUsuario")}>
         Insertar Usuario
       </button>
-      <h2>Lista de Usuarios</h2>
-      <table>
+      </div>
+      <h2 className={style.gestorUsuariosTitulo}>Lista de Usuarios</h2>
+      <table className={style.gestorUsuariosTabla}>
         <thead>
           <tr>
             <th>Código de Usuario</th>
@@ -97,6 +112,7 @@ const ComponenteGestorUsuarios = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
