@@ -4,7 +4,6 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const CryptoJS = require("crypto-js");
 
 const app = express();
 const port = 3001;
@@ -319,9 +318,9 @@ app.put('/api/Asistencia/:codigoAsistencia', (req, res) => {
     if (!Nombre_Usuario || !Contrasena) {
       return res.status(400).json({ error: 'Nombre_Usuario and Contrasena are required' });
     }
-    // Consulta para verificar al usuario y obtener su Codigo_Cargo y Codigo_Usuario
+    // Consulta para verificar al usuario y obtener su Codigo_Cargo
     db.query(
-      'SELECT Codigo_Usuario, Codigo_Cargo FROM Usuario WHERE Nombre_Usuario = ? AND Contrasena = ?',
+      'SELECT Codigo_Cargo FROM Usuario WHERE Nombre_Usuario = ? AND Contrasena = ?',
       [Nombre_Usuario, Contrasena],
       (err, results) => {
         if (err) {
@@ -331,12 +330,13 @@ app.put('/api/Asistencia/:codigoAsistencia', (req, res) => {
         if (results.length === 0) {
           return res.status(401).json({ error: 'Invalid Nombre_Usuario or Contrasena' });
         }
-        const { Codigo_Cargo, Codigo_Usuario } = results[0];
-        res.status(200).json({ Codigo_Cargo, Codigo_Usuario });
+        const { Codigo_Cargo } = results[0];
+        res.status(200).json({ Codigo_Cargo });
       }
     );
-  });
+ 
+});
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Servidor funcionando en http://localhost:${port}`);
 });

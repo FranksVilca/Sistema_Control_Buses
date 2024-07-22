@@ -3,13 +3,11 @@ import PropTypes from "prop-types";
 import style from './DashboardLogin.module.css';
 import ReCAPTCHA from "react-google-recaptcha";
 import CryptoJS from "crypto-js";
-import { useNavigate } from 'react-router-dom';
 
 const DashboardLogin = ({ className = "" }) => {
   const [captchavalido, cambiarcaptchavalido] = useState(null);
   const [usuariovalido, cambiarusuariovalido] = useState(false);
   const captcha = useRef(null);
-  const navigate = useNavigate();
 
   const onChange = () => {
     if (captcha.current.getValue()) {
@@ -53,24 +51,24 @@ const DashboardLogin = ({ className = "" }) => {
         cambiarusuariovalido(false);
       } else {
         localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
-        redirectToPage(data.Codigo_Cargo, data.Codigo_Usuario);
+        redirectToPage(data.Codigo_Cargo);
       }
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred. Please try again.');
     }
   };
-  
-  const redirectToPage = (Codigo_Cargo, Codigo_Usuario) => {
+
+  const redirectToPage = (Codigo_Cargo) => {
     switch(Codigo_Cargo) {
       case 1:
-        navigate(`/VistaAdmin/${Codigo_Usuario}`); // Redirige a la vista de administrador con el ID del usuario
+        navigate('/VistaAdmin'); // Reemplaza con la ruta de la ventana 1
         break;
       case 2:
-        navigate(`/VistaChofer/${Codigo_Usuario}`); // Redirige a la vista del chofer con el ID del usuario
+        navigate('/VistaChofer'); 
         break;
       case 3:
-        navigate(`/VistaUsuario/${Codigo_Usuario}`); // Redirige a la vista del usuario con el ID del usuario
+        navigate('/VistaUsuario'); 
         break;
       default:
         alert('Código de cargo no reconocido');
@@ -78,7 +76,7 @@ const DashboardLogin = ({ className = "" }) => {
   };
 
   return (
-    <div className={`${style.dashboard} ${className}`}>
+    <div className={style.dashboard}>
       <div className={style.bgcontainer}>
         <img className={style.bgicon} alt="" src="/bg.svg" />
       </div>
