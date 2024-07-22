@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import style from './PaginaEdicionRuta.module.css';
 
 const PaginaEdicionRuta = () => {
   const { idRuta } = useParams();
@@ -58,12 +59,25 @@ const PaginaEdicionRuta = () => {
   }
 
   return (
-    <div>
-      <h2>Editar Ruta</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.edicionRuta}>
+      <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Editar Ruta</h2>
+      <div className={style.campos}>
+        <label className={style.label1}>
           Punto de Salida:
-          <input
+          <input className={style.input}
             type="text"
             name="PuntoSalida"
             value={ruta.PuntoSalida || ""}
@@ -71,9 +85,9 @@ const PaginaEdicionRuta = () => {
             required
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Punto de Llegada:
-          <input
+          <input className={style.input}
             type="text"
             name="PuntoLlegada"
             value={ruta.PuntoLlegada || ""}
@@ -81,8 +95,13 @@ const PaginaEdicionRuta = () => {
             required
           />
         </label>
-        <button type="submit">Actualizar</button>
+        </div>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Actualizar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
