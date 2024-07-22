@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import style from './PaginaInsertarHorario.module.css';
 
 const PaginaInsertarHorario = () => {
   const [horario, setHorario] = useState({
@@ -47,12 +48,25 @@ const PaginaInsertarHorario = () => {
   };
 
   return (
-    <div>
-      <h2>Insertar Nuevo Horario</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div className={style.fondo}>
+      <header className={style.header}>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
+          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
+          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.insertarHorario}>
+      <form className={style.formInsertarHorario} onSubmit={handleSubmit}>
+      <h2 className={style.titulo}>Insertar Nuevo Horario</h2>
+      <div className={style.campos}>
+        <label className={style.label1}>
           Fecha:
-          <input
+          <input className={style.input}
             type="date"
             name="Fecha"
             value={horario.Fecha}
@@ -60,9 +74,9 @@ const PaginaInsertarHorario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Hora de Salida:
-          <input
+          <input className={style.input}
             type="time"
             name="Hora_Salida"
             value={horario.Hora_Salida}
@@ -70,9 +84,9 @@ const PaginaInsertarHorario = () => {
             required // Campo obligatorio
           />
         </label>
-        <label>
+        <label className={style.label1}>
           Hora de Llegada:
-          <input
+          <input className={style.input}
             type="time"
             name="Hora_Llegada"
             value={horario.Hora_Llegada}
@@ -80,8 +94,13 @@ const PaginaInsertarHorario = () => {
             required // Campo obligatorio
           />
         </label>
-        <button type="submit">Insertar</button>
+        </div>
+        <div className={style.botones}>
+        <button className={style.boton1} type="submit">Insertar</button>
+        <button className={style.boton2} type="submit">Cancelar</button>
+        </div>
       </form>
+      </div>
     </div>
   );
 };
