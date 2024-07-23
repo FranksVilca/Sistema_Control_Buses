@@ -543,6 +543,93 @@ app.delete('/api/delete/horario/:idHorario', (req, res) => {
   });
 });
 
+// Obtener todas las rutas
+app.get('/api/rutas', (req, res) => {
+  const sql = 'SELECT * FROM Ruta';
+  db.query(sql, (err, results) => {
+      if (err) {
+          console.error('Error fetching routes:', err);
+          res.status(500).send('Error fetching routes');
+          return;
+      }
+      res.json(results);
+  });
+});
+
+// Obtener una ruta específica por ID
+app.get('/api/ruta/:IDRuta', (req, res) => {
+  const { IDRuta } = req.params;
+  const sql = 'SELECT * FROM Ruta WHERE IDRuta = ?';
+  db.query(sql, [IDRuta], (err, result) => {
+      if (err) {
+          console.error('Error fetching route:', err);
+          res.status(500).send('Error fetching route');
+          return;
+      }
+      if (result.length === 0) {
+          // No se encontró la ruta con el ID especificado
+          res.status(404).send('Ruta no encontrada');
+          return;
+      }
+      res.json(result[0]); // Devolver el primer objeto del array
+  });
+});
+
+
+// Crear una nueva ruta
+app.post('/api/ruta', (req, res) => {
+  const { IDRuta, PuntoSalida, PuntoLlegada } = req.body;
+  const sql = 'INSERT INTO Ruta (IDRuta, PuntoSalida, PuntoLlegada) VALUES (?, ?, ?)';
+  db.query(sql, [IDRuta, PuntoSalida, PuntoLlegada], (err, result) => {
+      if (err) {
+          console.error('Error creating route:', err);
+          res.status(500).send('Error creating route');
+          return;
+      }
+      res.json({ IDRuta, PuntoSalida, PuntoLlegada });
+  });
+});
+
+//Conseguir el Maximo ID
+app.get('/api/rutas/max', (req, res) => {
+  const query = 'SELECT MAX(IDRuta) AS maxCodigoRuta FROM Ruta';
+  db.query(query, (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error al obtener el máximo código de ruta' });
+    }
+    res.json({ maxCodigoRuta: results[0].maxCodigoRuta });
+  });
+});
+
+// Actualizar una ruta existente
+app.put('/api/ruta/:IDRuta', (req, res) => {
+  const { IDRuta } = req.params;
+  const { PuntoSalida, PuntoLlegada } = req.body;
+  const sql = 'UPDATE Ruta SET PuntoSalida = ?, PuntoLlegada = ? WHERE IDRuta = ?';
+  db.query(sql, [PuntoSalida, PuntoLlegada, IDRuta], (err, result) => {
+      if (err) {
+          console.error('Error updating route:', err);
+          res.status(500).send('Error updating route');
+          return;
+      }
+      res.json({ IDRuta, PuntoSalida, PuntoLlegada });
+  });
+});
+
+// Eliminar una ruta existente
+app.delete('/api/ruta/:IDRuta', (req, res) => {
+  const { IDRuta } = req.params;
+  const sql = 'DELETE FROM Ruta WHERE IDRuta = ?';
+  db.query(sql, [IDRuta], (err, result) => {
+      if (err) {
+          console.error('Error deleting route:', err);
+          res.status(500).send('Error deleting route');
+          return;
+      }
+      res.json({ message: 'Route deleted successfully' });
+  });
+});
+
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });

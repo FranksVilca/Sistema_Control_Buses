@@ -46,7 +46,7 @@ function App() {
           path="/ComponenteGestorRuta"
           element={<ComponenteGestorRuta />}
         />
-        <Route path="/PaginaEdicionRuta" element={<PaginaEdicionRuta />} />
+        <Route path="/PaginaEdicionRuta/:idRuta" element={<PaginaEdicionRuta />} />
         <Route
           path="/PaginaInsertarHorarios"
           element={<PaginaInsertarHorarios />}
