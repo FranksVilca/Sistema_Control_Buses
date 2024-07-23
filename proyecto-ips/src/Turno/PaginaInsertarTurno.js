@@ -71,7 +71,7 @@ const PaginaInsertarTurno = () => {
         throw new Error("Error al insertar el turno");
       }
       alert("Turno insertado exitosamente");
-      navigate("/GestionarTurnos");
+      navigate("/GestionarTurno");
     } catch (error) {
       alert(`Error al insertar el turno: ${error.message}`);
       console.error("Error al insertar el turno:", error);
