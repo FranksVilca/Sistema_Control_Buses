@@ -38,7 +38,7 @@ const DashboardLogin = ({ className = "" }) => {
           alert(data.error);
           cambiarusuariovalido(false);
         } else {
-          const { Codigo_Cargo, Codigo_Usuario } = data;
+          const { Codigo_Cargo, Codigo_Usuario } = data.user; // Asegúrate de que los datos están dentro de "user"
           if (Codigo_Cargo && Codigo_Usuario) {
             localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
             redirectToPage(Codigo_Cargo, Codigo_Usuario);
