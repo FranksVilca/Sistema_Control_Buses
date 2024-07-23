@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fileTypeFromBuffer } from "file-type";
-import style from './PaginaInsertarUsuario.module.css';
+import style from "./PaginaInsertarUsuario.module.css";
 
 const PaginaInsertarUsuario = () => {
   const [usuario, setUsuario] = useState({
@@ -33,6 +33,24 @@ const PaginaInsertarUsuario = () => {
       .then((data) => setCargos(data))
       .catch((error) => console.error("Error al obtener los cargos:", error));
   }, []);
+
+  // Función para manejar la cancelación
+  const handleCancel = () => {
+    setUsuario({
+      Nombre: "",
+      Nombre_Usuario: "",
+      Contrasena: "",
+      DNI: "",
+      Codigo_Cargo: "",
+      Edad: "",
+      Sexo: "", // Inicialmente vacío
+      Celular: "",
+      Email: "",
+      Direccion: "",
+      EstadoRegistro: "",
+      img: null, // Añadido para la imagen
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -172,163 +190,203 @@ const PaginaInsertarUsuario = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear} href="#">
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear} href="#">
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.insertarUsuario}>
-      <form className={style.formInsertarUsuario} onSubmit={handleSubmit}>
-      <h2 className={style.titulo}>Insertar Nuevo Usuario</h2>
-      <div className={style.campos}>
-        <label className={style.label1}>
-          Nombre:
-          <input className={style.input}
-            type="text"
-            name="Nombre"
-            value={usuario.Nombre || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Nombre de Usuario:
-          <input className={style.input}
-            type="text"
-            name="Nombre_Usuario"
-            value={usuario.Nombre_Usuario || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Contraseña:
-          <input className={style.input}
-            type="password"
-            name="Contrasena"
-            value={usuario.Contrasena || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          DNI:
-          <input className={style.input}
-            type="text"
-            name="DNI"
-            value={usuario.DNI || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Código de Cargo:
-          <select className={style.select} 
-            name="Codigo_Cargo"
-            value={usuario.Codigo_Cargo}
-            onChange={handleCargoChange}
-            required // Campo obligatorio
-          >
-            <option value="">Seleccione un cargo</option>
-            {cargos.map((cargo) => (
-              <option key={cargo.Codigo_Cargo} value={cargo.Codigo_Cargo}>
-                {cargo.Descripcion}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={style.label1}>
-          Edad:
-          <input className={style.input}
-            type="number"
-            name="Edad"
-            value={usuario.Edad || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-            min="18"
-            max="60"
-          />
-        </label>
-        <label className={style.label1}>
-          Sexo:
-          <select className={style.select}  
-            name="Sexo"
-            value={
-              usuario.Sexo === 1
-                ? "Masculino"
-                : usuario.Sexo === 0
-                ? "Femenino"
-                : ""
-            }
-            onChange={handleSexoChange}
-            required // Campo obligatorio
-          >
-            <option value="">Seleccione el sexo</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-          </select>
-        </label>
-        <label className={style.label1}>
-          Celular:
-          <input className={style.input}
-            type="text"
-            name="Celular"
-            value={usuario.Celular || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Email:
-          <input className={style.input}
-            type="email"
-            name="Email"
-            value={usuario.Email || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Dirección:
-          <input className={style.input}
-            type="text"
-            name="Direccion"
-            value={usuario.Direccion || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Estado de Registro:
-          <select className={style.select} 
-            name="EstadoRegistro"
-            value={usuario.EstadoRegistro || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          >
-            <option value="">Seleccione un estado</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </select>
-        </label>
-        <label className={style.label1}>
-          Imagen:
-          <input className={style.input}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            required
-          />
-        </label>
-        </div>
-        <div className={style.botones}>
-        <button className={style.boton1} type="submit">Insertar</button>
-        <button className={style.boton2} type="submit">Cancelar</button>
-        </div>
-      </form>
+        <form className={style.formInsertarUsuario} onSubmit={handleSubmit}>
+          <h2 className={style.titulo}>Insertar Nuevo Usuario</h2>
+          <div className={style.campos}>
+            <label className={style.label1}>
+              Nombre:
+              <input
+                className={style.input}
+                type="text"
+                name="Nombre"
+                value={usuario.Nombre || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Nombre de Usuario:
+              <input
+                className={style.input}
+                type="text"
+                name="Nombre_Usuario"
+                value={usuario.Nombre_Usuario || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Contraseña:
+              <input
+                className={style.input}
+                type="password"
+                name="Contrasena"
+                value={usuario.Contrasena || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              DNI:
+              <input
+                className={style.input}
+                type="text"
+                name="DNI"
+                value={usuario.DNI || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Código de Cargo:
+              <select
+                className={style.select}
+                name="Codigo_Cargo"
+                value={usuario.Codigo_Cargo}
+                onChange={handleCargoChange}
+                required // Campo obligatorio
+              >
+                <option value="">Seleccione un cargo</option>
+                {cargos.map((cargo) => (
+                  <option key={cargo.Codigo_Cargo} value={cargo.Codigo_Cargo}>
+                    {cargo.Descripcion}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={style.label1}>
+              Edad:
+              <input
+                className={style.input}
+                type="number"
+                name="Edad"
+                value={usuario.Edad || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+                min="18"
+                max="60"
+              />
+            </label>
+            <label className={style.label1}>
+              Sexo:
+              <select
+                className={style.select}
+                name="Sexo"
+                value={
+                  usuario.Sexo === 1
+                    ? "Masculino"
+                    : usuario.Sexo === 0
+                    ? "Femenino"
+                    : ""
+                }
+                onChange={handleSexoChange}
+                required // Campo obligatorio
+              >
+                <option value="">Seleccione el sexo</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+            </label>
+            <label className={style.label1}>
+              Celular:
+              <input
+                className={style.input}
+                type="text"
+                name="Celular"
+                value={usuario.Celular || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Email:
+              <input
+                className={style.input}
+                type="email"
+                name="Email"
+                value={usuario.Email || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Dirección:
+              <input
+                className={style.input}
+                type="text"
+                name="Direccion"
+                value={usuario.Direccion || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Estado de Registro:
+              <select
+                className={style.select}
+                name="EstadoRegistro"
+                value={usuario.EstadoRegistro || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              >
+                <option value="">Seleccione un estado</option>
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </label>
+            <label className={style.label1}>
+              Imagen:
+              <input
+                className={style.input}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                required
+              />
+            </label>
+          </div>
+          <div className={style.botones}>
+            <button className={style.boton1} type="submit">
+              Insertar
+            </button>
+            <button
+              className={style.boton2}
+              type="submit"
+              onClick={handleCancel}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

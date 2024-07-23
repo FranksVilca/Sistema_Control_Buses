@@ -15,8 +15,9 @@ app.use(
   })
 );
 
-// Middleware para analizar JSON
-app.use(express.json());
+// Middleware para analizar JSON con un límite de tamaño
+app.use(express.json({ limit: "10mb" })); // Ajusta el límite según tus necesidades
+app.use(express.urlencoded({ limit: "10mb", extended: true })); // También para datos de formularios si es necesario
 
 // Configuración de Multer para manejar la carga de archivos
 const storage = multer.memoryStorage(); // Guarda archivos en memoria
@@ -162,34 +163,14 @@ app.get("/api/data/:codigoUsuario", (req, res) => {
 });
 
 // Ruta para actualizar un usuario por su código
-app.put(
-  "/api/update/:codigoUsuario",
-  upload.single("img"),
-  async (req, res) => {
-    const codigoUsuario = req.params.codigoUsuario;
-    const updatedUser = req.body;
-    const img = req.file ? req.file.buffer : null;
+app.put("/api/update/:codigoUsuario", async (req, res) => {
+  const codigoUsuario = req.params.codigoUsuario;
+  const updatedUser = req.body;
 
-    try {
-      // Validar los datos del usuario
-      await validateUser(updatedUser);
+  try {
+    await validateUser(updatedUser);
 
-      // Consultar usuario actual para obtener la imagen si no se proporciona una nueva
-      const [currentUser] = await new Promise((resolve, reject) => {
-        db.query(
-          "SELECT img FROM Usuario WHERE Codigo_Usuario = ?",
-          [codigoUsuario],
-          (err, results) => {
-            if (err) return reject(err);
-            resolve(results);
-          }
-        );
-      });
-
-      const existingImg = currentUser.img;
-
-      // Actualizar el usuario
-      const query = `UPDATE Usuario SET 
+    const query = `UPDATE Usuario SET 
       Nombre = ?, 
       Nombre_Usuario = ?, 
       Contrasena = ?, 
@@ -200,39 +181,37 @@ app.put(
       Celular = ?, 
       Email = ?, 
       Direccion = ?, 
-      EstadoRegistro = ?, 
-      img = ? 
+      EstadoRegistro = ? 
       WHERE Codigo_Usuario = ?`;
 
-      db.query(
-        query,
-        [
-          updatedUser.Nombre,
-          updatedUser.Nombre_Usuario,
-          updatedUser.Contrasena,
-          updatedUser.DNI,
-          updatedUser.Codigo_Cargo,
-          updatedUser.Edad,
-          updatedUser.Sexo,
-          updatedUser.Celular,
-          updatedUser.Email,
-          updatedUser.Direccion,
-          updatedUser.EstadoRegistro,
-          img || existingImg, // Si no hay una imagen nueva, conserva la imagen existente
-          codigoUsuario,
-        ],
-        (err, result) => {
-          if (err) {
-            return handleError(res, err, "Error al actualizar usuario");
-          }
-          res.send("Usuario actualizado exitosamente");
+    db.query(
+      query,
+      [
+        updatedUser.Nombre,
+        updatedUser.Nombre_Usuario,
+        updatedUser.Contrasena,
+        updatedUser.DNI,
+        updatedUser.Codigo_Cargo,
+        updatedUser.Edad,
+        updatedUser.Sexo,
+        updatedUser.Celular,
+        updatedUser.Email,
+        updatedUser.Direccion,
+        updatedUser.EstadoRegistro,
+        codigoUsuario,
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("Error en la base de datos:", err); // Verifica errores
+          return handleError(res, err, "Error al actualizar usuario");
         }
-      );
-    } catch (err) {
-      res.status(400).send(err.message);
-    }
+        res.send("Usuario actualizado exitosamente");
+      }
+    );
+  } catch (err) {
+    res.status(400).send(err.message);
   }
-);
+});
 
 // Ruta para eliminar un usuario por su código
 app.delete("/api/delete/:codigoUsuario", (req, res) => {
@@ -282,62 +261,67 @@ app.get("/api/asistencias/:codigoTurno", (req, res) => {
   );
 });
 
-//Modificar Asistencias
+// Modificar Asistencias
 // Ruta para actualizar la asistencia
-app.put('/api/Asistencia/:codigoAsistencia', (req, res) => {
+app.put("/api/Asistencia/:codigoAsistencia", (req, res) => {
   const { codigoAsistencia } = req.params;
   const { Asistencia } = req.body;
 
   // Validar el valor de Asistencia
   if (Asistencia !== 1 && Asistencia !== 0) {
-    return res.status(400).json({ error: 'Invalid Asistencia value' });
+    return res.status(400).json({ error: "Invalid Asistencia value" });
   }
 
   // Actualizar el registro en la base de datos
   db.query(
-    'UPDATE asistencia SET Asistencia = ? WHERE Codigo_Asistencia = ?',
+    "UPDATE asistencia SET Asistencia = ? WHERE Codigo_Asistencia = ?",
     [Asistencia, codigoAsistencia],
     (err, result) => {
       if (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Internal server error" });
       }
-      
+
       if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Asistencia not found' });
+        return res.status(404).json({ error: "Asistencia not found" });
       }
-      
-      res.status(200).json({ message: 'Asistencia updated successfully' });
+
+      res.status(200).json({ message: "Asistencia updated successfully" });
     }
   );
 });
 
-//Revisar Usuario
-app.post('/api/login', (req, res) => {
+// Revisar Usuario
+app.post("/api/login", (req, res) => {
   const { Nombre_Usuario, Contrasena } = req.body;
   if (!Nombre_Usuario || !Contrasena) {
-    return res.status(400).json({ error: 'Nombre_Usuario and Contrasena are required' });
+    return res
+      .status(400)
+      .json({ error: "Nombre de usuario y contraseña son requeridos" });
   }
 
   db.query(
-    'SELECT Codigo_Usuario, Codigo_Cargo, Contrasena FROM Usuario WHERE Nombre_Usuario = ? AND Contrasena = ?',
+    "SELECT * FROM Usuario WHERE Nombre_Usuario = ? AND Contrasena = ?",
     [Nombre_Usuario, Contrasena],
     (err, results) => {
       if (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error("Error de base de datos:", err);
+        return res.status(500).json({ error: "Error interno del servidor" });
       }
+
       if (results.length === 0) {
-        return res.status(401).json({ error: 'Invalid Nombre_Usuario or Contrasena' });
+        return res
+          .status(401)
+          .json({ error: "Nombre de usuario o contraseña incorrectos" });
       }
-      const { Codigo_Cargo, Codigo_Usuario } = results[0];
-      console.log('Results:', results[0]); // Agrega esto para verificar la respuesta
-      res.status(200).json({ Codigo_Cargo, Codigo_Usuario });
+
+      res
+        .status(200)
+        .json({ message: "Inicio de sesión exitoso", user: results[0] });
     }
   );
 });
 
-
 app.listen(port, () => {
-  console.log(`Servidor funcionando en http://localhost:${port}`);
+  console.log(`Servidor escuchando en http://localhost:${port}`);
 });
