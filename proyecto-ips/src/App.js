@@ -18,7 +18,7 @@ import TrabajadorPerfil from "./Perfiles/TrabajadorPerfil";
 import VistaAdmin from "./Vistas/VistaAdmin";
 import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
-
+import GestionarTurnos from "./Turno/ComponenteGestorTurnos";
 
 function App() {
   return (
@@ -64,6 +64,7 @@ function App() {
         <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />
         <Route path="/Asistencia/:codigoTurno" element={<Asistencia />} />
+        <Route path="/GestionarTurno" element={<GestionarTurnos />} />
       </Routes>
     </BrowserRouter>
   );
