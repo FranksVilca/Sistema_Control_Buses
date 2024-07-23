@@ -350,7 +350,7 @@ app.get("/api/usuario/:codigo_usuario", async (req, res) => {
 
 // Rutas para turnos
 app.get("/api/turnos", (req, res) => {
-  db.query("SELECT * FROM VistaTurnos", (err, results) => {
+  db.query("SELECT * FROM vistaturnos", (err, results) => {
     if (err) {
       console.error("Error al obtener los turnos:", err);
       return res.status(500).send("Error al obtener los turnos");
@@ -359,81 +359,22 @@ app.get("/api/turnos", (req, res) => {
   });
 });
 
-app.post("/api/turnos", (req, res) => {
-  const { Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer } = req.body;
-  const query = `INSERT INTO turno (Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer)
-                 VALUES (?, ?, ?, ?, ?)`;
-
-  db.query(
-    query,
-    [Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer],
-    (err, result) => {
-      if (err) {
-        console.error("Error al insertar turno:", err);
-        return res.status(500).send("Error al insertar turno");
-      }
-      res.status(201).send("Turno insertado exitosamente");
-    }
-  );
-});
-
-app.get("/api/turnos/:codigoTurno", (req, res) => {
-  const { codigoTurno } = req.params;
-  db.query(
-    "SELECT * FROM turno WHERE Codigo_Turno = ?",
-    [codigoTurno],
-    (err, results) => {
-      if (err) {
-        console.error("Error al obtener turno:", err);
-        return res.status(500).send("Error al obtener turno");
-      }
-      if (results.length === 0) {
-        return res.status(404).send("Turno no encontrado");
-      }
-      res.json(results[0]);
-    }
-  );
-});
-
-app.put("/api/turnos/:codigoTurno", (req, res) => {
-  const { codigoTurno } = req.params;
-  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
-
-  const query = `UPDATE turno SET 
-                   IDRuta = ?, 
-                   IDHorario = ?, 
-                   IDBus = ?, 
-                   IDChofer = ? 
-                 WHERE Codigo_Turno = ?`;
-
-  db.query(
-    query,
-    [IDRuta, IDHorario, IDBus, IDChofer, codigoTurno],
-    (err, result) => {
-      if (err) {
-        console.error("Error al actualizar turno:", err);
-        return res.status(500).send("Error al actualizar turno");
-      }
-      res.send("Turno actualizado exitosamente");
-    }
-  );
-});
-
-app.delete("/api/turnos/:codigoTurno", (req, res) => {
+app.put("/api/turnos/inactivar/:codigoTurno", (req, res) => {
   const { codigoTurno } = req.params;
 
+  // Marca el turno como inactivo en lugar de eliminarlo
   db.query(
-    "DELETE FROM turno WHERE Codigo_Turno = ?",
+    "UPDATE turno SET Activo = 0 WHERE Codigo_Turno = ?",
     [codigoTurno],
     (err, result) => {
       if (err) {
-        console.error("Error al eliminar turno:", err);
-        return res.status(500).send("Error al eliminar turno");
+        console.error("Error al inactivar turno:", err);
+        return res.status(500).send("Error al inactivar turno");
       }
       if (result.affectedRows === 0) {
         return res.status(404).send("Turno no encontrado");
       }
-      res.send("Turno eliminado exitosamente");
+      res.send("Turno marcado como inactivo exitosamente");
     }
   );
 });

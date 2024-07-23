@@ -24,25 +24,28 @@ const ComponenteGestorTurnos = () => {
   };
 
   const handleDelete = async (codigoTurno) => {
-    console.log("Código de turno a eliminar:", codigoTurno);
-    if (window.confirm("¿Estás seguro que deseas eliminar este turno?")) {
+    console.log("Código de turno a marcar como inactivo:", codigoTurno);
+    if (
+      window.confirm(
+        "¿Estás seguro que deseas marcar este turno como inactivo?"
+      )
+    ) {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/turnos/${codigoTurno}`,
+          `http://localhost:3001/api/turnos/inactivar/${codigoTurno}`,
           {
-            method: "PUT", // Suponiendo que utilizas PUT para marcar como inactivo
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ estado: "inactivo" }), // Ajusta según cómo manejes el estado
           }
         );
         if (!response.ok) {
-          throw new Error("Error al eliminar el turno");
+          throw new Error("Error al marcar el turno como inactivo");
         }
-        fetchData();
+        fetchData(); // Vuelve a obtener la lista de turnos después de la actualización
       } catch (error) {
-        console.error("Error al eliminar el turno:", error);
+        console.error("Error al marcar el turno como inactivo:", error);
       }
     }
   };
@@ -85,7 +88,7 @@ const ComponenteGestorTurnos = () => {
         </nav>
       </header>
       <div className={style.gestorTurnos}>
-        <h2 className={style.gestorTurnosTitulo}>Lista de Turnos</h2>
+        <h2 className={style.gestorTurnosTitulo}>Lista de Turnos Activos</h2>
         <table className={style.gestorTurnosTabla}>
           <thead>
             <tr>
@@ -97,7 +100,6 @@ const ComponenteGestorTurnos = () => {
               <th>Fecha</th>
               <th>Placa del Bus</th>
               <th>Número de Asientos</th>
-              <th>Nombre del Chofer</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -107,15 +109,14 @@ const ComponenteGestorTurnos = () => {
                 <td>{turno.Codigo_Turno}</td>
                 <td>{turno.PuntoSalida}</td>
                 <td>{turno.PuntoLlegada}</td>
-                <td>{turno.HoraSalida}</td>
-                <td>{turno.HoraLlegada}</td>
+                <td>{turno.Hora_Salida}</td>
+                <td>{turno.Hora_Llegada}</td>
                 <td>{turno.Fecha}</td>
-                <td>{turno.PlacaBus}</td>
-                <td>{turno.NumeroAsientos}</td>
-                <td>{turno.NombreChofer}</td>
+                <td>{turno.Placa}</td>
+                <td>{turno.Num_Asientos}</td>
                 <td>
                   <button onClick={() => handleDelete(turno.Codigo_Turno)}>
-                    Eliminar
+                    Marcar como Inactivo
                   </button>
                   <button onClick={() => handleAssign(turno.Codigo_Turno)}>
                     Asignar Turno

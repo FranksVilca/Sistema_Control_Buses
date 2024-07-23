@@ -31,6 +31,10 @@ CREATE TABLE Turno (
     IDChofer INT
 );
 
+ALTER TABLE turno
+ADD COLUMN Activo TINYINT(1) DEFAULT 1;
+
+
 -- Crear tabla para Ruta
 CREATE TABLE Ruta (
     IDRuta INT PRIMARY KEY,
@@ -95,3 +99,26 @@ CREATE TABLE Asistencia (
     FOREIGN KEY (Codigo_Turno) REFERENCES Turno(Codigo_Turno),
     FOREIGN KEY (Codigo_Usuario) REFERENCES Usuario(Codigo_Usuario)
 );
+
+
+CREATE VIEW VistaTurnos AS
+SELECT 
+    t.Codigo_Turno,
+    r.PuntoSalida,
+    r.PuntoLlegada,
+    h.Hora_Salida,
+    h.Hora_Llegada,
+    h.Fecha,
+    b.Placa,
+    b.Num_Asientos
+FROM 
+    turno t
+JOIN 
+    bus b ON t.IDBus = b.IDBus
+JOIN 
+    horario h ON t.IDHorario = h.IDHorario
+JOIN 
+    ruta r ON t.IDRuta = r.IDRuta
+WHERE 
+    t.Activo = 1;
+
