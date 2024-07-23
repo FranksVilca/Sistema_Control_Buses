@@ -2,26 +2,54 @@ import React, { useState, useRef } from 'react';
 import PropTypes from "prop-types";
 import style from './DashboardLogin.module.css';
 import ReCAPTCHA from "react-google-recaptcha";
-import CryptoJS from "crypto-js";
+import { useNavigate } from 'react-router-dom';
 
 const DashboardLogin = ({ className = "" }) => {
   const [captchavalido, cambiarcaptchavalido] = useState(null);
   const [usuariovalido, cambiarusuariovalido] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const captcha = useRef(null);
+  const navigate = useNavigate();
 
   const onChange = () => {
     if (captcha.current.getValue()) {
-      console.log("El usuario es valido");
+      console.log("El captcha es válido");
       cambiarcaptchavalido(true);
     }
   };
 
-  const submit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (captcha.current.getValue()) {
-      console.log("El usuario es valido");
-      cambiarusuariovalido(true);
-      cambiarcaptchavalido(true);
+      try {
+        const response = await fetch('http://localhost:3001/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ Nombre_Usuario: username, Contrasena: password })
+        });
+        const data = await response.json();
+        
+        console.log(data); // Para verificar qué datos se están recibiendo
+
+        if (data.error) {
+          alert(data.error);
+          cambiarusuariovalido(false);
+        } else {
+          const { Codigo_Cargo, Codigo_Usuario } = data;
+          if (Codigo_Cargo && Codigo_Usuario) {
+            localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
+            redirectToPage(Codigo_Cargo, Codigo_Usuario);
+          } else {
+            alert('Error: Datos incompletos recibidos del servidor');
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      }
     } else {
       console.log('Por favor acepta el captcha');
       cambiarusuariovalido(false);
@@ -29,46 +57,16 @@ const DashboardLogin = ({ className = "" }) => {
     }
   };
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const encryptedPassword = CryptoJS.AES.encrypt(password, 'your-secret-key').toString();
-  
-    try {
-      const response = await fetch('http://localhost:3001/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ Nombre_Usuario: username, Contrasena: encryptedPassword })
-      });
-      const data = await response.json();
-      
-      if (data.error) {
-        alert(data.error);
-        cambiarusuariovalido(false);
-      } else {
-        localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
-        redirectToPage(data.Codigo_Cargo);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
-    }
-  };
-
-  const redirectToPage = (Codigo_Cargo) => {
-    switch(Codigo_Cargo) {
+  const redirectToPage = (Codigo_Cargo, Codigo_Usuario) => {
+    switch (Codigo_Cargo) {
       case 1:
-        navigate('/VistaAdmin'); // Reemplaza con la ruta de la ventana 1
+        navigate(`/VistaAdmin/${Codigo_Usuario}`);
         break;
       case 2:
-        navigate('/VistaChofer'); 
+        navigate(`/VistaChofer/${Codigo_Usuario}`);
         break;
       case 3:
-        navigate('/VistaUsuario'); 
+        navigate(`/VistaUsuario/${Codigo_Usuario}`);
         break;
       default:
         alert('Código de cargo no reconocido');
@@ -76,17 +74,17 @@ const DashboardLogin = ({ className = "" }) => {
   };
 
   return (
-    <div className={style.dashboard}>
+    <div className={`${style.dashboard} ${className}`}>
       <div className={style.bgcontainer}>
         <img className={style.bgicon} alt="" src="/bg.svg" />
       </div>
       <div className={style.container}>
         {!usuariovalido &&
           <>
-            <form onSubmit={(e) => {handleLogin(e); submit(e); }}>
+            <form onSubmit={handleLogin}>
               <img className="imgIngreso" alt="imgIngreso" src="/undraw-login-re-4vu2-1.svg"/>
               <div className={style.formusername}>
-                <img className={style.icon}alt="icon" src="/user.svg" />
+                <img className={style.icon} alt="icon" src="/user.svg" />
                 <input
                   className={style.username}
                   type="text"
