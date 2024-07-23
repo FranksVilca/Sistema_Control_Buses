@@ -1,0 +1,188 @@
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.fondo {
+  position: relative;
+  width: 100vw;
+  max-width: 100%;
+  min-width: 500px;
+  height: 100vh;
+  overflow: auto;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  background-image: url("../../public/vector.svg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.gestorTurnos {
+  padding-top: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.gestorTurnoBotonInsertar {
+  justify-content: baseline;
+  width: 100%;
+  margin-left: 25px;
+}
+.gestorUsuariosBoton {
+  display: flex;
+  padding: 5px 10px 5px 5px;
+  font-size: 15px;
+  line-height: 30px;
+  display: block;
+  width: 150px;
+  outline: 0;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  box-shadow: 0px 0px 0px 0px rgba(162, 161, 161, 0.85);
+  font-family: "Montserrat";
+  margin-right: 10px;
+  background-color: dodgerblue;
+  border-color: dodgerblue;
+  color: white;
+}
+.header {
+  background: rgb(0, 0, 0);
+  width: 100%;
+  min-width: 500px;
+  position: fixed;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav {
+  float: right;
+}
+
+.ul {
+  list-style: none;
+  overflow: hidden;
+  display: flex;
+  min-width: 500px;
+}
+
+.li {
+  float: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.aopciones {
+  font-family: "Inter", sans-serif;
+  font-size: medium;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  width: 150px;
+  text-align: center;
+  margin: 10px;
+  border-radius: 10px;
+  padding: 5px 0px;
+  background-color: #333; /* Adjust as needed */
+}
+
+.aopciones:hover {
+  background-color: #2391ec;
+}
+
+.acrear {
+  font-family: "Inter", sans-serif;
+  font-size: medium;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  width: 150px;
+  text-align: center;
+  margin: 10px;
+  border-radius: 10px;
+  padding: 5px 0px;
+  background-color: dodgerblue;
+}
+
+.acrear:hover {
+  background-color: rgb(20, 92, 163);
+}
+
+.gestorTurnos {
+  padding-top: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.gestorTurnosBotonInsertar {
+  justify-content: baseline;
+  width: 100%;
+  margin-left: 25px;
+}
+
+.gestorTurnosBoton {
+  display: flex;
+  padding: 5px 10px 5px 5px;
+  font-size: 15px;
+  line-height: 30px;
+  display: block;
+  width: 150px;
+  outline: 0;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  box-shadow: 0px 0px 0px 0px rgba(162, 161, 161, 0.85);
+  font-family: "Montserrat";
+  margin-right: 10px;
+  background-color: dodgerblue;
+  border-color: dodgerblue;
+  color: white;
+}
+
+.gestorTurnosTitulo {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: "Inter", sans-serif;
+  font-size: 50px;
+}
+
+.gestorTurnosTabla {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 1em;
+  font-family: sans-serif;
+  min-width: 450px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.gestorTurnosTabla thead tr {
+  background-color: dodgerblue;
+  color: #ffffff;
+  text-align: middle;
+}
+
+.gestorTurnosTabla thead th,
+.gestorTurnosTabla tbody td {
+  padding: 12px 15px;
+}
+
+.gestorTurnosTabla tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.gestorTurnosTabla tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.gestorTurnosTabla tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
