@@ -322,6 +322,33 @@ app.post("/api/login", (req, res) => {
   );
 });
 
+//Encontrar Usuario
+app.get('/api/usuario/:codigo_usuario', async (req, res) => {
+  const { codigo_usuario } = req.params;
+  const queryUsuario = `
+      SELECT u.*, c.Descripcion AS Cargo
+      FROM Usuario u
+      JOIN Cargo c ON u.Codigo_Cargo = c.Codigo_Cargo
+      WHERE u.Codigo_Usuario = ?
+  `;
+  db.query(queryUsuario, [codigo_usuario], (error, results) => {
+      if (error) {
+          return res.status(500).json({ error: 'Error en la base de datos' });
+      }
+      if (results.length === 0) {
+          return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+      const usuario = results[0];
+      if (usuario.img) {
+          usuario.img = usuario.img.toString('base64'); // Convertir imagen a base64 si existe
+      } else {
+          usuario.img = null; // Si no hay imagen, establecer como null
+      }
+      res.json(usuario);
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
