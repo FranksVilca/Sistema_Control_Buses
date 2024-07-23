@@ -379,6 +379,69 @@ app.put("/api/turnos/inactivar/:codigoTurno", (req, res) => {
   );
 });
 
+app.post("/api/insertarTurno", (req, res) => {
+  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
+  const sql =
+    "INSERT INTO Turno (IDRuta, IDHorario, IDBus, IDChofer) VALUES (?, ?, ?, ?)";
+  connection.query(sql, [IDRuta, IDHorario, IDBus, IDChofer], (err, result) => {
+    if (err) {
+      console.error("Error al insertar el turno:", err);
+      res.status(500).send("Error al insertar el turno");
+    } else {
+      res.send("Turno insertado exitosamente");
+    }
+  });
+});
+
+app.get("/api/buses", (req, res) => {
+  const sql = "SELECT IDBus, Placa, Num_Asientos FROM Bus";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los buses:", err);
+      res.status(500).send("Error al obtener los buses");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/api/horarios", (req, res) => {
+  const sql = "SELECT IDHorario, Fecha, Hora_Salida FROM Horario";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los horarios:", err);
+      res.status(500).send("Error al obtener los horarios");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/api/rutas", (req, res) => {
+  const sql = "SELECT IDRuta, PuntoSalida, PuntoLlegada FROM Ruta";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error al obtener las rutas:", err);
+      res.status(500).send("Error al obtener las rutas");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/api/conductores", (req, res) => {
+  const sql =
+    "SELECT Codigo_Usuario, Nombre FROM Usuario WHERE Tipo = 'Conductor'";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los conductores:", err);
+      res.status(500).send("Error al obtener los conductores");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });

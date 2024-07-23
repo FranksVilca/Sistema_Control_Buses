@@ -19,6 +19,7 @@ import VistaAdmin from "./Vistas/VistaAdmin";
 import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
 import GestionarTurnos from "./Turno/ComponenteGestorTurnos";
+import PaginaInsertarTurno from "./Turno/PaginaInsertarTurno";
 
 function App() {
   return (
@@ -60,11 +61,15 @@ function App() {
           element={<PaginaEdicionHorarios />}
         />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
-        <Route path="/TrabajadorPerfil/:codigo_usuario" element={<TrabajadorPerfil />} />
+        <Route
+          path="/TrabajadorPerfil/:codigo_usuario"
+          element={<TrabajadorPerfil />}
+        />
         <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />
         <Route path="/Asistencia/:codigoTurno" element={<Asistencia />} />
         <Route path="/GestionarTurno" element={<GestionarTurnos />} />
+        <Route path="/InsertarTurno" element={<PaginaInsertarTurno />} />
       </Routes>
     </BrowserRouter>
   );
