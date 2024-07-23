@@ -56,7 +56,7 @@ function App() {
           element={<ComponenteGestorHorarios />}
         />
         <Route
-          path="/PaginaEdicionHorarios"
+          path="/PaginaEdicionHorarios/:idHorario"
           element={<PaginaEdicionHorarios />}
         />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />

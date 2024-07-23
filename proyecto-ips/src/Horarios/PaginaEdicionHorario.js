@@ -22,7 +22,13 @@ const PaginaEdicionHorario = () => {
         throw new Error("Error al obtener el horario");
       }
       const data = await response.json();
-      setHorario(data);
+      // Extraer solo la parte de la fecha en formato YYYY-MM-DD
+      const fecha = data.Fecha ? data.Fecha.split('T')[0] : "";
+      setHorario({
+        Fecha: fecha,
+        Hora_Salida: data.Hora_Salida || "",
+        Hora_Llegada: data.Hora_Llegada || "",
+      });
     } catch (error) {
       console.error("Error al obtener el horario:", error);
     }
@@ -94,7 +100,7 @@ const PaginaEdicionHorario = () => {
           <input className={style.input}
             type="date"
             name="Fecha"
-            value={horario.Fecha}
+            value={horario.Fecha || ""}
             onChange={handleChange}
             required // Campo obligatorio
           />
@@ -104,7 +110,7 @@ const PaginaEdicionHorario = () => {
           <input className={style.input}
             type="time"
             name="Hora_Salida"
-            value={horario.Hora_Salida}
+            value={horario.Hora_Salida || ""}
             onChange={handleChange}
             required // Campo obligatorio
           />
@@ -114,7 +120,7 @@ const PaginaEdicionHorario = () => {
           <input className={style.input}
             type="time"
             name="Hora_Llegada"
-            value={horario.Hora_Llegada}
+            value={horario.Hora_Llegada || ""}
             onChange={handleChange}
             required // Campo obligatorio
           />
@@ -122,7 +128,7 @@ const PaginaEdicionHorario = () => {
         </div>
         <div className={style.botones}>
         <button className={style.boton1} type="submit">Actualizar</button>
-        <button className={style.boton2} type="submit">Cancelar</button>
+        <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorHorarios")}>Cancelar</button>
         </div>
       </form>
       </div>

@@ -442,6 +442,106 @@ app.put('/api/update/bus/:idBus', (req, res) => {
   });
 });
 
+// Obtener todos los horarios
+app.get('/api/horarios', (req, res) => {
+  const query = 'SELECT * FROM Horario';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los horarios:', err);
+      return res.status(500).json({ error: 'Error al obtener los horarios' });
+    }
+    // Asegúrate de que los datos están en el formato esperado
+    res.status(200).json(results.map(row => ({
+      ...row,
+      Fecha: row.Fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD
+      Hora_Salida: row.Hora_Salida.toISOString().split('T')[1].substring(0, 5), // Formato HH:mm
+      Hora_Llegada: row.Hora_Llegada.toISOString().split('T')[1].substring(0, 5), // Formato HH:mm
+    })));
+  });
+});
+
+// Obtener un horario por ID
+app.get('/api/horario/:id', (req, res) => {
+  const horarioId = req.params.id;
+  db.query('SELECT * FROM Horario WHERE IDHorario = ?', [horarioId], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error en la base de datos' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Horario no encontrado' });
+    }
+    const horario = results[0];
+    horario.Fecha = horario.Fecha.toISOString().split('T')[0]; // Asegúrate de enviar en formato YYYY-MM-DD
+    res.json(horario);
+  });
+});
+
+// Insertar un nuevo horario
+app.post('/api/insert/horario', (req, res) => {
+  const { Fecha, Hora_Salida, Hora_Llegada } = req.body;
+
+  // Primero, obtiene el valor máximo actual del IDHorario
+  db.query('SELECT MAX(IDHorario) AS maxID FROM Horario', (error, results) => {
+    if (error) {
+      console.error('Error al obtener el valor máximo de IDHorario:', error);
+      return res.status(500).json({ error: 'Error al obtener el valor máximo de IDHorario' });
+    }
+
+    // Calcula el nuevo IDHorario
+    const maxID = results[0].maxID || 0;
+    const newIDHorario = maxID + 1;
+
+    // Inserta el nuevo horario con el nuevo IDHorario
+    const sql = 'INSERT INTO Horario (IDHorario, Fecha, Hora_Salida, Hora_Llegada) VALUES (?, ?, ?, ?)';
+    const values = [newIDHorario, Fecha, Hora_Salida, Hora_Llegada];
+
+    db.query(sql, values, (error) => {
+      if (error) {
+        console.error('Error al insertar el horario:', error);
+        return res.status(500).json({ error: 'Error al insertar el horario' });
+      }
+      res.status(201).json({ message: 'Horario insertado exitosamente' });
+    });
+  });
+});
+
+// Actualizar un horario por ID
+app.put('/api/update/horario/:idHorario', (req, res) => {
+  const idHorario = req.params.idHorario;
+  const { Fecha, Hora_Salida, Hora_Llegada } = req.body;
+
+  const query = `
+    UPDATE Horario
+    SET Fecha = ?, Hora_Salida = ?, Hora_Llegada = ?
+    WHERE IDHorario = ?
+  `;
+
+  db.query(query, [Fecha, Hora_Salida, Hora_Llegada, idHorario], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el horario:', err);
+      return res.status(500).json({ error: 'Error al actualizar el horario' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Horario no encontrado' });
+    }
+    res.status(200).json({ message: 'Horario actualizado exitosamente' });
+  });
+});
+
+// Eliminar un horario por ID
+app.delete('/api/delete/horario/:idHorario', (req, res) => {
+  const idHorario = req.params.idHorario;
+  db.query('DELETE FROM Horario WHERE IDHorario = ?', [idHorario], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el horario:', err);
+      return res.status(500).json({ error: 'Error al eliminar el horario' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Horario no encontrado' });
+    }
+    res.status(200).json({ message: 'Horario eliminado exitosamente' });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);

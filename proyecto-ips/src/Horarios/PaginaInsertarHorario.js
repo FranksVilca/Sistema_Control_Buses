@@ -41,7 +41,7 @@ const PaginaInsertarHorario = () => {
         throw new Error("Error al insertar el horario");
       }
       alert("Horario insertado exitosamente");
-      navigate("/GestionarHorarios");
+      navigate("/ComponenteGestorHorarios");
     } catch (error) {
       console.error("Error al insertar el horario:", error);
     }
