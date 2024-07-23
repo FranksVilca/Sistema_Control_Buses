@@ -323,7 +323,7 @@ app.post("/api/login", (req, res) => {
 });
 
 //Encontrar Usuario
-app.get('/api/usuario/:codigo_usuario', async (req, res) => {
+app.get("/api/usuario/:codigo_usuario", async (req, res) => {
   const { codigo_usuario } = req.params;
   const queryUsuario = `
       SELECT u.*, c.Descripcion AS Cargo
@@ -332,22 +332,111 @@ app.get('/api/usuario/:codigo_usuario', async (req, res) => {
       WHERE u.Codigo_Usuario = ?
   `;
   db.query(queryUsuario, [codigo_usuario], (error, results) => {
-      if (error) {
-          return res.status(500).json({ error: 'Error en la base de datos' });
-      }
-      if (results.length === 0) {
-          return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-      const usuario = results[0];
-      if (usuario.img) {
-          usuario.img = usuario.img.toString('base64'); // Convertir imagen a base64 si existe
-      } else {
-          usuario.img = null; // Si no hay imagen, establecer como null
-      }
-      res.json(usuario);
+    if (error) {
+      return res.status(500).json({ error: "Error en la base de datos" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    const usuario = results[0];
+    if (usuario.img) {
+      usuario.img = usuario.img.toString("base64"); // Convertir imagen a base64 si existe
+    } else {
+      usuario.img = null; // Si no hay imagen, establecer como null
+    }
+    res.json(usuario);
   });
 });
 
+// Rutas para turnos
+app.get("/api/turnos", (req, res) => {
+  db.query("SELECT * FROM VistaTurnos", (err, results) => {
+    if (err) {
+      console.error("Error al obtener los turnos:", err);
+      return res.status(500).send("Error al obtener los turnos");
+    }
+    res.json(results);
+  });
+});
+
+app.post("/api/turnos", (req, res) => {
+  const { Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer } = req.body;
+  const query = `INSERT INTO turno (Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer)
+                 VALUES (?, ?, ?, ?, ?)`;
+
+  db.query(
+    query,
+    [Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer],
+    (err, result) => {
+      if (err) {
+        console.error("Error al insertar turno:", err);
+        return res.status(500).send("Error al insertar turno");
+      }
+      res.status(201).send("Turno insertado exitosamente");
+    }
+  );
+});
+
+app.get("/api/turnos/:codigoTurno", (req, res) => {
+  const { codigoTurno } = req.params;
+  db.query(
+    "SELECT * FROM turno WHERE Codigo_Turno = ?",
+    [codigoTurno],
+    (err, results) => {
+      if (err) {
+        console.error("Error al obtener turno:", err);
+        return res.status(500).send("Error al obtener turno");
+      }
+      if (results.length === 0) {
+        return res.status(404).send("Turno no encontrado");
+      }
+      res.json(results[0]);
+    }
+  );
+});
+
+app.put("/api/turnos/:codigoTurno", (req, res) => {
+  const { codigoTurno } = req.params;
+  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
+
+  const query = `UPDATE turno SET 
+                   IDRuta = ?, 
+                   IDHorario = ?, 
+                   IDBus = ?, 
+                   IDChofer = ? 
+                 WHERE Codigo_Turno = ?`;
+
+  db.query(
+    query,
+    [IDRuta, IDHorario, IDBus, IDChofer, codigoTurno],
+    (err, result) => {
+      if (err) {
+        console.error("Error al actualizar turno:", err);
+        return res.status(500).send("Error al actualizar turno");
+      }
+      res.send("Turno actualizado exitosamente");
+    }
+  );
+});
+
+app.delete("/api/turnos/:codigoTurno", (req, res) => {
+  const { codigoTurno } = req.params;
+
+  db.query(
+    "DELETE FROM turno WHERE Codigo_Turno = ?",
+    [codigoTurno],
+    (err, result) => {
+      if (err) {
+        console.error("Error al eliminar turno:", err);
+        return res.status(500).send("Error al eliminar turno");
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).send("Turno no encontrado");
+      }
+      res.send("Turno eliminado exitosamente");
+    }
+  );
+});
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
