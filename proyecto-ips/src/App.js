@@ -60,7 +60,7 @@ function App() {
           element={<PaginaEdicionHorarios />}
         />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
-        <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
+        <Route path="/TrabajadorPerfil/:codigo_usuario" element={<TrabajadorPerfil />} />
         <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
         <Route path="/VistaAdmin" element={<VistaAdmin />} />
         <Route path="/Asistencia/:codigoTurno" element={<Asistencia />} />
