@@ -4,7 +4,7 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
+const bodyParser = require('body-parser');
 const app = express();
 const port = 3001;
 
@@ -14,6 +14,7 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+app.use(bodyParser.json());
 
 // Middleware para analizar JSON con un límite de tamaño
 app.use(express.json({ limit: "10mb" })); // Ajusta el límite según tus necesidades
@@ -345,6 +346,99 @@ app.get('/api/usuario/:codigo_usuario', async (req, res) => {
           usuario.img = null; // Si no hay imagen, establecer como null
       }
       res.json(usuario);
+  });
+});
+
+//Insertar Buses
+app.post('/api/insert/bus', (req, res) => {
+  const { Num_Asientos, EstadoRegistro, Modelo, Marca, Placa } = req.body;
+
+  // Primero, obtiene el valor máximo actual del IDBus
+  db.query('SELECT MAX(IDBus) AS maxID FROM bus', (error, results) => {
+    if (error) {
+      console.error('Error al obtener el valor máximo de IDBus:', error);
+      return res.status(500).json({ error: 'Error al obtener el valor máximo de IDBus' });
+    }
+
+    // Calcula el nuevo IDBus
+    const maxID = results[0].maxID || 0;
+    const newIDBus = maxID + 1;
+
+    // Inserta el nuevo bus con el nuevo IDBus
+    const sql = 'INSERT INTO bus (IDBus, Num_Asientos, EstadoRegistro, Modelo, Marca, Placa) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [newIDBus, Num_Asientos, EstadoRegistro, Modelo, Marca, Placa];
+
+    db.query(sql, values, (error) => {
+      if (error) {
+        console.error('Error al insertar el bus:', error);
+        return res.status(500).json({ error: 'Error al insertar el bus' });
+      }
+      res.status(201).json({ message: 'Bus insertado exitosamente' });
+    });
+  });
+});
+
+// Ruta para eliminar un bus por su ID
+app.delete('/api/delete/bus/:idBus', (req, res) => {
+  const idBus = req.params.idBus;
+  db.query('DELETE FROM bus WHERE IDBus = ?', [idBus], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el bus:', err);
+      return res.status(500).json({ error: 'Error al eliminar el bus' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Bus no encontrado' });
+    }
+    res.status(200).json({ message: 'Bus eliminado exitosamente' });
+  });
+});
+
+// Ruta para obtener todos los buses
+app.get('/api/buses', (req, res) => {
+  const query = 'SELECT * FROM bus';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los buses:', err);
+      return res.status(500).json({ error: 'Error al obtener los buses' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Ruta para obtener un bus por ID
+app.get('/api/bus/:id', (req, res) => {
+  const busId = req.params.id;
+  db.query('SELECT * FROM bus WHERE IDBus = ?', [busId], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error en la base de datos' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Bus no encontrado' });
+    }
+    res.json(results[0]);
+  });
+});
+
+// Ruta para actualizar un bus por ID
+app.put('/api/update/bus/:idBus', (req, res) => {
+  const idBus = req.params.idBus;
+  const { Num_Asientos, EstadoRegistro, Modelo, Marca, Placa } = req.body;
+
+  const query = `
+    UPDATE bus
+    SET Num_Asientos = ?, EstadoRegistro = ?, Modelo = ?, Marca = ?, Placa = ?
+    WHERE IDBus = ?
+  `;
+
+  db.query(query, [Num_Asientos, EstadoRegistro, Modelo, Marca, Placa, idBus], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el bus:', err);
+      return res.status(500).json({ error: 'Error al actualizar el bus' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Bus no encontrado' });
+    }
+    res.status(200).json({ message: 'Bus actualizado exitosamente' });
   });
 });
 

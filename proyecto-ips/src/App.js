@@ -40,7 +40,7 @@ function App() {
           element={<ComponenteGestorBuses />}
         />
 
-        <Route path="/PaginaEdicionBus" element={<PaginaEdicionBus />} />
+        <Route path="/PaginaEdicionBus/:idBus" element={<PaginaEdicionBus />} />
         <Route path="/PaginaInsertarRuta" element={<PaginaInsertarRuta />} />
         <Route
           path="/ComponenteGestorRuta"
