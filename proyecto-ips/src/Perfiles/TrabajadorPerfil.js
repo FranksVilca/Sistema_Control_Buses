@@ -15,7 +15,7 @@ const TrabajadorPerfil = () => {
         estadoCivil: 'Casado',
         tipoSangre: 'O+',
         categoriaLaboral: 'Contratista',
-    };
+    };5
 
     return (
         <div className={style.fondo}>
