@@ -87,7 +87,16 @@ const ComponenteGestorTurnos = () => {
           </ul>
         </nav>
       </header>
+
       <div className={style.gestorTurnos}>
+        <div className={style.gestorUsuariosBotonInsertar}>
+          <button
+            className={style.gestorUsuariosBoton}
+            onClick={() => navigate("/InsertarTurno")}
+          >
+            InsertarTurno
+          </button>
+        </div>
         <h2 className={style.gestorTurnosTitulo}>Lista de Turnos Activos</h2>
         <table className={style.gestorTurnosTabla}>
           <thead>

@@ -194,7 +194,7 @@ const PaginaInsertarTurno = () => {
             <button
               className={style.boton2}
               type="button"
-              onClick={() => navigate("/GestionarTurnos")}
+              onClick={() => navigate("/GestionarTurno")}
             >
               Cancelar
             </button>
