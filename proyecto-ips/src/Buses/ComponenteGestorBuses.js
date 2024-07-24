@@ -24,7 +24,6 @@ const ComponenteGestorBuses = () => {
   };
 
   const handleDelete = async (idBus) => {
-    console.log("ID del bus a eliminar:", idBus);
     if (window.confirm("¿Estás seguro que deseas eliminar este bus?")) {
       try {
         const response = await fetch(
@@ -44,7 +43,7 @@ const ComponenteGestorBuses = () => {
   };
 
   const handleEdit = (idBus) => {
-    navigate(`/editar/bus/${idBus}`);
+    navigate(`/PaginaEdicionBus/${idBus}`);
   };
 
   return (
@@ -52,54 +51,54 @@ const ComponenteGestorBuses = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorBus}>
-      <div className={style.gestorBusBotonInsertar}>
-      <button className={style.gestorBusBoton} onClick={() => navigate("/InsertarBus")}>
-        Insertar Bus
-      </button>
-      </div>
-      <h2 className={style.gestorBusTitulo}>Lista de Buses</h2>
-      <table className={style.gestorBusTabla}>
-        <thead>
-          <tr>
-            <th>ID de Bus</th>
-            <th>Número de Asientos</th>
-            <th>Estado de Registro</th>
-            <th>Modelo</th>
-            <th>Marca</th>
-            <th>Placa</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {buses.map((bus) => (
-            <tr key={bus.IDBus}>
-              <td>{bus.IDBus}</td>
-              <td>{bus.Num_Asientos}</td>
-              <td>{bus.EstadoRegistro}</td>
-              <td>{bus.Modelo}</td>
-              <td>{bus.Marca}</td>
-              <td>{bus.Placa}</td>
-              <td>
-                <button onClick={() => handleDelete(bus.IDBus)}>
-                  Eliminar
-                </button>
-                <button onClick={() => handleEdit(bus.IDBus)}>
-                  Editar
-                </button>
-              </td>
+        <div className={style.gestorBusBotonInsertar}>
+          <button className={style.gestorBusBoton} onClick={() => navigate("/InsertarBus")}>
+            Insertar Bus
+          </button>
+        </div>
+        <h2 className={style.gestorBusTitulo}>Lista de Buses</h2>
+        <table className={style.gestorBusTabla}>
+          <thead>
+            <tr>
+              <th>ID de Bus</th>
+              <th>Número de Asientos</th>
+              <th>Estado de Registro</th>
+              <th>Modelo</th>
+              <th>Marca</th>
+              <th>Placa</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {buses.map((bus) => (
+              <tr key={bus.IDBus}>
+                <td>{bus.IDBus}</td>
+                <td>{bus.Num_Asientos}</td>
+                <td>{bus.EstadoRegistro}</td>
+                <td>{bus.Modelo}</td>
+                <td>{bus.Marca}</td>
+                <td>{bus.Placa}</td>
+                <td>
+                  <button className={style.botonEliminar} onClick={() => handleDelete(bus.IDBus)}>
+                    Eliminar
+                  </button>
+                  <button className={style.botonEditar} onClick={() => handleEdit(bus.IDBus)}>
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

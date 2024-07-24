@@ -42,13 +42,13 @@ function App() {
           element={<ComponenteGestorBuses />}
         />
 
-        <Route path="/PaginaEdicionBus" element={<PaginaEdicionBus />} />
+        <Route path="/PaginaEdicionBus/:idBus" element={<PaginaEdicionBus />} />
         <Route path="/PaginaInsertarRuta" element={<PaginaInsertarRuta />} />
         <Route
           path="/ComponenteGestorRuta"
           element={<ComponenteGestorRuta />}
         />
-        <Route path="/PaginaEdicionRuta" element={<PaginaEdicionRuta />} />
+        <Route path="/PaginaEdicionRuta/:idRuta" element={<PaginaEdicionRuta />} />
         <Route
           path="/PaginaInsertarHorarios"
           element={<PaginaInsertarHorarios />}
@@ -58,7 +58,7 @@ function App() {
           element={<ComponenteGestorHorarios />}
         />
         <Route
-          path="/PaginaEdicionHorarios"
+          path="/PaginaEdicionHorarios/:idHorario"
           element={<PaginaEdicionHorarios />}
         />
         <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />

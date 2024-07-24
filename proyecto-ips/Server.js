@@ -4,7 +4,7 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
+const bodyParser = require("body-parser");
 const app = express();
 const port = 3001;
 
@@ -14,6 +14,7 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+app.use(bodyParser.json());
 
 // Middleware para analizar JSON con un límite de tamaño
 app.use(express.json({ limit: "10mb" })); // Ajusta el límite según tus necesidades
@@ -348,74 +349,186 @@ app.get("/api/usuario/:codigo_usuario", async (req, res) => {
   });
 });
 
-// Rutas para turnos
-app.get("/api/turnos", (req, res) => {
-  db.query("SELECT * FROM vistaturnos", (err, results) => {
-    if (err) {
-      console.error("Error al obtener los turnos:", err);
-      return res.status(500).send("Error al obtener los turnos");
+//Insertar Buses
+app.post("/api/insert/bus", (req, res) => {
+  const { Num_Asientos, EstadoRegistro, Modelo, Marca, Placa } = req.body;
+
+  // Primero, obtiene el valor máximo actual del IDBus
+  db.query("SELECT MAX(IDBus) AS maxID FROM bus", (error, results) => {
+    if (error) {
+      console.error("Error al obtener el valor máximo de IDBus:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al obtener el valor máximo de IDBus" });
     }
-    res.json(results);
+
+    // Calcula el nuevo IDBus
+    const maxID = results[0].maxID || 0;
+    const newIDBus = maxID + 1;
+
+    // Inserta el nuevo bus con el nuevo IDBus
+    const sql =
+      "INSERT INTO bus (IDBus, Num_Asientos, EstadoRegistro, Modelo, Marca, Placa) VALUES (?, ?, ?, ?, ?, ?)";
+    const values = [
+      newIDBus,
+      Num_Asientos,
+      EstadoRegistro,
+      Modelo,
+      Marca,
+      Placa,
+    ];
+
+    db.query(sql, values, (error) => {
+      if (error) {
+        console.error("Error al insertar el bus:", error);
+        return res.status(500).json({ error: "Error al insertar el bus" });
+      }
+      res.status(201).json({ message: "Bus insertado exitosamente" });
+    });
   });
 });
 
-app.put("/api/turnos/inactivar/:codigoTurno", (req, res) => {
-  const { codigoTurno } = req.params;
+// Ruta para eliminar un bus por su ID
+app.delete("/api/delete/bus/:idBus", (req, res) => {
+  const idBus = req.params.idBus;
+  db.query("DELETE FROM bus WHERE IDBus = ?", [idBus], (err, result) => {
+    if (err) {
+      console.error("Error al eliminar el bus:", err);
+      return res.status(500).json({ error: "Error al eliminar el bus" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Bus no encontrado" });
+    }
+    res.status(200).json({ message: "Bus eliminado exitosamente" });
+  });
+});
 
-  // Marca el turno como inactivo en lugar de eliminarlo
+// Ruta para obtener todos los buses
+app.get("/api/buses", (req, res) => {
+  const query = "SELECT * FROM bus";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los buses:", err);
+      return res.status(500).json({ error: "Error al obtener los buses" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Ruta para obtener un bus por ID
+app.get("/api/bus/:id", (req, res) => {
+  const busId = req.params.id;
+  db.query("SELECT * FROM bus WHERE IDBus = ?", [busId], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: "Error en la base de datos" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Bus no encontrado" });
+    }
+    res.json(results[0]);
+  });
+});
+
+// Ruta para actualizar un bus por ID
+app.put("/api/update/bus/:idBus", (req, res) => {
+  const idBus = req.params.idBus;
+  const { Num_Asientos, EstadoRegistro, Modelo, Marca, Placa } = req.body;
+
+  const query = `
+    UPDATE bus
+    SET Num_Asientos = ?, EstadoRegistro = ?, Modelo = ?, Marca = ?, Placa = ?
+    WHERE IDBus = ?
+  `;
+
   db.query(
-    "UPDATE turno SET Activo = 0 WHERE Codigo_Turno = ?",
-    [codigoTurno],
+    query,
+    [Num_Asientos, EstadoRegistro, Modelo, Marca, Placa, idBus],
     (err, result) => {
       if (err) {
-        console.error("Error al inactivar turno:", err);
-        return res.status(500).send("Error al inactivar turno");
+        console.error("Error al actualizar el bus:", err);
+        return res.status(500).json({ error: "Error al actualizar el bus" });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).send("Turno no encontrado");
+        return res.status(404).json({ error: "Bus no encontrado" });
       }
-      res.send("Turno marcado como inactivo exitosamente");
+      res.status(200).json({ message: "Bus actualizado exitosamente" });
     }
   );
 });
 
-const getNextTurnoCodigo = (callback) => {
-  const sql = "SELECT MAX(Codigo_Turno) AS maxCodigoTurno FROM Turno";
-  db.query(sql, (err, results) => {
+// Obtener todos los horarios
+app.get("/api/horarios", (req, res) => {
+  const query = "SELECT * FROM Horario";
+  db.query(query, (err, results) => {
     if (err) {
-      return callback(err, null);
+      console.error("Error al obtener los horarios:", err);
+      return res.status(500).json({ error: "Error al obtener los horarios" });
     }
-    const maxCodigoTurno = results[0].maxCodigoTurno || 0;
-    const nextCodigoTurno = maxCodigoTurno + 1;
-    callback(null, nextCodigoTurno);
+    // Asegúrate de que los datos están en el formato esperado
+    res.status(200).json(
+      results.map((row) => ({
+        ...row,
+        Fecha: row.Fecha.toISOString().split("T")[0], // Formato YYYY-MM-DD
+        Hora_Salida: row.Hora_Salida.toISOString()
+          .split("T")[1]
+          .substring(0, 5), // Formato HH:mm
+        Hora_Llegada: row.Hora_Llegada.toISOString()
+          .split("T")[1]
+          .substring(0, 5), // Formato HH:mm
+      }))
+    );
   });
-};
+});
 
-app.post("/api/insertarTurno", (req, res) => {
-  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
+// Obtener un horario por ID
+app.get("/api/horario/:id", (req, res) => {
+  const horarioId = req.params.id;
+  db.query(
+    "SELECT * FROM Horario WHERE IDHorario = ?",
+    [horarioId],
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: "Error en la base de datos" });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Horario no encontrado" });
+      }
+      const horario = results[0];
+      horario.Fecha = horario.Fecha.toISOString().split("T")[0]; // Asegúrate de enviar en formato YYYY-MM-DD
+      res.json(horario);
+    }
+  );
+});
 
-  getNextTurnoCodigo((err, nextCodigoTurno) => {
-    if (err) {
-      console.error("Error al obtener el siguiente código de turno:", err);
+// Insertar un nuevo horario
+app.post("/api/insert/horario", (req, res) => {
+  const { Fecha, Hora_Salida, Hora_Llegada } = req.body;
+
+  // Primero, obtiene el valor máximo actual del IDHorario
+  db.query("SELECT MAX(IDHorario) AS maxID FROM Horario", (error, results) => {
+    if (error) {
+      console.error("Error al obtener el valor máximo de IDHorario:", error);
       return res
         .status(500)
-        .send("Error al obtener el siguiente código de turno");
+        .json({ error: "Error al obtener el valor máximo de IDHorario" });
     }
 
+    // Calcula el nuevo IDHorario
+    const maxID = results[0].maxID || 0;
+    const newIDHorario = maxID + 1;
+
+    // Inserta el nuevo horario con el nuevo IDHorario
     const sql =
-      "INSERT INTO Turno (Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer) VALUES (?, ?, ?, ?, ?)";
-    db.query(
-      sql,
-      [nextCodigoTurno, IDRuta, IDHorario, IDBus, IDChofer],
-      (err, result) => {
-        if (err) {
-          console.error("Error al insertar el turno:", err);
-          res.status(500).send("Error al insertar el turno");
-        } else {
-          res.send("Turno insertado exitosamente");
-        }
+      "INSERT INTO Horario (IDHorario, Fecha, Hora_Salida, Hora_Llegada) VALUES (?, ?, ?, ?)";
+    const values = [newIDHorario, Fecha, Hora_Salida, Hora_Llegada];
+
+    db.query(sql, values, (error) => {
+      if (error) {
+        console.error("Error al insertar el horario:", error);
+        return res.status(500).json({ error: "Error al insertar el horario" });
       }
-    );
+      res.status(201).json({ message: "Horario insertado exitosamente" });
+    });
   });
 });
 
@@ -482,52 +595,141 @@ app.get("/api/usuarios", (req, res) => {
   });
 });
 
-app.get("/api/buses", (req, res) => {
-  const sql = "SELECT IDBus, Placa, Num_Asientos FROM Bus";
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error al obtener los buses:", err);
-      res.status(500).send("Error al obtener los buses");
-    } else {
-      res.json(results);
+// Actualizar un horario por ID
+app.put("/api/update/horario/:idHorario", (req, res) => {
+  const idHorario = req.params.idHorario;
+  const { Fecha, Hora_Salida, Hora_Llegada } = req.body;
+
+  const query = `
+    UPDATE Horario
+    SET Fecha = ?, Hora_Salida = ?, Hora_Llegada = ?
+    WHERE IDHorario = ?
+  `;
+
+  db.query(
+    query,
+    [Fecha, Hora_Salida, Hora_Llegada, idHorario],
+    (err, result) => {
+      if (err) {
+        console.error("Error al actualizar el horario:", err);
+        return res
+          .status(500)
+          .json({ error: "Error al actualizar el horario" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Horario no encontrado" });
+      }
+      res.status(200).json({ message: "Horario actualizado exitosamente" });
     }
-  });
+  );
 });
 
-app.get("/api/horarios", (req, res) => {
-  const sql = "SELECT IDHorario, Fecha, Hora_Salida FROM Horario";
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error al obtener los horarios:", err);
-      res.status(500).send("Error al obtener los horarios");
-    } else {
-      res.json(results);
+// Eliminar un horario por ID
+app.delete("/api/delete/horario/:idHorario", (req, res) => {
+  const idHorario = req.params.idHorario;
+  db.query(
+    "DELETE FROM Horario WHERE IDHorario = ?",
+    [idHorario],
+    (err, result) => {
+      if (err) {
+        console.error("Error al eliminar el horario:", err);
+        return res.status(500).json({ error: "Error al eliminar el horario" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Horario no encontrado" });
+      }
+      res.status(200).json({ message: "Horario eliminado exitosamente" });
     }
-  });
+  );
 });
 
+// Obtener todas las rutas
 app.get("/api/rutas", (req, res) => {
-  const sql = "SELECT IDRuta, PuntoSalida, PuntoLlegada FROM Ruta";
+  const sql = "SELECT * FROM Ruta";
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Error al obtener las rutas:", err);
-      res.status(500).send("Error al obtener las rutas");
-    } else {
-      res.json(results);
+      console.error("Error fetching routes:", err);
+      res.status(500).send("Error fetching routes");
+      return;
     }
+    res.json(results);
   });
 });
 
-app.get("/api/conductores", (req, res) => {
-  const sql =
-    "SELECT Codigo_Usuario, Nombre FROM Usuario WHERE Codigo_Cargo = '3'";
-  db.query(sql, (err, results) => {
+// Obtener una ruta específica por ID
+app.get("/api/ruta/:IDRuta", (req, res) => {
+  const { IDRuta } = req.params;
+  const sql = "SELECT * FROM Ruta WHERE IDRuta = ?";
+  db.query(sql, [IDRuta], (err, result) => {
     if (err) {
-      console.error("Error al obtener los conductores:", err);
-      res.status(500).send("Error al obtener los conductores");
-    } else {
-      res.json(results);
+      console.error("Error fetching route:", err);
+      res.status(500).send("Error fetching route");
+      return;
     }
+    if (result.length === 0) {
+      // No se encontró la ruta con el ID especificado
+      res.status(404).send("Ruta no encontrada");
+      return;
+    }
+    res.json(result[0]); // Devolver el primer objeto del array
+  });
+});
+
+// Crear una nueva ruta
+app.post("/api/ruta", (req, res) => {
+  const { IDRuta, PuntoSalida, PuntoLlegada } = req.body;
+  const sql =
+    "INSERT INTO Ruta (IDRuta, PuntoSalida, PuntoLlegada) VALUES (?, ?, ?)";
+  db.query(sql, [IDRuta, PuntoSalida, PuntoLlegada], (err, result) => {
+    if (err) {
+      console.error("Error creating route:", err);
+      res.status(500).send("Error creating route");
+      return;
+    }
+    res.json({ IDRuta, PuntoSalida, PuntoLlegada });
+  });
+});
+
+//Conseguir el Maximo ID
+app.get("/api/rutas/max", (req, res) => {
+  const query = "SELECT MAX(IDRuta) AS maxCodigoRuta FROM Ruta";
+  db.query(query, (error, results) => {
+    if (error) {
+      return res
+        .status(500)
+        .json({ error: "Error al obtener el máximo código de ruta" });
+    }
+    res.json({ maxCodigoRuta: results[0].maxCodigoRuta });
+  });
+});
+
+// Actualizar una ruta existente
+app.put("/api/ruta/:IDRuta", (req, res) => {
+  const { IDRuta } = req.params;
+  const { PuntoSalida, PuntoLlegada } = req.body;
+  const sql =
+    "UPDATE Ruta SET PuntoSalida = ?, PuntoLlegada = ? WHERE IDRuta = ?";
+  db.query(sql, [PuntoSalida, PuntoLlegada, IDRuta], (err, result) => {
+    if (err) {
+      console.error("Error updating route:", err);
+      res.status(500).send("Error updating route");
+      return;
+    }
+    res.json({ IDRuta, PuntoSalida, PuntoLlegada });
+  });
+});
+
+// Eliminar una ruta existente
+app.delete("/api/ruta/:IDRuta", (req, res) => {
+  const { IDRuta } = req.params;
+  const sql = "DELETE FROM Ruta WHERE IDRuta = ?";
+  db.query(sql, [IDRuta], (err, result) => {
+    if (err) {
+      console.error("Error deleting route:", err);
+      res.status(500).send("Error deleting route");
+      return;
+    }
+    res.json({ message: "Route deleted successfully" });
   });
 });
 

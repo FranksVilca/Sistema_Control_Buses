@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import style from './PaginaEdicionRuta.module.css';
 
 const PaginaEdicionRuta = () => {
-  const { idRuta } = useParams();
+  const { idRuta } = useParams(); // Extraer el parámetro de la URL
   const [ruta, setRuta] = useState({
     PuntoSalida: "",
     PuntoLlegada: "",
@@ -11,6 +11,13 @@ const PaginaEdicionRuta = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("ID Ruta:", idRuta); // Verificar el valor de idRuta
+
+    if (!idRuta) {
+      console.error("ID de ruta no proporcionado");
+      return;
+    }
+
     fetch(`http://localhost:3001/api/ruta/${idRuta}`)
       .then((response) => {
         if (!response.ok) {
@@ -18,7 +25,15 @@ const PaginaEdicionRuta = () => {
         }
         return response.json();
       })
-      .then((data) => setRuta(data))
+      .then((data) => {
+        console.log("Datos de la ruta recibidos:", data);
+        // Verificar si data tiene la forma esperada
+        if (data && data.IDRuta) {
+          setRuta(data); // data es un objeto
+        } else {
+          console.warn("No se encontraron datos para la ruta especificada.");
+        }
+      })
       .catch((error) => console.error("Error al obtener la ruta:", error));
   }, [idRuta]);
 
@@ -34,7 +49,7 @@ const PaginaEdicionRuta = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:3001/api/update/ruta/${idRuta}`,
+        `http://localhost:3001/api/ruta/${idRuta}`,
         {
           method: "PUT",
           headers: {
@@ -53,7 +68,6 @@ const PaginaEdicionRuta = () => {
     }
   };
 
-  // Verificar si la ruta está cargada completamente antes de renderizar el formulario
   if (!ruta.PuntoSalida && !ruta.PuntoLlegada) {
     return <p>Cargando...</p>;
   }
@@ -63,44 +77,46 @@ const PaginaEdicionRuta = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
           </ul>
         </nav>
       </header>
       <div className={style.edicionRuta}>
-      <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
-      <h2 className={style.titulo}>Editar Ruta</h2>
-      <div className={style.campos}>
-        <label className={style.label1}>
-          Punto de Salida:
-          <input className={style.input}
-            type="text"
-            name="PuntoSalida"
-            value={ruta.PuntoSalida || ""}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label className={style.label1}>
-          Punto de Llegada:
-          <input className={style.input}
-            type="text"
-            name="PuntoLlegada"
-            value={ruta.PuntoLlegada || ""}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        </div>
-        <div className={style.botones}>
-        <button className={style.boton1} type="submit">Actualizar</button>
-        <button className={style.boton2} type="submit">Cancelar</button>
-        </div>
-      </form>
+        <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
+          <h2 className={style.titulo}>Editar Ruta</h2>
+          <div className={style.campos}>
+            <label className={style.label1}>
+              Punto de Salida:
+              <input
+                className={style.input}
+                type="text"
+                name="PuntoSalida"
+                value={ruta.PuntoSalida || ""}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label className={style.label1}>
+              Punto de Llegada:
+              <input
+                className={style.input}
+                type="text"
+                name="PuntoLlegada"
+                value={ruta.PuntoLlegada || ""}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+          <div className={style.botones}>
+            <button className={style.boton1} type="submit">Actualizar</button>
+            <button className={style.boton2} type="button" onClick={() => navigate("/GestionarRutas")}>Cancelar</button>
+          </div>
+        </form>
       </div>
     </div>
   );

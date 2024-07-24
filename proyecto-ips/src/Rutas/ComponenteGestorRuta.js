@@ -23,12 +23,12 @@ const ComponenteGestorRutas = () => {
     }
   };
 
-  const handleDelete = async (idRuta) => {
-    console.log("ID de la ruta a eliminar:", idRuta);
+  const handleDelete = async (IDRuta) => {
+    console.log("ID de la ruta a eliminar:", IDRuta);
     if (window.confirm("¿Estás seguro que deseas eliminar esta ruta?")) {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/delete/ruta/${idRuta}`,
+          `http://localhost:3001/api/ruta/${IDRuta}`,
           {
             method: "DELETE",
           }
@@ -43,8 +43,8 @@ const ComponenteGestorRutas = () => {
     }
   };
 
-  const handleEdit = (idRuta) => {
-    navigate(`/editar/ruta/${idRuta}`);
+  const handleEdit = (IDRuta) => {
+    navigate(`/PaginaEdicionRuta/${IDRuta}`);
   };
 
   return (
@@ -52,48 +52,48 @@ const ComponenteGestorRutas = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
+            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
+            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorRuta}>
         <div className={style.gestorRutaBotonInsertar}>
-      <button className={style.gestorRutaBoton} onClick={() => navigate("/InsertarRuta")}>
-        Insertar Ruta
-      </button>
-      </div>
-      <h2 className={style.gestorRutaTitulo}>Lista de Rutas</h2>
-      <table className={style.gestorRutaTabla}>
-        <thead>
-          <tr>
-            <th>ID de Ruta</th>
-            <th>Punto de Salida</th>
-            <th>Punto de Llegada</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rutas.map((ruta) => (
-            <tr key={ruta.IDRuta}>
-              <td>{ruta.IDRuta}</td>
-              <td>{ruta.PuntoSalida}</td>
-              <td>{ruta.PuntoLlegada}</td>
-              <td>
-                <button onClick={() => handleDelete(ruta.IDRuta)}>
-                  Eliminar
-                </button>
-                <button onClick={() => handleEdit(ruta.IDRuta)}>
-                  Editar
-                </button>
-              </td>
+          <button className={style.gestorRutaBoton} onClick={() => navigate("/PaginaInsertarRuta")}>
+            Insertar Ruta
+          </button>
+        </div>
+        <h2 className={style.gestorRutaTitulo}>Lista de Rutas</h2>
+        <table className={style.gestorRutaTabla}>
+          <thead>
+            <tr>
+              <th>ID de Ruta</th>
+              <th>Punto de Salida</th>
+              <th>Punto de Llegada</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rutas.map((ruta) => (
+              <tr key={ruta.IDRuta}>
+                <td>{ruta.IDRuta}</td>
+                <td>{ruta.PuntoSalida}</td>
+                <td>{ruta.PuntoLlegada}</td>
+                <td>
+                  <button onClick={() => handleDelete(ruta.IDRuta)}>
+                    Eliminar
+                  </button>
+                  <button onClick={() => handleEdit(ruta.IDRuta)}>
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

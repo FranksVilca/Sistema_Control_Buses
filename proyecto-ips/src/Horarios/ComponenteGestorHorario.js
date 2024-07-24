@@ -24,7 +24,6 @@ const ComponenteGestorHorarios = () => {
   };
 
   const handleDelete = async (idHorario) => {
-    console.log("ID del horario a eliminar:", idHorario);
     if (window.confirm("¿Estás seguro que deseas eliminar este horario?")) {
       try {
         const response = await fetch(
@@ -44,7 +43,7 @@ const ComponenteGestorHorarios = () => {
   };
 
   const handleEdit = (idHorario) => {
-    navigate(`/editar/horario/${idHorario}`);
+    navigate(`/PaginaEdicionHorarios/${idHorario}`);
   };
 
   return (
@@ -104,9 +103,20 @@ const ComponenteGestorHorarios = () => {
             {horarios.map((horario) => (
               <tr key={horario.IDHorario}>
                 <td>{horario.IDHorario}</td>
-                <td>{horario.Fecha}</td>
-                <td>{horario.Hora_Salida}</td>
-                <td>{horario.Hora_Llegada}</td>
+                <td>{new Date(horario.Fecha).toLocaleDateString()}</td>{" "}
+                {/* Convierte la fecha */}
+                <td>
+                  {new Date(
+                    `1970-01-01T${horario.Hora_Salida}`
+                  ).toLocaleTimeString()}
+                </td>{" "}
+                {/* Convierte la hora */}
+                <td>
+                  {new Date(
+                    `1970-01-01T${horario.Hora_Llegada}`
+                  ).toLocaleTimeString()}
+                </td>{" "}
+                {/* Convierte la hora */}
                 <td>
                   <button onClick={() => handleDelete(horario.IDHorario)}>
                     Eliminar
