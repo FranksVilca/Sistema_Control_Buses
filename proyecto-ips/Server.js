@@ -464,14 +464,14 @@ app.get("/api/horarios", (req, res) => {
       console.error("Error al obtener los horarios:", err);
       return res.status(500).json({ error: "Error al obtener los horarios" });
     }
-    const formattedResults = results.map(row => {
+    const formattedResults = results.map((row) => {
       // Convertir las fechas y horas al formato esperado si no son null
       const fecha = new Date(row.Fecha);
       const horaSalida = row.Hora_Salida ? row.Hora_Salida : null;
       const horaLlegada = row.Hora_Llegada ? row.Hora_Llegada : null;
       return {
         ...row,
-        Fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD
+        Fecha: fecha.toISOString().split("T")[0], // Formato YYYY-MM-DD
         Hora_Salida: horaSalida ? horaSalida.substring(0, 5) : null, // Formato HH:mm
         Hora_Llegada: horaLlegada ? horaLlegada.substring(0, 5) : null, // Formato HH:mm
       };
@@ -479,7 +479,6 @@ app.get("/api/horarios", (req, res) => {
     res.status(200).json(formattedResults);
   });
 });
-
 
 // Obtener un horario por ID
 app.get("/api/horario/:id", (req, res) => {

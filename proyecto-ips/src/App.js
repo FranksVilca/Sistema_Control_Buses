@@ -1,7 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './components/AuthContext'; 
-import DashboardLogin from './components/DashboardLogin'; 
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./components/AuthContext";
+import DashboardLogin from "./components/DashboardLogin";
 import ComponenteGestorUsuarios from "./Usuario/ComponenteGestorUsuarios";
 import PaginaInsertarUsuario from "./Usuario/PaginaInsertarUsuario";
 import ComponenteGestorBuses from "./Buses/ComponenteGestorBuses";
@@ -142,7 +142,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-         <Route
+          <Route
             path="/VistaAdmin/:codigoUsuario"
             element={
               <ProtectedRoute allowedRoles={[1]}>
@@ -159,6 +159,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/asignarTurno/:codigoTurno/:numAsientos"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                {" "}
+                <AsignarTurno />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/InsertarTurno"
             element={
@@ -175,7 +186,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-         <Route
+          <Route
             path="/VistaChofer/:codigoUsuario"
             element={
               <ProtectedRoute allowedRoles={[2]}>
