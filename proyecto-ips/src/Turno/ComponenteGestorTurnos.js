@@ -50,8 +50,8 @@ const ComponenteGestorTurnos = () => {
     }
   };
 
-  const handleAssign = (codigoTurno) => {
-    navigate(`/asignarTurno/${codigoTurno}`);
+  const handleAssign = (codigoTurno, numAsientos) => {
+    navigate(`/asignarTurno/${codigoTurno}/${numAsientos}`);
   };
 
   return (
@@ -94,7 +94,7 @@ const ComponenteGestorTurnos = () => {
             className={style.gestorUsuariosBoton}
             onClick={() => navigate("/InsertarTurno")}
           >
-            InsertarTurno
+            Crear Turno
           </button>
         </div>
         <h2 className={style.gestorTurnosTitulo}>Lista de Turnos Activos</h2>
@@ -127,7 +127,11 @@ const ComponenteGestorTurnos = () => {
                   <button onClick={() => handleDelete(turno.Codigo_Turno)}>
                     Marcar como Inactivo
                   </button>
-                  <button onClick={() => handleAssign(turno.Codigo_Turno)}>
+                  <button
+                    onClick={() =>
+                      handleAssign(turno.Codigo_Turno, turno.Num_Asientos)
+                    }
+                  >
                     Asignar Turno
                   </button>
                 </td>

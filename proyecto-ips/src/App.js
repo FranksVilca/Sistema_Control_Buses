@@ -23,6 +23,7 @@ import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
 import GestionarTurnos from "./Turno/ComponenteGestorTurnos";
 import PaginaInsertarTurno from "./Turno/PaginaInsertarTurno";
+import AsignarTurno from "./Turno/AsignarTurno";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
