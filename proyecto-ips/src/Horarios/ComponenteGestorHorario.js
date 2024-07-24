@@ -17,6 +17,7 @@ const ComponenteGestorHorarios = () => {
         throw new Error("Error al obtener los horarios");
       }
       const data = await response.json();
+      console.log("Horarios recibidos:", data);
       setHorarios(data);
     } catch (error) {
       console.error("Error al obtener la lista de horarios:", error);
@@ -80,9 +81,9 @@ const ComponenteGestorHorarios = () => {
             {horarios.map((horario) => (
               <tr key={horario.IDHorario}>
                 <td>{horario.IDHorario}</td>
-                <td>{new Date(horario.Fecha).toLocaleDateString()}</td> {/* Convierte la fecha */}
-                <td>{new Date(`1970-01-01T${horario.Hora_Salida}`).toLocaleTimeString()}</td> {/* Convierte la hora */}
-                <td>{new Date(`1970-01-01T${horario.Hora_Llegada}`).toLocaleTimeString()}</td> {/* Convierte la hora */}
+                <td>{horario.Fecha}</td>
+                <td>{horario.Hora_Salida ? horario.Hora_Salida : 'N/A'}</td>
+                <td>{horario.Hora_Llegada ? horario.Hora_Llegada : 'N/A'}</td>
                 <td>
                   <button onClick={() => handleDelete(horario.IDHorario)}>Eliminar</button>
                   <button onClick={() => handleEdit(horario.IDHorario)}>Editar</button>

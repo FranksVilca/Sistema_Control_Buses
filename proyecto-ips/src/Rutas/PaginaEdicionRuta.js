@@ -62,7 +62,7 @@ const PaginaEdicionRuta = () => {
         throw new Error("Error al actualizar la ruta");
       }
       alert("Ruta actualizada exitosamente");
-      navigate("/GestionarRutas");
+      navigate("/ComponenteGestorRuta");
     } catch (error) {
       console.error("Error al actualizar la ruta:", error);
     }
@@ -114,7 +114,7 @@ const PaginaEdicionRuta = () => {
           </div>
           <div className={style.botones}>
             <button className={style.boton1} type="submit">Actualizar</button>
-            <button className={style.boton2} type="button" onClick={() => navigate("/GestionarRutas")}>Cancelar</button>
+            <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorRuta")}>Cancelar</button>
           </div>
         </form>
       </div>

@@ -65,7 +65,7 @@ const PaginaEdicionBus = () => {
         throw new Error(`Error al actualizar el bus: ${errorText}`);
       }
       alert("Bus actualizado exitosamente");
-      navigate("/GestionarBuses");
+      navigate("/ComponenteGestorBuses");
     } catch (error) {
       console.error("Error al actualizar el bus:", error);
     }
@@ -153,6 +153,9 @@ const PaginaEdicionBus = () => {
           </div>
           <button className={style.boton} type="submit">
             Actualizar Bus
+          </button>
+          <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorBuses")}>
+            Cancelar
           </button>
         </form>
       </div>

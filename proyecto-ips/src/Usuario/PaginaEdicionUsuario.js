@@ -266,6 +266,7 @@ const PaginaEdicionUsuario = () => {
           <button className={style.boton} type="submit">
             Actualizar Usuario
           </button>
+          <button className={style.boton2} type="button" onClick={() => navigate("/GestionarUsuarios")}>Cancelar</button>
         </form>
       </div>
     </div>

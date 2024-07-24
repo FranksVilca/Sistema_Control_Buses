@@ -35,7 +35,7 @@ const PaginaInsertarBus = () => {
         throw new Error("Error al insertar el bus");
       }
       alert("Bus insertado exitosamente");
-      navigate("/GestionarBuses");
+      navigate("/ComponenteGestorBuses");
     } catch (error) {
       console.error("Error al insertar el bus:", error);
     }
@@ -123,7 +123,9 @@ const PaginaInsertarBus = () => {
         </div>
         <div className={style.botones}>
         <button className={style.boton1} type="submit">Insertar</button>
-        <button className={style.boton2} type="submit">Cancelar</button>
+        <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorBuses")}>
+            Cancelar
+          </button>
         </div>
       </form>
       </div>

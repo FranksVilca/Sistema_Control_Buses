@@ -97,7 +97,7 @@ const PaginaInsertarHorario = () => {
         </div>
         <div className={style.botones}>
         <button className={style.boton1} type="submit">Insertar</button>
-        <button className={style.boton2} type="submit">Cancelar</button>
+        <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorHorarios")}>Cancelar</button>
         </div>
       </form>
       </div>

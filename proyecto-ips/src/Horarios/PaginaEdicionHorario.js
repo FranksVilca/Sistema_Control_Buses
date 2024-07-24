@@ -67,7 +67,7 @@ const PaginaEdicionHorario = () => {
         throw new Error("Error al actualizar el horario");
       }
       alert("Horario actualizado exitosamente");
-      navigate("/GestionarHorarios");
+      navigate("/ComponenteGestorHorarios");
     } catch (error) {
       console.error("Error al actualizar el horario:", error);
     }
