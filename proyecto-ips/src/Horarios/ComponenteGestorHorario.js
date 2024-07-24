@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './ComponenteGestorHorario.module.css';
+import style from "./ComponenteGestorHorario.module.css";
 
 const ComponenteGestorHorarios = () => {
   const [horarios, setHorarios] = useState([]);
@@ -52,50 +52,73 @@ const ComponenteGestorHorarios = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.aopciones} href="#">
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear} href="#">
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear} href="#">
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorHorario}>
-      <div className={style.gestorHorarioBotonInsertar}>
-      <button className={style.gestorHorarioBoton} onClick={() => navigate("/InsertarHorario")}>
-        Insertar Horario
-      </button>
-      </div>
-      <h2 className={style.gestorHorarioTitulo}>Lista de Horarios</h2>
-      <table className={style.gestorHorarioTabla}>
-        <thead>
-          <tr>
-            <th>ID de Horario</th>
-            <th>Fecha</th>
-            <th>Hora de Salida</th>
-            <th>Hora de Llegada</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {horarios.map((horario) => (
-            <tr key={horario.IDHorario}>
-              <td>{horario.IDHorario}</td>
-              <td>{horario.Fecha}</td>
-              <td>{horario.Hora_Salida}</td>
-              <td>{horario.Hora_Llegada}</td>
-              <td>
-                <button onClick={() => handleDelete(horario.IDHorario)}>
-                  Eliminar
-                </button>
-                <button onClick={() => handleEdit(horario.IDHorario)}>
-                  Editar
-                </button>
-              </td>
+        <div className={style.gestorHorarioBotonInsertar}>
+          <button
+            className={style.gestorHorarioBoton}
+            onClick={() => navigate("/PaginaInsertarHorarios")}
+          >
+            Insertar Horario
+          </button>
+        </div>
+        <h2 className={style.gestorHorarioTitulo}>Lista de Horarios</h2>
+        <table className={style.gestorHorarioTabla}>
+          <thead>
+            <tr>
+              <th>ID de Horario</th>
+              <th>Fecha</th>
+              <th>Hora de Salida</th>
+              <th>Hora de Llegada</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {horarios.map((horario) => (
+              <tr key={horario.IDHorario}>
+                <td>{horario.IDHorario}</td>
+                <td>{horario.Fecha}</td>
+                <td>{horario.Hora_Salida}</td>
+                <td>{horario.Hora_Llegada}</td>
+                <td>
+                  <button onClick={() => handleDelete(horario.IDHorario)}>
+                    Eliminar
+                  </button>
+                  <button onClick={() => handleEdit(horario.IDHorario)}>
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

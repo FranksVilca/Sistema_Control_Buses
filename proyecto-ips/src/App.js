@@ -20,6 +20,7 @@ import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
 import GestionarTurnos from "./Turno/ComponenteGestorTurnos";
 import PaginaInsertarTurno from "./Turno/PaginaInsertarTurno";
+import AsignarTurno from "./Turno/AsignarTurno";
 
 function App() {
   return (
@@ -70,6 +71,10 @@ function App() {
         <Route path="/Asistencia/:codigoTurno" element={<Asistencia />} />
         <Route path="/GestionarTurno" element={<GestionarTurnos />} />
         <Route path="/InsertarTurno" element={<PaginaInsertarTurno />} />
+        <Route
+          path="/asignarTurno/:codigoTurno/:numAsientos"
+          element={<AsignarTurno />}
+        />
       </Routes>
     </BrowserRouter>
   );

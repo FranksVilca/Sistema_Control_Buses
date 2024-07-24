@@ -419,6 +419,69 @@ app.post("/api/insertarTurno", (req, res) => {
   });
 });
 
+// Endpoint para asignar asistencia a los trabajadores
+app.post("/api/asistencia", async (req, res) => {
+  const { Codigo_Turno, Trabajadores, Num_Asientos } = req.body;
+
+  if (!Codigo_Turno || !Trabajadores || Trabajadores.length === 0) {
+    return res.status(400).json({ message: "Datos inválidos" });
+  }
+
+  if (Trabajadores.length < 1 || Trabajadores.length > Num_Asientos) {
+    return res.status(400).json({
+      message: `El número de trabajadores seleccionados debe ser entre 1 y ${Num_Asientos}.`,
+    });
+  }
+
+  try {
+    // Obtener el valor máximo de Codigo_Asistencia
+    const [rows] = await db
+      .promise()
+      .query("SELECT MAX(Codigo_Asistencia) AS maxId FROM Asistencia");
+    const maxId = rows[0].maxId ? rows[0].maxId : 0;
+    const newCodigoAsistencia = maxId + 1;
+
+    // Preparar los datos para insertar en la tabla Asistencia
+    const values = Trabajadores.map((codigoUsuario) => [
+      newCodigoAsistencia,
+      Codigo_Turno,
+      codigoUsuario,
+      true,
+    ]);
+
+    // Insertar los registros en la tabla Asistencia
+    await db
+      .promise()
+      .query(
+        "INSERT INTO Asistencia (Codigo_Asistencia, Codigo_Turno, Codigo_Usuario, Asistencia) VALUES ?",
+        [values]
+      );
+
+    res.status(200).json({ message: "Asistencia guardada exitosamente" });
+  } catch (error) {
+    console.error("Error al guardar la asistencia:", error);
+    res.status(500).json({ message: "Error al guardar la asistencia", error });
+  }
+});
+
+app.get("/api/usuarios", (req, res) => {
+  const cargo = req.query.cargo;
+  let query = "SELECT * FROM Usuario";
+  let params = [];
+
+  if (cargo) {
+    query += " WHERE Codigo_Cargo = ?";
+    params.push(cargo);
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      return handleError(res, err, "Error al obtener usuarios");
+    }
+    res.json(results);
+  });
+});
+
 app.get("/api/buses", (req, res) => {
   const sql = "SELECT IDBus, Placa, Num_Asientos FROM Bus";
   db.query(sql, (err, results) => {
