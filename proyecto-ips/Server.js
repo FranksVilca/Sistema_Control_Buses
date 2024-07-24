@@ -690,6 +690,16 @@ app.post("/api/ruta", (req, res) => {
   });
 });
 
+app.get("/api/turnos", (req, res) => {
+  db.query("SELECT * FROM vistaturnos", (err, results) => {
+    if (err) {
+      console.error("Error al obtener los turnos:", err);
+      return res.status(500).send("Error al obtener los turnos");
+    }
+    res.json(results);
+  });
+});
+
 //Conseguir el Maximo ID
 app.get("/api/rutas/max", (req, res) => {
   const query = "SELECT MAX(IDRuta) AS maxCodigoRuta FROM Ruta";
