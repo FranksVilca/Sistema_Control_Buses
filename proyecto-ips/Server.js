@@ -533,43 +533,25 @@ app.post("/api/insert/horario", (req, res) => {
   });
 });
 
-// Endpoint para asignar asistencia a los trabajadores
+// Endpoint para guardar asistencia
 app.post("/api/asistencia", async (req, res) => {
-  const { Codigo_Turno, Trabajadores, Num_Asientos } = req.body;
+  const { Codigo_Turno, Trabajadores } = req.body;
 
   if (!Codigo_Turno || !Trabajadores || Trabajadores.length === 0) {
     return res.status(400).json({ message: "Datos inválidos" });
   }
 
-  if (Trabajadores.length < 1 || Trabajadores.length > Num_Asientos) {
-    return res.status(400).json({
-      message: `El número de trabajadores seleccionados debe ser entre 1 y ${Num_Asientos}.`,
-    });
-  }
-
   try {
-    // Obtener el valor máximo de Codigo_Asistencia
-    const [rows] = await db
-      .promise()
-      .query("SELECT MAX(Codigo_Asistencia) AS maxId FROM Asistencia");
-    const maxId = rows[0].maxId ? rows[0].maxId : 0;
-    const newCodigoAsistencia = maxId + 1;
-
-    // Preparar los datos para insertar en la tabla Asistencia
+    // Insertar registros en la tabla Asistencia
+    const query =
+      "INSERT INTO Asistencia (Codigo_Turno, Codigo_Usuario, Asistencia) VALUES ?";
     const values = Trabajadores.map((codigoUsuario) => [
-      newCodigoAsistencia,
       Codigo_Turno,
       codigoUsuario,
-      true,
+      false,
     ]);
 
-    // Insertar los registros en la tabla Asistencia
-    await db
-      .promise()
-      .query(
-        "INSERT INTO Asistencia (Codigo_Asistencia, Codigo_Turno, Codigo_Usuario, Asistencia) VALUES ?",
-        [values]
-      );
+    await db.promise().query(query, [values]);
 
     res.status(200).json({ message: "Asistencia guardada exitosamente" });
   } catch (error) {
