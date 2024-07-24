@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import PropTypes from "prop-types";
 import style from './DashboardLogin.module.css';
-import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from 'react-google-recaptcha';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 const DashboardLogin = ({ className = "" }) => {
   const [captchavalido, cambiarcaptchavalido] = useState(null);
@@ -11,10 +11,10 @@ const DashboardLogin = ({ className = "" }) => {
   const [password, setPassword] = useState('');
   const captcha = useRef(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onChange = () => {
     if (captcha.current.getValue()) {
-      console.log("El captcha es válido");
       cambiarcaptchavalido(true);
     }
   };
@@ -31,16 +31,21 @@ const DashboardLogin = ({ className = "" }) => {
           body: JSON.stringify({ Nombre_Usuario: username, Contrasena: password })
         });
         const data = await response.json();
-        
-        console.log(data); // Para verificar qué datos se están recibiendo
 
         if (data.error) {
-          alert(data.error);
           cambiarusuariovalido(false);
+          alert(data.error);
         } else {
-          const { Codigo_Cargo, Codigo_Usuario } = data.user; // Asegúrate de que los datos están dentro de "user"
+          const { Codigo_Cargo, Codigo_Usuario, token } = data.user; // Asegúrate de que los datos están correctos
           if (Codigo_Cargo && Codigo_Usuario) {
-            localStorage.setItem('token', 'your-token-value'); // Puedes usar el token del servidor si lo devuelves
+            login(data.user);
+            if (document.getElementById('checkbox').checked) {
+              localStorage.setItem('token', token); // Usa el token del servidor
+              localStorage.setItem('user', JSON.stringify(data.user));
+            } else {
+              sessionStorage.setItem('token', token); // Usa el token del servidor
+              sessionStorage.setItem('user', JSON.stringify(data.user));
+            }
             redirectToPage(Codigo_Cargo, Codigo_Usuario);
           } else {
             alert('Error: Datos incompletos recibidos del servidor');
@@ -51,8 +56,6 @@ const DashboardLogin = ({ className = "" }) => {
         alert('An error occurred. Please try again.');
       }
     } else {
-      console.log('Por favor acepta el captcha');
-      cambiarusuariovalido(false);
       cambiarcaptchavalido(false);
     }
   };
@@ -110,7 +113,7 @@ const DashboardLogin = ({ className = "" }) => {
                 />
               </div>
               <div className={style.divCB}>
-                <input className={style.sino} type="checkbox" id="checkbox" value="Mantener tu cuenta iniciada" />
+                <input className={style.sino} type="checkbox" id="checkbox" />
                 <label htmlFor="checkbox">Mantener tu cuenta iniciada</label>
               </div>
               <div className={style.recaptcha}>
@@ -124,19 +127,13 @@ const DashboardLogin = ({ className = "" }) => {
               <button className={style.login} type="submit">LOGIN</button>
             </form>
             <div className={style.olvContraseña}>
-              <div className={style.dashboardloginitem}></div>
               <a className={style.a} href="url">Olvidaste tu contraseña?</a>
-              <div className={style.dashboardlogininner}></div>
             </div>
           </>
         }
       </div>
     </div>
   );
-};
-
-DashboardLogin.propTypes = {
-  className: PropTypes.string,
 };
 
 export default DashboardLogin;

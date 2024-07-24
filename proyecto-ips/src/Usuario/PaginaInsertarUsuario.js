@@ -386,7 +386,6 @@ const PaginaInsertarUsuario = () => {
               Cancelar
             </button>
             <button className={style.boton2} type="button" onClick={() => navigate("/GestionarUsuarios")}>Cancelar</button>
-
           </div>
         </form>
       </div>

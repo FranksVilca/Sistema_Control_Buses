@@ -1,6 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DashboardLogin from "./components/DashboardLogin";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './components/AuthContext'; 
+import DashboardLogin from './components/DashboardLogin'; 
 import ComponenteGestorUsuarios from "./Usuario/ComponenteGestorUsuarios";
 import PaginaInsertarUsuario from "./Usuario/PaginaInsertarUsuario";
 import ComponenteGestorBuses from "./Buses/ComponenteGestorBuses";
@@ -16,62 +17,182 @@ import PaginaEdicionHorarios from "./Horarios/PaginaEdicionHorario";
 import TrabajadorTurno from "./Turno/TrabajadorTurno";
 import TrabajadorPerfil from "./Perfiles/TrabajadorPerfil";
 import VistaAdmin from "./Vistas/VistaAdmin";
+import VistaChofer from "./Vistas/VistaChofer";
+import VistaUsuario from "./Vistas/VistaUsuario";
 import PaginaEdicionUsuario from "./Usuario/PaginaEdicionUsuario";
 import Asistencia from "./Asistencias/MarcarAsistencias";
 import GestionarTurnos from "./Turno/ComponenteGestorTurnos";
 import PaginaInsertarTurno from "./Turno/PaginaInsertarTurno";
 
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  if (!allowedRoles.includes(user.Codigo_Cargo)) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DashboardLogin />} />
-        <Route
-          path="/GestionarUsuarios"
-          element={<ComponenteGestorUsuarios />}
-        />
-        <Route path="/InsertarUsuario" element={<PaginaInsertarUsuario />} />
-        <Route
-          path="/editar/:codigoUsuario"
-          element={<PaginaEdicionUsuario />}
-        />
-        <Route path="/InsertarBus" element={<PaginaInsertarBuses />} />
-        <Route
-          path="/ComponenteGestorBuses"
-          element={<ComponenteGestorBuses />}
-        />
-
-        <Route path="/PaginaEdicionBus/:idBus" element={<PaginaEdicionBus />} />
-        <Route path="/PaginaInsertarRuta" element={<PaginaInsertarRuta />} />
-        <Route
-          path="/ComponenteGestorRuta"
-          element={<ComponenteGestorRuta />}
-        />
-        <Route path="/PaginaEdicionRuta/:idRuta" element={<PaginaEdicionRuta />} />
-        <Route
-          path="/PaginaInsertarHorarios"
-          element={<PaginaInsertarHorarios />}
-        />
-        <Route
-          path="/ComponenteGestorHorarios"
-          element={<ComponenteGestorHorarios />}
-        />
-        <Route
-          path="/PaginaEdicionHorarios/:idHorario"
-          element={<PaginaEdicionHorarios />}
-        />
-        <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
-        <Route
-          path="/TrabajadorPerfil/:codigo_usuario"
-          element={<TrabajadorPerfil />}
-        />
-        <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
-        <Route path="/VistaAdmin" element={<VistaAdmin />} />
-        <Route path="/Asistencia/:codigoTurno" element={<Asistencia />} />
-        <Route path="/GestionarTurno" element={<GestionarTurnos />} />
-        <Route path="/InsertarTurno" element={<PaginaInsertarTurno />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<DashboardLogin />} />
+          <Route
+            path="/GestionarUsuarios"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <ComponenteGestorUsuarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/InsertarUsuario"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaInsertarUsuario />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/InsertarBus"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaInsertarBuses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ComponenteGestorBuses"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <ComponenteGestorBuses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaginaEdicionBus/:idBus"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaEdicionBus />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaginaInsertarRuta"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaInsertarRuta />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ComponenteGestorRuta"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <ComponenteGestorRuta />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaginaEdicionRuta/:idRuta"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaEdicionRuta />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaginaInsertarHorarios"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaInsertarHorarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ComponenteGestorHorarios"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <ComponenteGestorHorarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaginaEdicionHorarios/:idHorario"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaEdicionHorarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
+          <Route
+            path="/editar/:codigo_usuario"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaEdicionUsuario />
+              </ProtectedRoute>
+            }
+          />
+         <Route
+            path="/VistaAdmin/:codigoUsuario"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <VistaAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/TrabajadorRuta" element={<TrabajadorRuta />} />
+          <Route
+            path="/GestionarTurno"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <GestionarTurnos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/InsertarTurno"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <PaginaInsertarTurno />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Asistencia/:codigoTurno"
+            element={
+              <ProtectedRoute allowedRoles={[2]}>
+                <Asistencia />
+              </ProtectedRoute>
+            }
+          />
+         <Route
+            path="/VistaChofer/:codigoUsuario"
+            element={
+              <ProtectedRoute allowedRoles={[2]}>
+                <VistaChofer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/VistaUsuario/:codigoUsuario"
+            element={
+              <ProtectedRoute allowedRoles={[3]}>
+                <VistaUsuario />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
