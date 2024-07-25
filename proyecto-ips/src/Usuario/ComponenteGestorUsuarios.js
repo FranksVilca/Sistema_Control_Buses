@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './ComponenteGestorUsuario.module.css';
+import style from "./ComponenteGestorUsuario.module.css";
 
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -56,62 +56,100 @@ const ComponenteGestorUsuarios = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorUsuarios}>
-      <div className={style.gestorUsuariosBotonInsertar}>
-      <button className={style.gestorUsuariosBoton} onClick={() => navigate("/InsertarUsuario")}>
-        Insertar Usuario
-      </button>
-      </div>
-      <h2 className={style.gestorUsuariosTitulo}>Lista de Usuarios</h2>
-      <table className={style.gestorUsuariosTabla}>
-        <thead>
-          <tr>
-            <th>Código de Usuario</th>
-            <th>Nombre</th>
-            <th>Nombre de Usuario</th>
-            <th>DNI</th>
-            <th>Código de Cargo</th>
-            <th>Edad</th>
-            <th>Sexo</th>
-            <th>Celular</th>
-            <th>Email</th>
-            <th>Dirección</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.map((usuario) => (
-            <tr key={usuario.Codigo_Usuario}>
-              <td>{usuario.Codigo_Usuario}</td>
-              <td>{usuario.Nombre}</td>
-              <td>{usuario.Nombre_Usuario}</td>
-              <td>{usuario.DNI}</td>
-              <td>{usuario.Codigo_Cargo}</td>
-              <td>{usuario.Edad}</td>
-              <td>{renderSexo(usuario.Sexo)}</td>
-              <td>{usuario.Celular}</td>
-              <td>{usuario.Email}</td>
-              <td>{usuario.Direccion}</td>
-              <td>
-                <button onClick={() => handleDelete(usuario.Codigo_Usuario)}>
-                  Eliminar
-                </button>
-                <button onClick={() => handleEdit(usuario.Codigo_Usuario)}>
-                  Editar
-                </button>
-              </td>
+        <div className={style.gestorUsuariosBotonInsertar}>
+          <button
+            className={style.gestorUsuariosBoton}
+            onClick={() => navigate("/InsertarUsuario")}
+          >
+            Insertar Usuario
+          </button>
+        </div>
+        <h2 className={style.gestorUsuariosTitulo}>Lista de Usuarios</h2>
+        <table className={style.gestorUsuariosTabla}>
+          <thead>
+            <tr>
+              <th>Código de Usuario</th>
+              <th>Nombre</th>
+              <th>Nombre de Usuario</th>
+              <th>DNI</th>
+              <th>Código de Cargo</th>
+              <th>Edad</th>
+              <th>Sexo</th>
+              <th>Celular</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {usuarios.map((usuario) => (
+              <tr key={usuario.Codigo_Usuario}>
+                <td>{usuario.Codigo_Usuario}</td>
+                <td>{usuario.Nombre}</td>
+                <td>{usuario.Nombre_Usuario}</td>
+                <td>{usuario.DNI}</td>
+                <td>{usuario.Codigo_Cargo}</td>
+                <td>{usuario.Edad}</td>
+                <td>{renderSexo(usuario.Sexo)}</td>
+                <td>{usuario.Celular}</td>
+                <td>{usuario.Email}</td>
+                <td>{usuario.Direccion}</td>
+                <td>
+                  <button onClick={() => handleDelete(usuario.Codigo_Usuario)}>
+                    Eliminar
+                  </button>
+                  <button onClick={() => handleEdit(usuario.Codigo_Usuario)}>
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

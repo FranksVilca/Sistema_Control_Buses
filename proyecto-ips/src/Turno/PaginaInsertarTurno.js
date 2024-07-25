@@ -84,27 +84,42 @@ const PaginaInsertarTurno = () => {
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
                 Horario
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
                 Bus
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
                 Ruta
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
                 Crear Turno
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
                 Crear Usuario
               </a>
             </li>

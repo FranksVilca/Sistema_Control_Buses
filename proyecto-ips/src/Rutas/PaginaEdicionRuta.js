@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import style from './PaginaEdicionRuta.module.css';
+import style from "./PaginaEdicionRuta.module.css";
 
 const PaginaEdicionRuta = () => {
   const { idRuta } = useParams(); // Extraer el parámetro de la URL
@@ -48,16 +48,13 @@ const PaginaEdicionRuta = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/ruta/${idRuta}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(ruta),
-        }
-      );
+      const response = await fetch(`http://localhost:3001/api/ruta/${idRuta}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ruta),
+      });
       if (!response.ok) {
         throw new Error("Error al actualizar la ruta");
       }
@@ -77,11 +74,46 @@ const PaginaEdicionRuta = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
@@ -113,8 +145,16 @@ const PaginaEdicionRuta = () => {
             </label>
           </div>
           <div className={style.botones}>
-            <button className={style.boton1} type="submit">Actualizar</button>
-            <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorRuta")}>Cancelar</button>
+            <button className={style.boton1} type="submit">
+              Actualizar
+            </button>
+            <button
+              className={style.boton2}
+              type="button"
+              onClick={() => navigate("/ComponenteGestorRuta")}
+            >
+              Cancelar
+            </button>
           </div>
         </form>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './PaginaInsertarHorario.module.css';
+import style from "./PaginaInsertarHorario.module.css";
 
 const PaginaInsertarHorario = () => {
   const [horario, setHorario] = useState({
@@ -52,54 +52,100 @@ const PaginaInsertarHorario = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.insertarHorario}>
-      <form className={style.formInsertarHorario} onSubmit={handleSubmit}>
-      <h2 className={style.titulo}>Insertar Nuevo Horario</h2>
-      <div className={style.campos}>
-        <label className={style.label1}>
-          Fecha:
-          <input className={style.input}
-            type="date"
-            name="Fecha"
-            value={horario.Fecha}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Hora de Salida:
-          <input className={style.input}
-            type="time"
-            name="Hora_Salida"
-            value={horario.Hora_Salida}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Hora de Llegada:
-          <input className={style.input}
-            type="time"
-            name="Hora_Llegada"
-            value={horario.Hora_Llegada}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        </div>
-        <div className={style.botones}>
-        <button className={style.boton1} type="submit">Insertar</button>
-        <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorHorarios")}>Cancelar</button>
-        </div>
-      </form>
+        <form className={style.formInsertarHorario} onSubmit={handleSubmit}>
+          <h2 className={style.titulo}>Insertar Nuevo Horario</h2>
+          <div className={style.campos}>
+            <label className={style.label1}>
+              Fecha:
+              <input
+                className={style.input}
+                type="date"
+                name="Fecha"
+                value={horario.Fecha}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Hora de Salida:
+              <input
+                className={style.input}
+                type="time"
+                name="Hora_Salida"
+                value={horario.Hora_Salida}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Hora de Llegada:
+              <input
+                className={style.input}
+                type="time"
+                name="Hora_Llegada"
+                value={horario.Hora_Llegada}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+          </div>
+          <div className={style.botones}>
+            <button className={style.boton1} type="submit">
+              Insertar
+            </button>
+            <button
+              className={style.boton2}
+              type="button"
+              onClick={() => navigate("/ComponenteGestorHorarios")}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
