@@ -728,3 +728,16 @@ app.delete("/api/ruta/:IDRuta", (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+// Obtener todas los conductores
+app.get("/api/conductores", (req, res) => {
+  const sql = "SELECT * FROM usuario where Codigo_Cargo=3";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching conductores:", err);
+      res.status(500).send("Error fetching conductores");
+      return;
+    }
+    res.json(results);
+  });
+});
