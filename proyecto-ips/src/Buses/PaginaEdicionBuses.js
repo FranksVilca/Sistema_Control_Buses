@@ -11,7 +11,11 @@ const PaginaEdicionBus = () => {
     Marca: "",
     Placa: "",
   });
-  const [estados, setEstados] = useState(["Activo", "Inactivo", "Mantenimiento"]); // Ejemplo de estados
+  const [estados, setEstados] = useState([
+    "Activo",
+    "Inactivo",
+    "Mantenimiento",
+  ]); // Ejemplo de estados
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,11 +85,46 @@ const PaginaEdicionBus = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
@@ -154,7 +193,11 @@ const PaginaEdicionBus = () => {
           <button className={style.boton} type="submit">
             Actualizar Bus
           </button>
-          <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorBuses")}>
+          <button
+            className={style.boton2}
+            type="button"
+            onClick={() => navigate("/ComponenteGestorBuses")}
+          >
             Cancelar
           </button>
         </form>

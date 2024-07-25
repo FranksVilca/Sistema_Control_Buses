@@ -82,10 +82,18 @@ const VistaAdmin = ({ className = "" }) => {
             <h3>Horario</h3>
             <p>Para crear es necesario: Dia, Fecha y Hora</p>
             <div className={style.botones}>
-              <button className={style.crear} type="submit">
+              <button
+                className={style.crear}
+                type="submit"
+                onClick={() => navigate("/PaginaInsertarHorarios")}
+              >
                 Crear
               </button>
-              <button className={style.gestionar} type="submit">
+              <button
+                className={style.gestionar}
+                type="submit"
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
                 Gestionar
               </button>
             </div>
@@ -97,10 +105,18 @@ const VistaAdmin = ({ className = "" }) => {
             <h3>Ruta</h3>
             <p>Para crear es necesario: Lugar de Partida, Lugar de Llegada</p>
             <div className={style.botones}>
-              <button className={style.crear} type="submit">
+              <button
+                className={style.crear}
+                type="submit"
+                onClick={() => navigate("/PaginaInsertarRuta")}
+              >
                 Crear
               </button>
-              <button className={style.gestionar} type="submit">
+              <button
+                className={style.gestionar}
+                type="submit"
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
                 Gestionar
               </button>
             </div>
@@ -112,10 +128,18 @@ const VistaAdmin = ({ className = "" }) => {
             <h3>Bus</h3>
             <p>Para crear es necesario: Modelo, Matricula</p>
             <div className={style.botones}>
-              <button className={style.crear} type="submit">
+              <button
+                className={style.crear}
+                type="submit"
+                onClick={() => navigate("/InsertarBus")}
+              >
                 Crear
               </button>
-              <button className={style.gestionar} type="submit">
+              <button
+                className={style.gestionar}
+                type="submit"
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
                 Gestionar
               </button>
             </div>

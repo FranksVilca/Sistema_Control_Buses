@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './ComponenteGestorBuses.module.css';
+import style from "./ComponenteGestorBuses.module.css";
 
 const ComponenteGestorBuses = () => {
   const [buses, setBuses] = useState([]);
@@ -51,17 +51,55 @@ const ComponenteGestorBuses = () => {
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
-            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear Turno
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear Usuario
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorBus}>
         <div className={style.gestorBusBotonInsertar}>
-          <button className={style.gestorBusBoton} onClick={() => navigate("/InsertarBus")}>
+          <button
+            className={style.gestorBusBoton}
+            onClick={() => navigate("/InsertarBus")}
+          >
             Insertar Bus
           </button>
         </div>
@@ -88,10 +126,16 @@ const ComponenteGestorBuses = () => {
                 <td>{bus.Marca}</td>
                 <td>{bus.Placa}</td>
                 <td>
-                  <button className={style.botonEliminar} onClick={() => handleDelete(bus.IDBus)}>
+                  <button
+                    className={style.botonEliminar}
+                    onClick={() => handleDelete(bus.IDBus)}
+                  >
                     Eliminar
                   </button>
-                  <button className={style.botonEditar} onClick={() => handleEdit(bus.IDBus)}>
+                  <button
+                    className={style.botonEditar}
+                    onClick={() => handleEdit(bus.IDBus)}
+                  >
                     Editar
                   </button>
                 </td>
