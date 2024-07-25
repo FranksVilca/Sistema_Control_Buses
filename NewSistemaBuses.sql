@@ -54,7 +54,7 @@ CREATE TABLE Horario (
 CREATE TABLE Bus (
     IDBus INT PRIMARY KEY,
     Num_Asientos INT,
-    EstadoRegistro VARCHAR(1),
+    EstadoRegistro VARCHAR(16),
     Modelo VARCHAR(100),
     Marca VARCHAR(100),
     Placa VARCHAR(10)
