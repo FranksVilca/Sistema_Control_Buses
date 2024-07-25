@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom'; // Importa useParams para acceder a parámetros de URL
+import { useParams,useNavigate } from 'react-router-dom'; // Importa useParams para acceder a parámetros de URL
+import style from "./MarcarAsistencias.module.css";
+
 
 const Asistencia = () => {
     const [turnos, setTurnos] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { codigoTurno } = useParams(); // Obtiene codigoTurno de la URL
-    
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchAsistencias = async () => {
             console.log('Fetching asistencias for codigoTurno:', codigoTurno); // Log del código del turno
@@ -65,17 +68,40 @@ const Asistencia = () => {
             setError(err);
         }
     };
+    const handleLogoClick = () => {
+        navigate("/VistaChofer/${Codigo_Usuario}");
+      };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading data: {error.message}</p>;
 
     return (
-        <div>
-            <h1>Asistencias</h1>
+        <div className={style.fondo}>
+      <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
+        <nav className={style.nav}>
+          <ul className={style.ul}>
+            <li className={style.li}>
+              <a className={style.aopciones}
+              onClick={() => navigate("/Asistencia/1")}>
+                Marcar Asistencia
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear}
+              onClick={() => navigate("/")}>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <div className={style.gestorBus}>
+            <h1 className={style.gestorBusTitulo}>Asistencias</h1>
             {Object.entries(turnos).map(([turno, asistencias]) => (
                 <div key={turno}>
                     <h2>Turno: {turno}</h2>
-                    <table>
+                    <table className={style.gestorBusTabla}>
                         <thead>
                             <tr>
                                 <th>ID Usuario</th>
@@ -105,6 +131,7 @@ const Asistencia = () => {
                     </table>
                 </div>
             ))}
+        </div>
         </div>
     );
 };

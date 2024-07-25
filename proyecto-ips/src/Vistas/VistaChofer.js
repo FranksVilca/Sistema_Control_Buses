@@ -18,7 +18,7 @@ const VistaChofer = ({ className = "" }) => {
           <ul className={style.ul}>
             <li className={style.li}>
               <a className={style.aopciones}
-              onClick={() => navigate("/")}>
+              onClick={() => navigate("/Asistencia/1")}>
                 Marcar Asistencia
               </a>
             </li>
@@ -39,7 +39,8 @@ const VistaChofer = ({ className = "" }) => {
           <div className={style.opcion11}>
             <h3>Marcar Asistencia</h3>
             <div className={style.botones}>
-              <button className={style.gestionar} type="submit">
+              <button className={style.gestionar} type="submit"
+              onClick={() => navigate("/Asistencia/1")}>
                 Marcar
               </button>
             </div>

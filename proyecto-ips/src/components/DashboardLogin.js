@@ -66,10 +66,10 @@ const DashboardLogin = ({ className = "" }) => {
         navigate(`/VistaAdmin/${Codigo_Usuario}` , { state: { Codigo_Usuario } });
         break;
       case 2:
-        navigate(`/VistaChofer/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
+        navigate(`/VistaUsuario/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
         break;
       case 3:
-        navigate(`/VistaUsuario/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
+        navigate(`/VistaChofer/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
         break;
       default:
         alert('Código de cargo no reconocido');
