@@ -214,6 +214,47 @@ app.put("/api/update/:codigoUsuario", async (req, res) => {
   }
 });
 
+const getNextTurnoCodigo = (callback) => {
+  const sql = "SELECT MAX(Codigo_Turno) AS maxCodigoTurno FROM Turno";
+  db.query(sql, (err, results) => {
+    if (err) {
+      return callback(err, null);
+    }
+    const maxCodigoTurno = results[0].maxCodigoTurno || 0;
+    const nextCodigoTurno = maxCodigoTurno + 1;
+    callback(null, nextCodigoTurno);
+  });
+};
+
+app.post("/api/insertarTurno", (req, res) => {
+  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
+
+  getNextTurnoCodigo((err, nextCodigoTurno) => {
+    if (err) {
+      console.error("Error al obtener el siguiente código de turno:", err);
+      return res
+        .status(500)
+        .send("Error al obtener el siguiente código de turno");
+    }
+
+    const sql =
+      "INSERT INTO Turno (Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer) VALUES (?, ?, ?, ?, ?)";
+
+    db.query(
+      sql,
+      [nextCodigoTurno, IDRuta, IDHorario, IDBus, IDChofer],
+      (err, result) => {
+        if (err) {
+          console.error("Error al insertar el turno:", err);
+          return res.status(500).send("Error al insertar el turno");
+        }
+
+        res.send("Turno insertado exitosamente");
+      }
+    );
+  });
+});
+
 // Ruta para eliminar un usuario por su código
 app.delete("/api/delete/:codigoUsuario", (req, res) => {
   const codigoUsuario = req.params.codigoUsuario;
@@ -679,47 +720,6 @@ app.get("/api/turnos", (req, res) => {
       return res.status(500).send("Error al obtener los turnos");
     }
     res.json(results);
-  });
-});
-
-const getNextTurnoCodigo = (callback) => {
-  const sql = "SELECT MAX(Codigo_Turno) AS maxCodigoTurno FROM Turno";
-  db.query(sql, (err, results) => {
-    if (err) {
-      return callback(err, null);
-    }
-    const maxCodigoTurno = results[0].maxCodigoTurno || 0;
-    const nextCodigoTurno = maxCodigoTurno + 1;
-    callback(null, nextCodigoTurno);
-  });
-};
-
-app.post("/api/insertarTurno", (req, res) => {
-  const { IDRuta, IDHorario, IDBus, IDChofer } = req.body;
-
-  getNextTurnoCodigo((err, nextCodigoTurno) => {
-    if (err) {
-      console.error("Error al obtener el siguiente código de turno:", err);
-      return res
-        .status(500)
-        .send("Error al obtener el siguiente código de turno");
-    }
-
-    const sql =
-      "INSERT INTO Turno (Codigo_Turno, IDRuta, IDHorario, IDBus, IDChofer) VALUES (?, ?, ?, ?, ?)";
-
-    db.query(
-      sql,
-      [nextCodigoTurno, IDRuta, IDHorario, IDBus, IDChofer],
-      (err, result) => {
-        if (err) {
-          console.error("Error al insertar el turno:", err);
-          return res.status(500).send("Error al insertar el turno");
-        }
-
-        res.send("Turno insertado exitosamente");
-      }
-    );
   });
 });
 
