@@ -1,36 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import style from "./VistaAdmin.module.css";
+import style from "./VistaChofer.module.css";
+import { useNavigate } from "react-router-dom";
 
-const VistaAdmin = ({ className = "" }) => {
+const VistaChofer = ({ className = "" }) => {
+  const navigate = useNavigate();
   return (
     <div className={style.fondo}>
       <header className={style.header}>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
-                Horario
+              <a className={style.aopciones}
+              onClick={() => navigate("/")}>
+                Marcar Asistencia
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
-                Bus
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.aopciones} href="#">
-                Ruta
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Turno
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Usuario
+              <a className={style.acrear}
+              onClick={() => navigate("/")}>
+                Logout
               </a>
             </li>
           </ul>
@@ -39,18 +28,6 @@ const VistaAdmin = ({ className = "" }) => {
       <div className={style.container}>
         <div className={style.titulo}>
           <h1 className={style.tit}>Bienvenido Chofer</h1>
-          <p className={style.subtit}>
-            <strong>Crear un Turno Nuevo:</strong> Requiere de los elementos de
-            abajo
-          </p>
-          <div className={style.botones}>
-            <button className={style.crear} type="submit">
-              Crear Turno
-            </button>
-            <button className={style.crear} type="submit">
-              Crear Usuario
-            </button>
-          </div>
         </div>
         <div className={style.opcion1}>
           <div className={style.opcion11}>
@@ -68,8 +45,8 @@ const VistaAdmin = ({ className = "" }) => {
   );
 };
 
-VistaAdmin.propTypes = {
+VistaChofer.propTypes = {
   className: PropTypes.string,
 };
 
-export default VistaAdmin;
+export default VistaChofer;

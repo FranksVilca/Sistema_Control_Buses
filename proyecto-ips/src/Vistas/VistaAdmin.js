@@ -56,26 +56,6 @@ const VistaAdmin = ({ className = "" }) => {
       <div className={style.container}>
         <div className={style.titulo}>
           <h1 className={style.tit}>Bienvenido Administrador</h1>
-          <p className={style.subtit}>
-            <strong>Crear un Turno Nuevo:</strong> Requiere de los elementos de
-            abajo
-          </p>
-          <div className={style.botones}>
-            <button
-              className={style.crear}
-              type="submit"
-              onClick={() => navigate("/InsertarTurno")}
-            >
-              Crear Turno
-            </button>
-            <button
-              className={style.crear}
-              type="submit"
-              onClick={() => navigate("/InsertarUsuario")}
-            >
-              Crear Usuario
-            </button>
-          </div>
         </div>
         <div className={style.opcion1}>
           <div className={style.opcion11}>
@@ -124,7 +104,7 @@ const VistaAdmin = ({ className = "" }) => {
           <div className={style.imgrutas}></div>
         </div>
         <div className={style.opcion3}>
-          <div className={style.opcion21}>
+          <div className={style.opcion31}>
             <h3>Bus</h3>
             <p>Para crear es necesario: Modelo, Matricula</p>
             <div className={style.botones}>
@@ -139,6 +119,52 @@ const VistaAdmin = ({ className = "" }) => {
                 className={style.gestionar}
                 type="submit"
                 onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Gestionar
+              </button>
+            </div>
+          </div>
+          <div className={style.imgbuses}></div>
+        </div>
+        <div className={style.opcion4}>
+          <div className={style.opcion41}>
+            <h3>Usuarios</h3>
+            <p>Puede crear y visualizar a todos los usuarios</p>
+            <div className={style.botones}>
+              <button
+                className={style.crear}
+                type="submit"
+                onClick={() => navigate("/InsertarUsuario")}
+              >
+                Crear
+              </button>
+              <button
+                className={style.gestionar}
+                type="submit"
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Gestionar
+              </button>
+            </div>
+          </div>
+          <div className={style.imgbuses}></div>
+        </div>
+        <div className={style.opcion5}>
+          <div className={style.opcion51}>
+            <h3>Turno</h3>
+            <p>Puede crear y visualizar a todos los usuarios</p>
+            <div className={style.botones}>
+              <button
+                className={style.crear}
+                type="submit"
+                onClick={() => navigate("/InsertarTurno")}
+              >
+                Crear
+              </button>
+              <button
+                className={style.gestionar}
+                type="submit"
+                onClick={() => navigate("/GestionarTurno")}
               >
                 Gestionar
               </button>

@@ -56,10 +56,11 @@ const PaginaInsertarRuta = () => {
         if (!response.ok) {
           throw new Error("Error al insertar la ruta");
         }
-        alert("Ruta insertada exitosamente");
-        navigate("/GestionarRutas");
+        alert(`Ruta insertada exitosamente`);
+        navigate("/ComponenteGestorRuta");
       }
     } catch (error) {
+      alert(`Error al insertar el ruta: ${error.message}`);
       console.error("Error al insertar la ruta:", error);
     }
   };

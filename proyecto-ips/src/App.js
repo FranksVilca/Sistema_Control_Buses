@@ -134,6 +134,7 @@ function App() {
             }
           />
           <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
+          <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
           <Route
             path="/editar/:codigo_usuario"
             element={

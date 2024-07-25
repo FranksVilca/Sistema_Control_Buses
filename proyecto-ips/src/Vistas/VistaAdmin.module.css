@@ -126,7 +126,7 @@
     border-color: rgb(218, 218, 218);
     color: black;
 }
-.opcion1,.opcion3{
+.opcion1,.opcion3,.opcion5{
 display: flex;
 flex-direction: row;
 align-items:center;
@@ -134,7 +134,7 @@ justify-content:space-between;
 width: 100%;
 margin-top: 30px;
 }
-.opcion2{
+.opcion2,.opcion4{
     display: flex;
     flex-direction:row-reverse;
     align-items:center;
@@ -168,7 +168,7 @@ margin-top: 30px;
     margin-right: 50px;
     border-radius: 10px;
 }
-.opcion11,.opcion31{
+.opcion11,.opcion31,.opcion51{
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -176,7 +176,7 @@ margin-top: 30px;
     margin-left: 50px;
     margin-right: 50px;
 }
-.opcion21{
+.opcion21,.opcion41{
     display: flex;
     flex-direction: column;
     justify-content: left;

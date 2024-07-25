@@ -37,6 +37,7 @@ const PaginaInsertarBus = () => {
       alert("Bus insertado exitosamente");
       navigate("/ComponenteGestorBuses");
     } catch (error) {
+      alert(`Error al insertar el bus: ${error.message}`);
       console.error("Error al insertar el bus:", error);
     }
   };

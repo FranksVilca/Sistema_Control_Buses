@@ -79,9 +79,9 @@ body {
 }
 
 .aopciones {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: medium;
-  display: block;
+  display: block; 
   color: #fff;
   text-decoration: none;
   width: 150px;
@@ -89,7 +89,8 @@ body {
   margin: 10px;
   border-radius: 10px;
   padding: 5px 0px;
-  background-color: #333; /* Adjust as needed */
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .aopciones:hover {

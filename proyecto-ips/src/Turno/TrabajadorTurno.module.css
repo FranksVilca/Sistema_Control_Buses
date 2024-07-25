@@ -33,15 +33,19 @@ body {
 }
 
 .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
     float: right;
-}
-
-.ul {
+    margin-right: 30px;
+  }
+  .ul{
     list-style: none;
     overflow: hidden;
     display: flex;
+    justify-content: end;
     min-width: 500px;
-}
+  }
 
 .li {
     float: left;
