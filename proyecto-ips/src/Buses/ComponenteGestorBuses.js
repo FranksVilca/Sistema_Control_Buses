@@ -5,7 +5,9 @@ import style from "./ComponenteGestorBuses.module.css";
 const ComponenteGestorBuses = () => {
   const [buses, setBuses] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetchBuses();
   }, []);
@@ -49,6 +51,7 @@ const ComponenteGestorBuses = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>

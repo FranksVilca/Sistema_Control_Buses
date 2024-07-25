@@ -12,7 +12,9 @@ const PaginaInsertarBus = () => {
   });
 
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBus((prevState) => ({
@@ -45,6 +47,8 @@ const PaginaInsertarBus = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
+
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>

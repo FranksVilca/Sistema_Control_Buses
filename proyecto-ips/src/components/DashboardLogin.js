@@ -63,13 +63,13 @@ const DashboardLogin = ({ className = "" }) => {
   const redirectToPage = (Codigo_Cargo, Codigo_Usuario) => {
     switch (Codigo_Cargo) {
       case 1:
-        navigate(`/VistaAdmin/${Codigo_Usuario}`);
+        navigate(`/VistaAdmin/${Codigo_Usuario}` , { state: { Codigo_Usuario } });
         break;
       case 2:
-        navigate(`/VistaChofer/${Codigo_Usuario}`);
+        navigate(`/VistaChofer/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
         break;
       case 3:
-        navigate(`/VistaUsuario/${Codigo_Usuario}`);
+        navigate(`/VistaUsuario/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
         break;
       default:
         alert('Código de cargo no reconocido');

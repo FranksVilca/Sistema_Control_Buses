@@ -1,13 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import style from "./VistaAdmin.module.css";
-import { useNavigate } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 
 const VistaAdmin = ({ className = "" }) => {
+  const { Codigo_Usuario } = useParams();
   const navigate = useNavigate();
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
+
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
@@ -147,7 +154,7 @@ const VistaAdmin = ({ className = "" }) => {
               </button>
             </div>
           </div>
-          <div className={style.imgbuses}></div>
+          <div className={style.imgusuario}></div>
         </div>
         <div className={style.opcion5}>
           <div className={style.opcion51}>
@@ -170,7 +177,7 @@ const VistaAdmin = ({ className = "" }) => {
               </button>
             </div>
           </div>
-          <div className={style.imgbuses}></div>
+          <div className={style.imgturno}></div>
         </div>
       </div>
     </div>

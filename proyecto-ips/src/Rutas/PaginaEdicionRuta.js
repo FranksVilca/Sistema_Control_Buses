@@ -9,7 +9,9 @@ const PaginaEdicionRuta = () => {
     PuntoLlegada: "",
   });
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     console.log("ID Ruta:", idRuta); // Verificar el valor de idRuta
 
@@ -72,6 +74,7 @@ const PaginaEdicionRuta = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>

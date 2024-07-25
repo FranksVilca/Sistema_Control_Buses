@@ -10,7 +10,9 @@ const PaginaInsertarHorario = () => {
   });
 
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setHorario((prevState) => ({
@@ -50,6 +52,7 @@ const PaginaInsertarHorario = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
