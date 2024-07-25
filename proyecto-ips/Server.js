@@ -7,6 +7,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 3001;
+const bcrypt = require('bcryptjs');
 
 // Configura el middleware cors para permitir solicitudes desde http://localhost:3000
 app.use(
@@ -100,6 +101,9 @@ app.post("/api/insert", upload.single("img"), async (req, res) => {
   try {
     await validateUser(nuevoUsuario);
 
+    // Cifrar la contraseña
+    const hashedPassword = await bcrypt.hash(nuevoUsuario.Contrasena, 10);
+
     const query = `INSERT INTO Usuario (
       Codigo_Usuario,
       Nombre,
@@ -122,7 +126,7 @@ app.post("/api/insert", upload.single("img"), async (req, res) => {
         nuevoUsuario.Codigo_Usuario,
         nuevoUsuario.Nombre,
         nuevoUsuario.Nombre_Usuario,
-        nuevoUsuario.Contrasena,
+        hashedPassword, // Usa la contraseña cifrada
         nuevoUsuario.DNI,
         nuevoUsuario.Codigo_Cargo,
         nuevoUsuario.Edad,
@@ -170,6 +174,11 @@ app.put("/api/update/:codigoUsuario", async (req, res) => {
 
   try {
     await validateUser(updatedUser);
+
+    // Cifrar la contraseña si es necesario
+    if (updatedUser.Contrasena) {
+      updatedUser.Contrasena = await hashPassword(updatedUser.Contrasena);
+    }
 
     const query = `UPDATE Usuario SET 
       Nombre = ?, 
@@ -334,7 +343,7 @@ app.put("/api/Asistencia/:codigoAsistencia", (req, res) => {
 });
 
 // Revisar Usuario
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { Nombre_Usuario, Contrasena } = req.body;
   if (!Nombre_Usuario || !Contrasena) {
     return res
@@ -343,9 +352,9 @@ app.post("/api/login", (req, res) => {
   }
 
   db.query(
-    "SELECT * FROM Usuario WHERE Nombre_Usuario = ? AND Contrasena = ?",
-    [Nombre_Usuario, Contrasena],
-    (err, results) => {
+    "SELECT * FROM Usuario WHERE Nombre_Usuario = ?",
+    [Nombre_Usuario],
+    async (err, results) => {
       if (err) {
         console.error("Error de base de datos:", err);
         return res.status(500).json({ error: "Error interno del servidor" });
@@ -357,9 +366,19 @@ app.post("/api/login", (req, res) => {
           .json({ error: "Nombre de usuario o contraseña incorrectos" });
       }
 
+      const user = results[0];
+      // Comparar la contraseña proporcionada con la almacenada
+      const isMatch = await bcrypt.compare(Contrasena, user.Contrasena);
+
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ error: "Nombre de usuario o contraseña incorrectos" });
+      }
+
       res
         .status(200)
-        .json({ message: "Inicio de sesión exitoso", user: results[0] });
+        .json({ message: "Inicio de sesión exitoso", user });
     }
   );
 });

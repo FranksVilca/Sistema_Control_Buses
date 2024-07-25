@@ -203,6 +203,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/TrabajadorPerfil/:codigoUsuario"
+            element={
+                <TrabajadorPerfil />
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
