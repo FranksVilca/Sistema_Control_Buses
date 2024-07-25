@@ -61,13 +61,17 @@ const VistaAdmin = ({ className = "" }) => {
             abajo
           </p>
           <div className={style.botones}>
-            <button className={style.crear} type="submit">
+            <button
+              className={style.crear}
+              type="submit"
+              onClick={() => navigate("/InsertarTurno")}
+            >
               Crear Turno
             </button>
             <button
               className={style.crear}
               type="submit"
-              onClick={() => navigate("/GestionarUsuarios")}
+              onClick={() => navigate("/InsertarUsuario")}
             >
               Crear Usuario
             </button>
