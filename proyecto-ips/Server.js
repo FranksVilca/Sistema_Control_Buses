@@ -886,3 +886,18 @@ app.delete("/api/turno/:Codigo_Turno", (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+// Endpoint para obtener turnos filtrados por Codigo_Usuario
+app.get("/api/turnos/:Codigo_Usuario", (req, res) => {
+  const { Codigo_Usuario } = req.params;
+  const sql = "SELECT * FROM Turno WHERE IDChofer = ?";
+  db.query(sql, [Codigo_Usuario], (err, results) => {
+    if (err) {
+      console.error("Error fetching turnos:", err);
+      res.status(500).send("Error fetching turnos");
+      return;
+    }
+    res.json(results);
+  });
+});
+

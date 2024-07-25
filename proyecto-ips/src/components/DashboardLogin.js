@@ -46,6 +46,7 @@ const DashboardLogin = ({ className = "" }) => {
               sessionStorage.setItem('token', token); // Usa el token del servidor
               sessionStorage.setItem('user', JSON.stringify(data.user));
             }
+            localStorage.setItem('IDUSER', Codigo_Usuario);
             redirectToPage(Codigo_Cargo, Codigo_Usuario);
           } else {
             alert('Error: Datos incompletos recibidos del servidor');

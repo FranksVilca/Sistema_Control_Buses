@@ -8,7 +8,7 @@ const Asistencia = () => {
     const [turnos, setTurnos] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { codigoTurno } = useParams(); // Obtiene codigoTurno de la URL
+    const { codigoTurno } = useParams(); 
     const navigate = useNavigate();
 
     useEffect(() => {
