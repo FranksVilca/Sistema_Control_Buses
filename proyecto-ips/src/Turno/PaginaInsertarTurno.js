@@ -14,7 +14,9 @@ const PaginaInsertarTurno = () => {
   const [rutas, setRutas] = useState([]);
   const [conductores, setConductores] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetch(`http://localhost:3001/api/buses`)
       .then((response) => response.json())
@@ -86,6 +88,8 @@ const PaginaInsertarTurno = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>

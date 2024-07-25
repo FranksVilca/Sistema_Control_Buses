@@ -5,7 +5,9 @@ import style from "./ComponenteGestorUsuario.module.css";
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -54,6 +56,7 @@ const ComponenteGestorUsuarios = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>

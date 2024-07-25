@@ -19,7 +19,9 @@ const PaginaEdicionUsuario = () => {
   });
   const [cargos, setCargos] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetch(`http://localhost:3001/api/data/${codigoUsuario}`)
       .then((response) => {
@@ -107,6 +109,7 @@ const PaginaEdicionUsuario = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+      <div className={style.logoairova} onClick={handleLogoClick}></div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
