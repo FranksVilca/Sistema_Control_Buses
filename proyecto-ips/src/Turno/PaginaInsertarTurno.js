@@ -7,14 +7,16 @@ const PaginaInsertarTurno = () => {
     IDRuta: "",
     IDHorario: "",
     IDBus: "",
-    IDChofer: "",
+    Codigo_Cargo: "",
   });
   const [buses, setBuses] = useState([]);
   const [horarios, setHorarios] = useState([]);
   const [rutas, setRutas] = useState([]);
   const [conductores, setConductores] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetch(`http://localhost:3001/api/buses`)
       .then((response) => response.json())
@@ -31,9 +33,14 @@ const PaginaInsertarTurno = () => {
       .then((data) => setRutas(data))
       .catch((error) => console.error("Error al obtener las rutas:", error));
 
-    fetch(`http://localhost:3001/api/conductores`)
+    fetch(`http://localhost:3001/api/usuarios`)
       .then((response) => response.json())
-      .then((data) => setConductores(data))
+      .then((data) => {
+        const conductoresFiltrados = data.filter(
+          (usuario) => usuario.Codigo_Cargo === 3
+        );
+        setConductores(conductoresFiltrados);
+      })
       .catch((error) =>
         console.error("Error al obtener los conductores:", error)
       );
@@ -54,7 +61,7 @@ const PaginaInsertarTurno = () => {
         !turno.IDRuta ||
         !turno.IDHorario ||
         !turno.IDBus ||
-        !turno.IDChofer
+        !turno.Codigo_Cargo
       ) {
         throw new Error("Por favor complete todos los campos");
       }
@@ -81,31 +88,56 @@ const PaginaInsertarTurno = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
                 Horario
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
                 Bus
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
                 Ruta
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Turno
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Usuarios
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Usuario
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/")}
+              >
+                Logout
               </a>
             </li>
           </ul>
@@ -170,16 +202,16 @@ const PaginaInsertarTurno = () => {
               Conductor:
               <select
                 className={style.select}
-                name="IDChofer"
-                value={turno.IDChofer}
+                name="Codigo_Cargo"
+                value={turno.Codigo_Cargo}
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccione un conductor</option>
                 {conductores.map((conductor) => (
                   <option
-                    key={conductor.Codigo_Usuario}
-                    value={conductor.Codigo_Usuario}
+                    key={conductor.Codigo_Cargo}
+                    value={conductor.Codigo_Cargo}
                   >
                     {conductor.Nombre}
                   </option>

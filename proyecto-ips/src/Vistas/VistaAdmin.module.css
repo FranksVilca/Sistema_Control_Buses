@@ -27,8 +27,11 @@
         min-width: 500px;
         position: fixed;
         z-index: 100;
+        display: flex;
+        flex-direction:row;
         align-items: center;
-        justify-content: center;
+        justify-content:space-between;
+
       }
       .nav {
         float: right;
@@ -126,7 +129,7 @@
     border-color: rgb(218, 218, 218);
     color: black;
 }
-.opcion1,.opcion3{
+.opcion1,.opcion3,.opcion5{
 display: flex;
 flex-direction: row;
 align-items:center;
@@ -134,7 +137,7 @@ justify-content:space-between;
 width: 100%;
 margin-top: 30px;
 }
-.opcion2{
+.opcion2,.opcion4{
     display: flex;
     flex-direction:row-reverse;
     align-items:center;
@@ -168,7 +171,23 @@ margin-top: 30px;
     margin-right: 50px;
     border-radius: 10px;
 }
-.opcion11,.opcion31{
+.imgusuario{
+  width: 483px;
+  height: 300px;
+  background-image: url(../../public/usuarios.png);
+  margin-left: 50px;
+  margin-right: 50px;
+  border-radius: 10px;
+}
+.imgturno{
+  width: 483px;
+  height: 300px;
+  background-image: url(../../public/turnoimg.jpg);
+  margin-left: 50px;
+  margin-right: 50px;
+  border-radius: 10px;
+}
+.opcion11,.opcion31,.opcion51{
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -176,7 +195,7 @@ margin-top: 30px;
     margin-left: 50px;
     margin-right: 50px;
 }
-.opcion21{
+.opcion21,.opcion41{
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -186,4 +205,14 @@ margin-top: 30px;
 }
 p{
     color:gray;
+}
+.logoairova{
+    width: 70px;
+    height: 70px;
+    margin-left: 30px;
+    display: inline-block;
+    cursor: pointer;
+    background-image: url(../../public/logoairova.png);
+    min-width: 70px;
+    min-height: 70px;
 }

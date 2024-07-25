@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import style from './PaginaEdicionHorario.module.css';
+import style from "./PaginaEdicionHorario.module.css";
 
 const PaginaEdicionHorario = () => {
   const { idHorario } = useParams();
@@ -10,20 +10,24 @@ const PaginaEdicionHorario = () => {
     Hora_Llegada: "",
   });
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetchHorario();
   }, [idHorario]);
 
   const fetchHorario = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/horario/${idHorario}`);
+      const response = await fetch(
+        `http://localhost:3001/api/horario/${idHorario}`
+      );
       if (!response.ok) {
         throw new Error("Error al obtener el horario");
       }
       const data = await response.json();
       // Extraer solo la parte de la fecha en formato YYYY-MM-DD
-      const fecha = data.Fecha ? data.Fecha.split('T')[0] : "";
+      const fecha = data.Fecha ? data.Fecha.split("T")[0] : "";
       setHorario({
         Fecha: fecha,
         Hora_Salida: data.Hora_Salida || "",
@@ -81,56 +85,112 @@ const PaginaEdicionHorario = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
-          <li className={style.li}><a className={style.aopciones} href="#" >Horario</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Bus</a></li>
-          <li className={style.li}><a className={style.aopciones} href="#" >Ruta</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Turno</a></li>
-          <li className={style.li}><a className={style.acrear} href="#" >Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/")}
+              >
+                Logout
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.EdicionHorario}>
-      <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
-      <h2 className={style.titulo}>Editar Horario</h2>
-      <div className={style.campos}>
-        <label className={style.label1}>
-          Fecha:
-          <input className={style.input}
-            type="date"
-            name="Fecha"
-            value={horario.Fecha || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Hora de Salida:
-          <input className={style.input}
-            type="time"
-            name="Hora_Salida"
-            value={horario.Hora_Salida || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        <label className={style.label1}>
-          Hora de Llegada:
-          <input className={style.input}
-            type="time"
-            name="Hora_Llegada"
-            value={horario.Hora_Llegada || ""}
-            onChange={handleChange}
-            required // Campo obligatorio
-          />
-        </label>
-        </div>
-        <div className={style.botones}>
-        <button className={style.boton1} type="submit">Actualizar</button>
-        <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorHorarios")}>Cancelar</button>
-        </div>
-      </form>
+        <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
+          <h2 className={style.titulo}>Editar Horario</h2>
+          <div className={style.campos}>
+            <label className={style.label1}>
+              Fecha:
+              <input
+                className={style.input}
+                type="date"
+                name="Fecha"
+                value={horario.Fecha || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Hora de Salida:
+              <input
+                className={style.input}
+                type="time"
+                name="Hora_Salida"
+                value={horario.Hora_Salida || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+            <label className={style.label1}>
+              Hora de Llegada:
+              <input
+                className={style.input}
+                type="time"
+                name="Hora_Llegada"
+                value={horario.Hora_Llegada || ""}
+                onChange={handleChange}
+                required // Campo obligatorio
+              />
+            </label>
+          </div>
+          <div className={style.botones}>
+            <button className={style.boton1} type="submit">
+              Actualizar
+            </button>
+            <button
+              className={style.boton2}
+              type="button"
+              onClick={() => navigate("/ComponenteGestorHorarios")}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

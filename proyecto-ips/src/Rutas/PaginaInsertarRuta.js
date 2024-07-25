@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './PaginaInsertarRuta.module.css';
+import style from "./PaginaInsertarRuta.module.css";
 
 const PaginaInsertarRuta = () => {
   const [ruta, setRuta] = useState({
@@ -9,7 +9,9 @@ const PaginaInsertarRuta = () => {
   });
 
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRuta((prevState) => ({
@@ -56,10 +58,11 @@ const PaginaInsertarRuta = () => {
         if (!response.ok) {
           throw new Error("Error al insertar la ruta");
         }
-        alert("Ruta insertada exitosamente");
-        navigate("/GestionarRutas");
+        alert(`Ruta insertada exitosamente`);
+        navigate("/ComponenteGestorRuta");
       }
     } catch (error) {
+      alert(`Error al insertar el ruta: ${error.message}`);
       console.error("Error al insertar la ruta:", error);
     }
   };
@@ -67,13 +70,58 @@ const PaginaInsertarRuta = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
-            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/")}
+              >
+                Logout
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
@@ -83,7 +131,8 @@ const PaginaInsertarRuta = () => {
           <div className={style.campos}>
             <label className={style.label1}>
               Punto de Salida:
-              <input className={style.input}
+              <input
+                className={style.input}
                 type="text"
                 name="PuntoSalida"
                 value={ruta.PuntoSalida}
@@ -93,7 +142,8 @@ const PaginaInsertarRuta = () => {
             </label>
             <label className={style.label1}>
               Punto de Llegada:
-              <input className={style.input}
+              <input
+                className={style.input}
                 type="text"
                 name="PuntoLlegada"
                 value={ruta.PuntoLlegada}
@@ -103,8 +153,16 @@ const PaginaInsertarRuta = () => {
             </label>
           </div>
           <div className={style.botones}>
-            <button className={style.boton1} type="submit">Insertar</button>
-            <button className={style.boton2} type="button" onClick={() => navigate("/ComponenteGestorRuta")}>Cancelar</button>
+            <button className={style.boton1} type="submit">
+              Insertar
+            </button>
+            <button
+              className={style.boton2}
+              type="button"
+              onClick={() => navigate("/ComponenteGestorRuta")}
+            >
+              Cancelar
+            </button>
           </div>
         </form>
       </div>

@@ -5,7 +5,9 @@ import style from "./ComponenteGestorTurnos.module.css"; // Ajusta el nombre del
 const ComponenteGestorTurnos = () => {
   const [turnos, setTurnos] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -57,31 +59,56 @@ const ComponenteGestorTurnos = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
                 Horario
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
                 Bus
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.aopciones} href="#">
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
                 Ruta
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Turno
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Usuarios
               </a>
             </li>
             <li className={style.li}>
-              <a className={style.acrear} href="#">
-                Crear Usuario
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/")}
+              >
+                Logout
               </a>
             </li>
           </ul>

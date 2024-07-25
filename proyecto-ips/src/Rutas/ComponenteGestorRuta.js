@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import style from './ComponenteGestorRuta.module.css';
+import style from "./ComponenteGestorRuta.module.css";
 
 const ComponenteGestorRutas = () => {
   const [rutas, setRutas] = useState([]);
   const navigate = useNavigate();
-
+  const handleLogoClick = () => {
+    navigate("/VistaAdmin/${Codigo_Usuario}");
+  };
   useEffect(() => {
     fetchRutas();
   }, []);
@@ -50,19 +52,67 @@ const ComponenteGestorRutas = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
-            <li className={style.li}><a className={style.aopciones} href="#">Horario</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Bus</a></li>
-            <li className={style.li}><a className={style.aopciones} href="#">Ruta</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Turno</a></li>
-            <li className={style.li}><a className={style.acrear} href="#">Crear Usuario</a></li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorHorarios")}
+              >
+                Horario
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorBuses")}
+              >
+                Bus
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/ComponenteGestorRuta")}
+              >
+                Ruta
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
+              >
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.acrear}
+                onClick={() => navigate("/")}
+              >
+                Logout
+              </a>
+            </li>
           </ul>
         </nav>
       </header>
       <div className={style.gestorRuta}>
         <div className={style.gestorRutaBotonInsertar}>
-          <button className={style.gestorRutaBoton} onClick={() => navigate("/PaginaInsertarRuta")}>
+          <button
+            className={style.gestorRutaBoton}
+            onClick={() => navigate("/PaginaInsertarRuta")}
+          >
             Insertar Ruta
           </button>
         </div>

@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './TrabajadorPerfil.module.css';
+import { useNavigate } from "react-router-dom";
+
 
 const TrabajadorPerfil = () => {
+    const handleLogoClick = () => {
+        navigate("/VistaUsuario/${Codigo_Usuario}");
+      };
+    const navigate = useNavigate();
+
     // Datos del trabajador (simulación)
     const trabajador = {
         nombre: 'Juan Pérez',
@@ -21,12 +28,27 @@ const TrabajadorPerfil = () => {
     return (
         <div className={style.fondo}>
             <header className={style.header}>
+            <div className={style.logoairova} onClick={handleLogoClick}></div>
                 <nav className={style.nav}>
                     <ul className={style.ul}>
-                        <li className={style.li}><a href="/TrabajadorPerfil" className={style.aopciones}>Perfil</a></li>
-                        <li className={style.li}><a href="/TrabajadorTurno" className={style.aopciones}>Turno</a></li>
-                        <li className={style.li}><a href="/TrabajadorRuta" className={style.aopciones}>Ruta</a></li>
-                        <li className={style.li}><a href="/" className={style.acrear}>Login</a></li>
+                    <li className={style.li}>
+              <a className={style.aopciones}
+              onClick={() => navigate("/TrabajadorTurno")}>
+                Ver Turno
+              </a>
+            </li>
+                    <li className={style.li}>
+              <a className={style.aopciones}
+              onClick={() => navigate("/TrabajadorPerfil")}>
+                Ver Perfil
+              </a>
+            </li>
+            <li className={style.li}>
+              <a className={style.acrear}
+              onClick={() => navigate("/")}>
+                Logout
+              </a>
+            </li>
                     </ul>
                 </nav>
             </header>

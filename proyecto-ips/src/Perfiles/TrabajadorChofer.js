@@ -1,7 +1,11 @@
 import React from 'react';
 import style from './TrabajadorPerfil.module.css';
+import { useParams,useNavigate } from "react-router-dom";
 
 const TrabajadorPerfil = () => {
+    const handleLogoClick = () => {
+        navigate("/VistaChofer/${Codigo_Usuario}");
+      };
     // Datos del trabajador (simulación)
     const trabajador = {
         nombre: 'Juan Pérez',
@@ -20,6 +24,7 @@ const TrabajadorPerfil = () => {
     return (
         <div className={style.fondo}>
             <header className={style.header}>
+            <div className={style.logoairova} onClick={handleLogoClick}></div>
                 <nav className={style.nav}>
                     <ul className={style.ul}>
                         <li className={style.li}><a href="/TrabajadorPerfil" className={style.aopciones}>Perfil</a></li>
