@@ -1,54 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './TrabajadorPerfil.module.css';
-import { useNavigate } from "react-router-dom";
-
 
 const TrabajadorPerfil = () => {
-    const handleLogoClick = () => {
-        navigate("/VistaUsuario/${Codigo_Usuario}");
-      };
-    const navigate = useNavigate();
+    const { codigoUsuario } = useParams();
+    const [trabajador, setTrabajador] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Datos del trabajador (simulación)
-    const trabajador = {
-        nombre: 'Juan Pérez',
-        edad: 45,
-        ubicacion: 'Arequipa, Perú',
-        idTrabajador: 'TR-012345',
-        empresa: 'Ferreiros',
-        cargo: 'Construcción civil',
-        dni: '12345678',
-        vivienda: 'Calle Principal 123',
-        estadoCivil: 'Casado',
-        tipoSangre: 'O+',
-        categoriaLaboral: 'Contratista',
-    };
+    useEffect(() => {
+        const fetchTrabajador = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/usuario/${codigoUsuario}`);
+                const data = await response.json();
+                setTrabajador(data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error al obtener los datos del trabajador:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchTrabajador();
+    }, [codigoUsuario]);
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!trabajador) {
+        return <div>Trabajador no encontrado</div>;
+    }
 
     return (
         <div className={style.fondo}>
             <header className={style.header}>
-            <div className={style.logoairova} onClick={handleLogoClick}></div>
                 <nav className={style.nav}>
                     <ul className={style.ul}>
-                    <li className={style.li}>
-              <a className={style.aopciones}
-              onClick={() => navigate("/TrabajadorTurno")}>
-                Ver Turno
-              </a>
-            </li>
-                    <li className={style.li}>
-              <a className={style.aopciones}
-              onClick={() => navigate("/TrabajadorPerfil")}>
-                Ver Perfil
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.acrear}
-              onClick={() => navigate("/")}>
-                Logout
-              </a>
-            </li>
+                        <li className={style.li}><a href="/TrabajadorPerfil" className={style.aopciones}>Perfil</a></li>
+                        <li className={style.li}><a href="/TrabajadorTurno" className={style.aopciones}>Turno</a></li>
+                        <li className={style.li}><a href="/TrabajadorRuta" className={style.aopciones}>Ruta</a></li>
+                        <li className={style.li}><a href="/" className={style.acrear}>Login</a></li>
                     </ul>
                 </nav>
             </header>
@@ -60,7 +51,7 @@ const TrabajadorPerfil = () => {
                             alt="Trabajador" 
                             className={style.profileImage} 
                         />
-                        <p><strong>Empresa:</strong> Airova</p>
+                        <p><strong>Empresa:</strong> 'Airova' </p>
                         <p><strong>Cargo:</strong> {trabajador.Cargo}</p>
                         <p><strong>ID Trabajador:</strong> {trabajador.Codigo_Usuario}</p>
                     </div>

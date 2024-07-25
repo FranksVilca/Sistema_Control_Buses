@@ -136,11 +136,9 @@ function App() {
           <Route path="/TrabajadorTurno" element={<TrabajadorTurno />} />
           <Route path="/TrabajadorPerfil" element={<TrabajadorPerfil />} />
           <Route
-            path="/editar/:codigo_usuario"
+            path="/editar/:codigoUsuario"
             element={
-              <ProtectedRoute allowedRoles={[1]}>
                 <PaginaEdicionUsuario />
-              </ProtectedRoute>
             }
           />
           <Route
@@ -190,7 +188,7 @@ function App() {
           <Route
             path="/VistaChofer/:codigoUsuario"
             element={
-              <ProtectedRoute allowedRoles={[2]}>
+              <ProtectedRoute allowedRoles={[3]}>
                 <VistaChofer />
               </ProtectedRoute>
             }
@@ -198,7 +196,7 @@ function App() {
           <Route
             path="/VistaUsuario/:codigoUsuario"
             element={
-              <ProtectedRoute allowedRoles={[3]}>
+              <ProtectedRoute allowedRoles={[2]}>
                 <VistaUsuario />
               </ProtectedRoute>
             }

@@ -19,35 +19,38 @@ const PaginaEdicionUsuario = () => {
   });
   const [cargos, setCargos] = useState([]);
   const navigate = useNavigate();
-  const handleLogoClick = () => {
-    navigate("/VistaAdmin/${Codigo_Usuario}");
-  };
-  useEffect(() => {
-    fetch(`http://localhost:3001/api/data/${codigoUsuario}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Asegúrate de que el objeto `img` no se esté incluyendo
-        const { img, ...usuarioSinImg } = data;
-        usuarioSinImg.Sexo =
-          usuarioSinImg.Sexo !== null ? usuarioSinImg.Sexo : 2; // 2 para "Seleccionar"
-        setUsuario(usuarioSinImg);
-      })
-      .catch((error) => console.error("Error al obtener el usuario:", error));
 
-    fetch(`http://localhost:3001/api/cargos`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [usuarioResponse, cargosResponse] = await Promise.all([
+          fetch(`http://localhost:3001/api/data/${codigoUsuario}`),
+          fetch(`http://localhost:3001/api/cargos`)
+        ]);
+
+        if (!usuarioResponse.ok) {
+          throw new Error(`Error HTTP: ${usuarioResponse.status}`);
         }
-        return response.json();
-      })
-      .then((data) => setCargos(data))
-      .catch((error) => console.error("Error al obtener los cargos:", error));
+
+        if (!cargosResponse.ok) {
+          throw new Error(`Error HTTP: ${cargosResponse.status}`);
+        }
+
+        const usuarioData = await usuarioResponse.json();
+        const cargosData = await cargosResponse.json();
+
+        setUsuario((prev) => ({
+          ...prev,
+          ...usuarioData,
+          Sexo: usuarioData.Sexo ?? 2 // Usa el operador de coalescencia nula para manejar valores nulos
+        }));
+        setCargos(cargosData);
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+      }
+    };
+
+    fetchData();
   }, [codigoUsuario]);
 
   const handleChange = (e) => {
@@ -66,18 +69,58 @@ const PaginaEdicionUsuario = () => {
   };
 
   const handleSexoChange = (e) => {
-    const sexoValue = parseInt(e.target.value, 10); // Asegúrate de convertir el valor a número
+    const sexoValue = parseInt(e.target.value, 10);
     setUsuario((prevState) => ({
       ...prevState,
       Sexo: sexoValue,
     }));
   };
 
+  const handleEstadoRegistroChange = (e) => {
+    setUsuario((prevState) => ({
+      ...prevState,
+      EstadoRegistro: e.target.value,
+    }));
+  };
+
+  const handleNumberChange = (e) => {
+    const { name, value } = e.target;
+    // Filtra solo números
+    const filteredValue = value.replace(/[^0-9]/g, '');
+    setUsuario((prevState) => ({
+      ...prevState,
+      [name]: filteredValue,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Crear una copia del objeto usuario sin el campo `img`
+    // Validaciones
+    if (usuario.DNI.length !== 8) {
+      alert("El DNI debe tener exactamente 8 caracteres.");
+      return;
+    }
+
+    if (usuario.Edad < 18) {
+      alert("La edad debe ser mayor de 18 años.");
+      return;
+    }
+
+    if (usuario.Celular.length !== 9) {
+      alert("El celular debe tener exactamente 9 caracteres.");
+      return;
+    }
+
+    if (!["Activa", "Inactiva"].includes(usuario.EstadoRegistro)) {
+      alert("El estado de registro debe ser 'Activa' o 'Inactiva'.");
+      return;
+    }
+
     const { img, ...usuarioSinImg } = usuario;
+
+    // Agrega este console.log para verificar los datos enviados
+    console.log("Datos a enviar:", usuarioSinImg);
 
     try {
       const response = await fetch(
@@ -90,18 +133,20 @@ const PaginaEdicionUsuario = () => {
           body: JSON.stringify(usuarioSinImg),
         }
       );
+
       if (!response.ok) {
-        const errorText = await response.text(); // Obtener el texto del error
+        const errorText = await response.text();
         throw new Error(`Error al actualizar el usuario: ${errorText}`);
       }
+
       alert("Usuario actualizado exitosamente");
       navigate("/GestionarUsuarios");
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
+      alert("Hubo un error al actualizar el usuario. Por favor, intenta de nuevo.");
     }
   };
 
-  // Verificar si usuario está cargado completamente antes de renderizar el formulario
   if (!usuario.Nombre) {
     return <p>Cargando...</p>;
   }
@@ -109,57 +154,22 @@ const PaginaEdicionUsuario = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
-        <div className={style.logoairova} onClick={handleLogoClick}>
-        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorHorarios")}
-              >
-                Horario
-              </a>
+              <a className={style.aopciones} href="#">Horario</a>
             </li>
             <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorBuses")}
-              >
-                Bus
-              </a>
+              <a className={style.aopciones} href="#">Bus</a>
             </li>
             <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorRuta")}
-              >
-                Ruta
-              </a>
+              <a className={style.aopciones} href="#">Ruta</a>
             </li>
             <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarUsuarios")}
-              >
-                Usuarios
-              </a>
+              <a className={style.acrear} href="#">Crear Turno</a>
             </li>
             <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarTurno")}
-              >
-                Turnos
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.acrear}
-                onClick={() => navigate("/")}
-              >
-                Logout
-              </a>
+              <a className={style.acrear} href="#">Crear Usuario</a>
             </li>
           </ul>
         </nav>
@@ -204,8 +214,9 @@ const PaginaEdicionUsuario = () => {
                 className={style.input}
                 type="text"
                 name="DNI"
+                maxLength="8" // Limitar la entrada a 8 caracteres
                 value={usuario.DNI || ""}
-                onChange={handleChange}
+                onInput={handleNumberChange} // Solo permite números
               />
             </label>
             <label className={style.label1}>
@@ -213,7 +224,7 @@ const PaginaEdicionUsuario = () => {
               <select
                 className={style.select}
                 name="Codigo_Cargo"
-                value={usuario.Codigo_Cargo}
+                value={usuario.Codigo_Cargo || ""}
                 onChange={handleCargoChange}
               >
                 <option value="">Seleccione un cargo</option>
@@ -230,6 +241,7 @@ const PaginaEdicionUsuario = () => {
                 className={style.input}
                 type="number"
                 name="Edad"
+                min="18" // Edad mínima de 18 años
                 value={usuario.Edad || ""}
                 onChange={handleChange}
               />
@@ -239,9 +251,7 @@ const PaginaEdicionUsuario = () => {
               <select
                 className={style.select}
                 name="Sexo"
-                value={
-                  usuario.Sexo === 1 ? "1" : usuario.Sexo === 0 ? "0" : "2"
-                } // Valor numérico como string
+                value={usuario.Sexo !== null ? usuario.Sexo.toString() : "2"}
                 onChange={handleSexoChange}
               >
                 <option value="2">Seleccionar</option>
@@ -255,8 +265,9 @@ const PaginaEdicionUsuario = () => {
                 className={style.input}
                 type="text"
                 name="Celular"
+                maxLength="9" // Limitar la entrada a 9 caracteres
                 value={usuario.Celular || ""}
-                onChange={handleChange}
+                onInput={handleNumberChange} // Solo permite números
               />
             </label>
             <label className={style.label1}>
@@ -281,25 +292,22 @@ const PaginaEdicionUsuario = () => {
             </label>
             <label className={style.label1}>
               Estado Registro:
-              <input
-                className={style.input}
-                type="text"
+              <select
+                className={style.select}
                 name="EstadoRegistro"
                 value={usuario.EstadoRegistro || ""}
-                onChange={handleChange}
-              />
+                onChange={handleEstadoRegistroChange}
+              >
+                <option value="">Seleccione un estado</option>
+                <option value="Activa">Activa</option>
+                <option value="Inactiva">Inactiva</option>
+              </select>
             </label>
           </div>
           <button className={style.boton} type="submit">
             Actualizar Usuario
           </button>
-          <button
-            className={style.boton2}
-            type="button"
-            onClick={() => navigate("/GestionarUsuarios")}
-          >
-            Cancelar
-          </button>
+          <button className={style.boton2} type="button" onClick={() => navigate("/GestionarUsuarios")}>Cancelar</button>
         </form>
       </div>
     </div>

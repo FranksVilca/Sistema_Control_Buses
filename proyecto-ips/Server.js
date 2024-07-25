@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 3001;
 const bcrypt = require('bcryptjs');
+const saltRounds = 10; 
 
 // Configura el middleware cors para permitir solicitudes desde http://localhost:3000
 app.use(
@@ -45,6 +46,18 @@ db.connect((err) => {
 const handleError = (res, err, message) => {
   console.error(message, err);
   res.status(500).send(message);
+};
+
+const hashPassword = async (password) => {
+  try {
+    if (!password) {
+      throw new Error('No se proporcionó una contraseña para cifrar');
+    }
+    return await bcrypt.hash(password, saltRounds);
+  } catch (error) {
+    console.error('Error al cifrar la contraseña:', error);
+    throw new Error('Error al cifrar la contraseña');
+  }
 };
 
 // Función de validación
@@ -167,7 +180,7 @@ app.get("/api/data/:codigoUsuario", (req, res) => {
   );
 });
 
-// Ruta para actualizar un usuario por su código
+
 app.put("/api/update/:codigoUsuario", async (req, res) => {
   const codigoUsuario = req.params.codigoUsuario;
   const updatedUser = req.body;
@@ -176,8 +189,10 @@ app.put("/api/update/:codigoUsuario", async (req, res) => {
     await validateUser(updatedUser);
 
     // Cifrar la contraseña si es necesario
+    let hashedPassword = null;
     if (updatedUser.Contrasena) {
-      updatedUser.Contrasena = await hashPassword(updatedUser.Contrasena);
+      console.log('Cifrando contraseña...');
+      hashedPassword = await hashPassword(updatedUser.Contrasena);
     }
 
     const query = `UPDATE Usuario SET 
@@ -199,7 +214,7 @@ app.put("/api/update/:codigoUsuario", async (req, res) => {
       [
         updatedUser.Nombre,
         updatedUser.Nombre_Usuario,
-        updatedUser.Contrasena,
+        hashedPassword || null, // Usa la contraseña cifrada si se proporcionó, de lo contrario usa null
         updatedUser.DNI,
         updatedUser.Codigo_Cargo,
         updatedUser.Edad,
@@ -212,13 +227,14 @@ app.put("/api/update/:codigoUsuario", async (req, res) => {
       ],
       (err, result) => {
         if (err) {
-          console.error("Error en la base de datos:", err); // Verifica errores
-          return handleError(res, err, "Error al actualizar usuario");
+          console.error("Error en la base de datos:", err);
+          return res.status(500).send("Error al actualizar usuario");
         }
         res.send("Usuario actualizado exitosamente");
       }
     );
   } catch (err) {
+    console.error('Error en la actualización del usuario:', err);
     res.status(400).send(err.message);
   }
 });
