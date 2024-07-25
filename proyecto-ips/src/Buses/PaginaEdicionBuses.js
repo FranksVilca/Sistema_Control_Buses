@@ -85,8 +85,8 @@ const PaginaEdicionBus = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
-      <div className={style.logoairova} onClick={handleLogoClick}></div>
-
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
@@ -115,18 +115,26 @@ const PaginaEdicionBus = () => {
             </li>
             <li className={style.li}>
               <a
-                className={style.acrear}
-                onClick={() => navigate("/InsertarTurno")}
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
               >
-                Crear Turno
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
               </a>
             </li>
             <li className={style.li}>
               <a
                 className={style.acrear}
-                onClick={() => navigate("/InsertarUsuario")}
+                onClick={() => navigate("/")}
               >
-                Crear Usuario
+                Logout
               </a>
             </li>
           </ul>
@@ -194,8 +202,9 @@ const PaginaEdicionBus = () => {
               />
             </label>
           </div>
-          <button className={style.boton} type="submit">
-            Actualizar Bus
+          <div className={style.botones}>
+          <button className={style.boton1} type="submit">
+            Actualizar
           </button>
           <button
             className={style.boton2}
@@ -204,6 +213,7 @@ const PaginaEdicionBus = () => {
           >
             Cancelar
           </button>
+          </div>
         </form>
       </div>
     </div>

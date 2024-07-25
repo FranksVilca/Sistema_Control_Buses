@@ -4,11 +4,15 @@ import style from './TrabajadorTurno.module.css';
 import { useNavigate } from "react-router-dom";
 
 const TrabajadorTurno = () => {
+    const handleLogoClick = () => {
+        navigate("/VistaUsuario/${Codigo_Usuario}");
+      };
     const navigate = useNavigate();
 
     return (
         <div className={style.fondo}>
             <header className={style.header}>
+            <div className={style.logoairova} onClick={handleLogoClick}></div>
                 <nav className={style.nav}>
                     <ul className={style.ul}>
                     <li className={style.li}>

@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 
 const TrabajadorPerfil = () => {
+    const handleLogoClick = () => {
+        navigate("/VistaUsuario/${Codigo_Usuario}");
+      };
     const navigate = useNavigate();
 
     // Datos del trabajador (simulación)
@@ -25,6 +28,7 @@ const TrabajadorPerfil = () => {
     return (
         <div className={style.fondo}>
             <header className={style.header}>
+            <div className={style.logoairova} onClick={handleLogoClick}></div>
                 <nav className={style.nav}>
                     <ul className={style.ul}>
                     <li className={style.li}>

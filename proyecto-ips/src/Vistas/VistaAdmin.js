@@ -43,18 +43,26 @@ const VistaAdmin = ({ className = "" }) => {
             </li>
             <li className={style.li}>
               <a
-                className={style.acrear}
-                onClick={() => navigate("/InsertarTurno")}
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
               >
-                Crear Turno
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
               </a>
             </li>
             <li className={style.li}>
               <a
                 className={style.acrear}
-                onClick={() => navigate("/InsertarUsuario")}
+                onClick={() => navigate("/")}
               >
-                Crear Usuario
+                Logout
               </a>
             </li>
           </ul>

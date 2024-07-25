@@ -28,16 +28,24 @@ body {
     min-width: 500px;
     position: fixed;
     z-index: 100;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav {
     display: flex;
-    flex-direction: row;
-    justify-content: end;
+    flex-direction:row;
+    align-items: center;
+    justify-content:space-between;
+  
+  }
+  .nav {
     float: right;
-    margin-right: 30px;
+  }
+  .logoairova{
+    width: 70px;
+    height: 70px;
+    margin-left: 30px;
+    display: inline-block;
+    cursor: pointer;
+    background-image: url(../../public/logoairova.png);
+    min-width: 70px;
+    min-height: 70px;
   }
   .ul{
     list-style: none;

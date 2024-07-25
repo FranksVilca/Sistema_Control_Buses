@@ -56,7 +56,8 @@ const ComponenteGestorUsuarios = () => {
   return (
     <div className={style.fondo}>
       <header className={style.header}>
-      <div className={style.logoairova} onClick={handleLogoClick}></div>
+        <div className={style.logoairova} onClick={handleLogoClick}>
+        </div>
         <nav className={style.nav}>
           <ul className={style.ul}>
             <li className={style.li}>
@@ -85,18 +86,26 @@ const ComponenteGestorUsuarios = () => {
             </li>
             <li className={style.li}>
               <a
-                className={style.acrear}
-                onClick={() => navigate("/InsertarTurno")}
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarUsuarios")}
               >
-                Crear Turno
+                Usuarios
+              </a>
+            </li>
+            <li className={style.li}>
+              <a
+                className={style.aopciones}
+                onClick={() => navigate("/GestionarTurno")}
+              >
+                Turnos
               </a>
             </li>
             <li className={style.li}>
               <a
                 className={style.acrear}
-                onClick={() => navigate("/InsertarUsuario")}
+                onClick={() => navigate("/")}
               >
-                Crear Usuario
+                Logout
               </a>
             </li>
           </ul>

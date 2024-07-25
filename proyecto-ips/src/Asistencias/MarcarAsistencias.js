@@ -7,7 +7,7 @@ const Asistencia = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { codigoTurno } = useParams(); // Obtiene codigoTurno de la URL
-
+    
     useEffect(() => {
         const fetchAsistencias = async () => {
             console.log('Fetching asistencias for codigoTurno:', codigoTurno); // Log del código del turno
