@@ -7,7 +7,7 @@ const PaginaInsertarTurno = () => {
     IDRuta: "",
     IDHorario: "",
     IDBus: "",
-    IDChofer: "",
+    Codigo_Cargo: "",
   });
   const [buses, setBuses] = useState([]);
   const [horarios, setHorarios] = useState([]);
@@ -31,9 +31,14 @@ const PaginaInsertarTurno = () => {
       .then((data) => setRutas(data))
       .catch((error) => console.error("Error al obtener las rutas:", error));
 
-    fetch(`http://localhost:3001/api/conductores`)
+    fetch(`http://localhost:3001/api/usuarios`)
       .then((response) => response.json())
-      .then((data) => setConductores(data))
+      .then((data) => {
+        const conductoresFiltrados = data.filter(
+          (usuario) => usuario.Codigo_Cargo === 3
+        );
+        setConductores(conductoresFiltrados);
+      })
       .catch((error) =>
         console.error("Error al obtener los conductores:", error)
       );
@@ -54,7 +59,7 @@ const PaginaInsertarTurno = () => {
         !turno.IDRuta ||
         !turno.IDHorario ||
         !turno.IDBus ||
-        !turno.IDChofer
+        !turno.Codigo_Cargo
       ) {
         throw new Error("Por favor complete todos los campos");
       }
@@ -185,16 +190,16 @@ const PaginaInsertarTurno = () => {
               Conductor:
               <select
                 className={style.select}
-                name="IDChofer"
-                value={turno.IDChofer}
+                name="Codigo_Cargo"
+                value={turno.Codigo_Cargo}
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccione un conductor</option>
                 {conductores.map((conductor) => (
                   <option
-                    key={conductor.Codigo_Usuario}
-                    value={conductor.Codigo_Usuario}
+                    key={conductor.Codigo_Cargo}
+                    value={conductor.Codigo_Cargo}
                   >
                     {conductor.Nombre}
                   </option>
