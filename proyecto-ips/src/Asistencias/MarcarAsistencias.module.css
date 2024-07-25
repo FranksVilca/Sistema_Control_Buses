@@ -1,0 +1,159 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+.fondo {
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 500px;
+    height: 100vh;
+    overflow: auto;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    background-image: url('../../public/vector.svg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+.header {
+  background: rgb(0, 0, 0);
+  width: 100%;
+  min-width: 500px;
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+  justify-content:space-between;
+
+}
+.nav {
+  float: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items:end;
+}
+.logoairova{
+  width: 70px;
+  height: 70px;
+  margin-left: 30px;
+  display: inline-block;
+  cursor: pointer;
+  background-image: url(../../public/logoairova.png);
+  min-width: 70px;
+  min-height: 70px;
+}
+  .ul{
+    list-style: none;
+    overflow: hidden;
+    display: flex;
+    min-width: 500px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+  .li {
+    float: left;
+    font-family: Arial, Helvetica, sans-serif;;
+    font-size: 20px;
+    margin-top: 10px;
+
+  }
+  .aopciones {
+    font-family: 'Inter', sans-serif;
+    font-size: medium;
+    display: block; 
+    color: #fff;
+    text-decoration: none;
+    width: 150px;
+    text-align: center;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 5px 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .aopciones:hover{
+    background-color: #2391ec;
+  }
+  .acrear{
+    font-family: 'Inter', sans-serif;
+    font-size: medium;
+    display: block; 
+    color: #fff;
+    text-decoration: none;
+    width: 150px;
+    text-align: center;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 5px 0px;
+    background-color: dodgerblue;
+  }
+  .acrear:hover{
+    background-color: rgb(20, 92, 163);
+  }
+  .gestorBus{
+    padding-top: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    }
+    .gestorBusBotonInsertar{
+    justify-content: baseline;
+    width: 100%;
+    margin-left: 25px;
+    }
+    .gestorBusBoton{
+        display: flex;
+        padding: 5px 10px 5px 5px;
+        font-size: 15px;
+        line-height: 30px;
+        display: block;
+        width: 150px;
+        outline: 0;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+        font-weight: bolder;
+        box-shadow: 0px 0px 0px 0px rgba(162, 161, 161, 0.85);
+        font-family: 'Montserrat';
+        margin-right: 10px;
+        background-color: dodgerblue;
+        border-color: dodgerblue;
+        color: white;
+    }
+    .gestorBusTitulo{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+      font-size: 50px;
+    }
+    .gestorBusTabla{
+        border-collapse: collapse; 
+        margin: 25px 0; 
+        font-size: 1em; 
+        font-family: sans-serif; 
+        min-width: 450px; 
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+    .gestorBusTabla thead tr{
+        background-color:dodgerblue; 
+        color: #ffffff; 
+        text-align: middle;
+    }
+    .gestorBusTabla thead th,.gestorBusTabla tbody td{
+        padding: 12px 15px;
+    }
+    .gestorBusTabla tbody tr{
+        border-bottom: 1px solid #dddddd; 
+    } 
+    .gestorBusTabla tbody tr:nth-of-type(even) { 
+        background-color: #f3f3f3; 
+    } 
+    .gestorBusTabla tbody tr:last-of-type { 
+        border-bottom: 2px solid #009879;
+    }
