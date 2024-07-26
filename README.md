@@ -30,21 +30,20 @@
     ```sh
     npm install
     ```
-
+4. Ingresar a la carpeta de proyecto-ips:
+    ```sh
+    cd proyecto-ips
+    ```      
 ## Uso
 1. Inicia el servidor:
     ```sh
     npm start
     ```
-2. Abre tu navegador y ve a `http://localhost:3000`.
-
-## Configuración
-
-## Contribución
-
-## Pruebas
-
-## Documentación
+2. Inicia el servidor:
+    ```sh
+    node /server.js
+    ```
+3. Abre tu navegador y ve a `http://localhost:3000`.
 
 ## Autores
  - Añazco Huamanquispe, Andre 
@@ -52,7 +51,6 @@
  - Huisa Perez, Willy Alexanderc
  - Huichi Santander, Gersson A.
  - Jaita Chura Jose Manuel
-## Licencia
 
-## Agradecimientos
+
 

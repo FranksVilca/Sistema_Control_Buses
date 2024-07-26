@@ -180,9 +180,7 @@ function App() {
           <Route
             path="/Asistencia/:codigoTurno"
             element={
-              <ProtectedRoute allowedRoles={[2]}>
                 <Asistencia />
-              </ProtectedRoute>
             }
           />
           <Route
