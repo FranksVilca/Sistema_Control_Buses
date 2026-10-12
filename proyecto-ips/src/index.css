@@ -1,13 +1,123 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --airova-primary: #2563eb;
+  --airova-primary-dark: #1d4ed8;
+  --airova-primary-light: #3b82f6;
+  --airova-bg: #f1f5f9;
+  --airova-card: #ffffff;
+  --airova-text-main: #0f172a;
+  --airova-text-muted: #64748b;
+  --airova-border: #e2e8f0;
+  --airova-radius: 14px;
+  --airova-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --airova-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  --airova-shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.12);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--airova-bg);
+  color: var(--airova-text-main);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Common Modern Card Layout */
+.airova-card {
+  background: var(--airova-card);
+  border: 1px solid var(--airova-border);
+  border-radius: var(--airova-radius);
+  box-shadow: var(--airova-shadow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.airova-card:hover {
+  box-shadow: var(--airova-shadow-lg);
+}
+
+/* Common Page Container */
+.airova-page-wrapper {
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 2.5rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .airova-page-wrapper {
+    padding: 1.5rem 0.75rem;
+  }
+}
+
+/* Buttons Polish */
+.btn-airova-primary {
+  background: linear-gradient(135deg, var(--airova-primary), var(--airova-primary-dark));
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-airova-primary:hover {
+  background: linear-gradient(135deg, var(--airova-primary-dark), #1e40af);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+/* Status Badges */
+.badge-status {
+  padding: 0.4em 0.85em;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-status-activo {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-status-inactivo {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-status-mantenimiento {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
 }

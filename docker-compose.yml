@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:8.0
+    container_name: airova-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: airova
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./NewSistemaBuses.sql:/docker-entrypoint-initdb.d/init.sql

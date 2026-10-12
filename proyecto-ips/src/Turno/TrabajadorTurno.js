@@ -1,71 +1,84 @@
 import React from 'react';
-import PropTypes from "prop-types";
-import style from './TrabajadorTurno.module.css';
+import Navbar from '../components/Navbar';
 import { useNavigate } from "react-router-dom";
 
 const TrabajadorTurno = () => {
-    const handleLogoClick = () => {
-        navigate("/VistaUsuario/${Codigo_Usuario}");
-      };
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <div className={style.fondo}>
-            <header className={style.header}>
-            <div className={style.logoairova} onClick={handleLogoClick}></div>
-                <nav className={style.nav}>
-                    <ul className={style.ul}>
-                    <li className={style.li}>
-              <a className={style.aopciones}
-              onClick={() => navigate("/TrabajadorTurno")}>
-                Ver Turno
-              </a>
-            </li>
-                    <li className={style.li}>
-              <a className={style.aopciones}
-              onClick={() => navigate("/TrabajadorPerfil")}>
-                Ver Perfil
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.acrear}
-              onClick={() => navigate("/")}>
-                Logout
-              </a>
-            </li>
-                    </ul>
-                </nav>
-            </header>
-            <div className={style.workerView}>
-                <header className={style.turnoHeader}>
-                    <h1>Turno 1A</h1>
-                    <p>Domingo 17 Mayo 07:00 am - 8:30 am</p>
-                </header>
-                <section className={style.infoSection}>
-                    <div className={style.infoCard}>
-                        <h2>Información</h2>
-                        <p><strong>Destino:</strong> Polobaya - Arequipa</p>
-                        <p><strong>D. Turno:</strong> 1A</p>
-                        <p><strong>Fecha:</strong> 17 de mayo del 2023</p>
-                        <p><strong>Bus:</strong> ABC-123</p>
-                    </div>
-                    <div className={style.driverCard}>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7I7HyE4katbJHadjFl6NyQF9oFqqnBHbGGA&s" alt="Conductor" className={style.driverImage} />
-                        <h2>José Manuel Jaita Chura</h2>
-                        <p><strong>ID:</strong> 088213213</p>
-                    </div>
-                </section>
-                <section className={style.busInfo}>
-                    <p><strong>Placa de Bus:</strong> ABC-123</p>
-                    <p><strong>ID Bus:</strong> Tr09287</p>
-                </section>
-            </div>
+  return (
+    <div className="min-vh-100 bg-light d-flex flex-column">
+      <Navbar />
+
+      <div className="container py-5 px-3 px-md-4">
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <button
+            className="btn btn-link text-decoration-none text-muted p-0"
+            onClick={() => navigate(-1)}
+          >
+            <i className="fa-solid fa-arrow-left me-1"></i> Regresar
+          </button>
         </div>
-    );
-}
 
-TrabajadorTurno.propTypes = {
-    className: PropTypes.string,
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-10 col-lg-8">
+            <div className="airova-card p-4 p-md-5">
+              <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                <div
+                  className="rounded-3 d-flex align-items-center justify-content-center"
+                  style={{ width: "48px", height: "48px", background: "rgba(234, 88, 12, 0.1)", color: "#ea580c", fontSize: "1.3rem" }}
+                >
+                  <i className="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                  <h2 className="h4 fw-bold text-dark mb-0">Mi Turno Asignado</h2>
+                  <p className="text-muted small mb-0">Detalles del itinerario y bus programado para tu viaje</p>
+                </div>
+              </div>
+
+              {/* Shift Information Card */}
+              <div className="row g-4">
+                <div className="col-12 col-md-6">
+                  <div className="p-4 bg-light rounded-3 border h-100">
+                    <span className="badge bg-primary px-3 py-1 rounded-pill mb-3">Turno Activo 1A</span>
+                    <h3 className="h5 fw-bold text-dark mb-3">
+                      <i className="fa-solid fa-route text-primary me-2"></i> Cusco - Sicuani
+                    </h3>
+                    <ul className="list-unstyled text-secondary small mb-0 d-flex flex-column gap-2">
+                      <li>
+                        <strong><i className="fa-solid fa-calendar-day me-2 text-muted"></i>Fecha:</strong> Próxima salida programada
+                      </li>
+                      <li>
+                        <strong><i className="fa-solid fa-clock me-2 text-muted"></i>Horario:</strong> 07:00 AM - 08:30 AM
+                      </li>
+                      <li>
+                        <strong><i className="fa-solid fa-bus me-2 text-muted"></i>Unidad:</strong> Bus Paradiso G7 (ABC-123)
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="col-12 col-md-6">
+                  <div className="p-4 bg-light rounded-3 border h-100 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center mb-3 bg-white border"
+                      style={{ width: "70px", height: "70px", color: "#2563eb", fontSize: "1.8rem" }}
+                    >
+                      <i className="fa-solid fa-id-card"></i>
+                    </div>
+                    <span className="badge bg-warning bg-opacity-10 text-dark px-2 py-1 rounded small mb-1">
+                      Conductor Asignado
+                    </span>
+                    <h4 className="h6 fw-bold text-dark mb-1">José Manuel Jaita Chura</h4>
+                    <p className="text-muted small mb-0">DNI: 088213213</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default TrabajadorTurno;

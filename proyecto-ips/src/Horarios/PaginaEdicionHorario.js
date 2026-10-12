@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import style from "./PaginaEdicionHorario.module.css";
+import Navbar from "../components/Navbar";
+import Swal from "sweetalert2";
 
 const PaginaEdicionHorario = () => {
   const { idHorario } = useParams();
@@ -9,10 +10,10 @@ const PaginaEdicionHorario = () => {
     Hora_Salida: "",
     Hora_Llegada: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-  const handleLogoClick = () => {
-    navigate("/VistaAdmin/${Codigo_Usuario}");
-  };
+
   useEffect(() => {
     fetchHorario();
   }, [idHorario]);
@@ -26,15 +27,21 @@ const PaginaEdicionHorario = () => {
         throw new Error("Error al obtener el horario");
       }
       const data = await response.json();
-      // Extraer solo la parte de la fecha en formato YYYY-MM-DD
       const fecha = data.Fecha ? data.Fecha.split("T")[0] : "";
       setHorario({
         Fecha: fecha,
         Hora_Salida: data.Hora_Salida || "",
         Hora_Llegada: data.Hora_Llegada || "",
       });
+      setLoading(false);
     } catch (error) {
       console.error("Error al obtener el horario:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo cargar la información del horario."
+      });
+      setLoading(false);
     }
   };
 
@@ -48,13 +55,7 @@ const PaginaEdicionHorario = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const today = new Date().toISOString().split("T")[0]; // Obtener la fecha actual en formato ISO (YYYY-MM-DD)
-
-    // Validar que la Fecha seleccionada no sea más antigua que la fecha actual
-    if (horario.Fecha < today) {
-      alert("La fecha no puede ser más antigua que el día actual.");
-      return;
-    }
+    setSubmitting(true);
 
     try {
       const response = await fetch(
@@ -67,130 +68,160 @@ const PaginaEdicionHorario = () => {
           body: JSON.stringify(horario),
         }
       );
+
       if (!response.ok) {
-        throw new Error("Error al actualizar el horario");
+        throw new Error("Error al actualizar");
       }
-      alert("Horario actualizado exitosamente");
-      navigate("/ComponenteGestorHorarios");
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Horario Actualizado!",
+        text: `El itinerario #${idHorario} ha sido actualizado con éxito.`,
+        timer: 1800,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        navigate("/ComponenteGestorHorarios");
+      }, 1500);
     } catch (error) {
       console.error("Error al actualizar el horario:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `No se pudo actualizar el horario: ${error.message}`
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  // Verificar si el horario está cargado completamente antes de renderizar el formulario
-  if (!horario.Fecha) {
-    return <p>Cargando...</p>;
-  }
-
   return (
-    <div className={style.fondo}>
-      <header className={style.header}>
-        <div className={style.logoairova} onClick={handleLogoClick}>
+    <div className="min-vh-100 bg-light d-flex flex-column">
+      <Navbar />
+
+      <div className="container py-4 px-3 px-md-4">
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <button
+            className="btn btn-link text-decoration-none text-muted p-0"
+            onClick={() => navigate("/ComponenteGestorHorarios")}
+          >
+            <i className="fa-solid fa-arrow-left me-1"></i> Volver a Horarios
+          </button>
         </div>
-        <nav className={style.nav}>
-          <ul className={style.ul}>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorHorarios")}
-              >
-                Horario
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorBuses")}
-              >
-                Bus
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorRuta")}
-              >
-                Ruta
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarUsuarios")}
-              >
-                Usuarios
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarTurno")}
-              >
-                Turnos
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.acrear}
-                onClick={() => navigate("/")}
-              >
-                Logout
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className={style.EdicionHorario}>
-        <form className={style.formEdicionRuta} onSubmit={handleSubmit}>
-          <h2 className={style.titulo}>Editar Horario</h2>
-          <div className={style.campos}>
-            <label className={style.label1}>
-              Fecha:
-              <input
-                className={style.input}
-                type="date"
-                name="Fecha"
-                value={horario.Fecha || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Hora de Salida:
-              <input
-                className={style.input}
-                type="time"
-                name="Hora_Salida"
-                value={horario.Hora_Salida || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Hora de Llegada:
-              <input
-                className={style.input}
-                type="time"
-                name="Hora_Llegada"
-                value={horario.Hora_Llegada || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
+
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-10 col-lg-8">
+            <div className="airova-card p-4 p-md-5">
+              <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                <div
+                  className="rounded-3 d-flex align-items-center justify-content-center"
+                  style={{ width: "48px", height: "48px", background: "rgba(124, 58, 237, 0.1)", color: "#7c3aed", fontSize: "1.3rem" }}
+                >
+                  <i className="fa-solid fa-pen-to-square"></i>
+                </div>
+                <div>
+                  <h2 className="h4 fw-bold text-dark mb-0">Editar Horario #{idHorario}</h2>
+                  <p className="text-muted small mb-0">Modifica la fecha programada o los tiempos de viaje</p>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="text-center py-5">
+                  <div className="spinner-border text-primary" role="status"></div>
+                  <p className="text-muted mt-2">Cargando horario...</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="row g-3">
+                    <div className="col-12">
+                      <label className="form-label fw-semibold text-secondary small">
+                        Fecha Programada <span className="text-danger">*</span>
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-white text-muted">
+                          <i className="fa-solid fa-calendar-day text-primary"></i>
+                        </span>
+                        <input
+                          type="date"
+                          className="form-control"
+                          name="Fecha"
+                          value={horario.Fecha}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-6">
+                      <label className="form-label fw-semibold text-secondary small">
+                        Hora de Salida <span className="text-danger">*</span>
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-white text-muted">
+                          <i className="fa-solid fa-clock text-success"></i>
+                        </span>
+                        <input
+                          type="time"
+                          className="form-control"
+                          name="Hora_Salida"
+                          value={horario.Hora_Salida}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-6">
+                      <label className="form-label fw-semibold text-secondary small">
+                        Hora de Llegada <span className="text-danger">*</span>
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-white text-muted">
+                          <i className="fa-solid fa-clock text-danger"></i>
+                        </span>
+                        <input
+                          type="time"
+                          className="form-control"
+                          name="Hora_Llegada"
+                          value={horario.Hora_Llegada}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary px-4"
+                      onClick={() => navigate("/ComponenteGestorHorarios")}
+                      disabled={submitting}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn btn-airova-primary px-4 d-flex align-items-center gap-2"
+                      disabled={submitting}
+                    >
+                      {submitting ? (
+                        <>
+                          <i className="fa-solid fa-spinner fa-spin"></i> Guardando...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-check"></i> Actualizar Horario
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
-          <div className={style.botones}>
-            <button className={style.boton1} type="submit">
-              Actualizar
-            </button>
-            <button
-              className={style.boton2}
-              type="button"
-              onClick={() => navigate("/ComponenteGestorHorarios")}
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );

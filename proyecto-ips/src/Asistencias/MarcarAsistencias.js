@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams,useNavigate } from 'react-router-dom'; // Importa useParams para acceder a parámetros de URL
-import style from "./MarcarAsistencias.module.css";
-
+import { useParams, useNavigate } from 'react-router-dom';
+import Navbar from "../components/Navbar";
+import Swal from 'sweetalert2';
 
 const Asistencia = () => {
     const [turnos, setTurnos] = useState({});
@@ -13,16 +13,13 @@ const Asistencia = () => {
 
     useEffect(() => {
         const fetchAsistencias = async () => {
-            console.log('Fetching asistencias for codigoTurno:', codigoTurno); // Log del código del turno
             try {
                 const response = await axios.get(`http://localhost:3001/api/Asistencias/${codigoTurno}`);
-                console.log('Response data:', response.data); // Log de los datos obtenidos
                 const agrupadoPorTurno = agruparPorTurno(response.data);
-                console.log('Grouped by turno:', agrupadoPorTurno); // Log de los datos agrupados
                 setTurnos(agrupadoPorTurno);
                 setLoading(false);
             } catch (err) {
-                console.error('Error fetching asistencias:', err); // Log del error
+                console.error('Error fetching asistencias:', err);
                 setError(err);
                 setLoading(false);
             }
@@ -31,10 +28,9 @@ const Asistencia = () => {
         if (codigoTurno) {
             fetchAsistencias();
         }
-    }, [codigoTurno]); // Dependencia en codigoTurno para volver a ejecutar cuando cambie
+    }, [codigoTurno]);
 
     const agruparPorTurno = (asistencias) => {
-        console.log('Grouping asistencias:', asistencias); // Log de las asistencias antes de agrupar
         return asistencias.reduce((acc, asistencia) => {
             const { Codigo_Turno } = asistencia;
             if (!acc[Codigo_Turno]) {
@@ -45,12 +41,11 @@ const Asistencia = () => {
         }, {});
     };
 
-    const handleAsistenciaChange = async (codigoAsistencia, newValue) => {
-        console.log('Updating asistencia:', { codigoAsistencia, newValue });
+    const handleAsistenciaChange = async (codigoAsistencia, newValue, nombreUsuario) => {
         try {
-            const intValue = newValue ? 1 : 0; // Convertir el booleano a un valor numérico
+            const intValue = newValue ? 1 : 0;
             await axios.put(`http://localhost:3001/api/Asistencia/${codigoAsistencia}`, { Asistencia: intValue });
-            console.log('Asistencia updated successfully');
+            
             setTurnos((prevTurnos) =>
                 Object.fromEntries(
                     Object.entries(prevTurnos).map(([turno, asistencias]) => [
@@ -63,75 +58,145 @@ const Asistencia = () => {
                     ])
                 )
             );
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: intValue ? 'success' : 'info',
+                title: `${nombreUsuario}: marcado como ${intValue ? 'Asistió' : 'Faltó'}`,
+                showConfirmButton: false,
+                timer: 2000
+            });
         } catch (err) {
             console.error('Error updating asistencia:', err);
-            setError(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo actualizar el estado de asistencia.'
+            });
         }
     };
-    const handleLogoClick = () => {
-        navigate("/VistaChofer/${Codigo_Usuario}");
-      };
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading data: {error.message}</p>;
 
     return (
-        <div className={style.fondo}>
-      <header className={style.header}>
-      <div className={style.logoairova} onClick={handleLogoClick}></div>
-        <nav className={style.nav}>
-          <ul className={style.ul}>
-            <li className={style.li}>
-              <a className={style.aopciones}
-              onClick={() => navigate("/Asistencia/1")}>
-                Marcar Asistencia
-              </a>
-            </li>
-            <li className={style.li}>
-              <a className={style.acrear}
-              onClick={() => navigate("/")}>
-                Logout
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className={style.gestorBus}>
-            <h1 className={style.gestorBusTitulo}>Asistencias</h1>
-            {Object.entries(turnos).map(([turno, asistencias]) => (
-                <div key={turno}>
-                    <h2>Turno: {turno}</h2>
-                    <table className={style.gestorBusTabla}>
-                        <thead>
-                            <tr>
-                                <th>ID Usuario</th>
-                                <th>Nombre Usuario</th>
-                                <th>Asistencia</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {asistencias.map((asistencia) => (
-                                <tr key={asistencia.Codigo_Asistencia}>
-                                    <td>{asistencia.Codigo_Usuario}</td>
-                                    <td>{asistencia.Nombre}</td>
-                                    <td>
-                                        <select
-                                            value={asistencia.Asistencia ? 1 : 0}
-                                            onChange={(e) =>
-                                                handleAsistenciaChange(asistencia.Codigo_Asistencia, e.target.value === '1')
-                                            }
-                                        >
-                                            <option value="1">Asistió</option>
-                                            <option value="0">Faltó</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+        <div className="min-vh-100 bg-light d-flex flex-column">
+            <Navbar />
+
+            <div className="container py-4 px-3 px-md-4">
+                <div className="d-flex align-items-center gap-2 mb-3">
+                    <button
+                        className="btn btn-link text-decoration-none text-muted p-0"
+                        onClick={() => navigate(-1)}
+                    >
+                        <i className="fa-solid fa-arrow-left me-1"></i> Regresar
+                    </button>
                 </div>
-            ))}
-        </div>
+
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div>
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                            <span className="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded">
+                                <i className="fa-solid fa-clipboard-check me-1"></i> Control de Personal
+                            </span>
+                            <span className="text-muted small">• Turno #{codigoTurno}</span>
+                        </div>
+                        <h1 className="h3 fw-bold text-dark mb-0">Registro de Asistencias</h1>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div className="airova-card p-5 text-center">
+                        <div className="spinner-border text-primary" role="status"></div>
+                        <p className="text-muted mt-2 mb-0">Cargando lista de asistencia...</p>
+                    </div>
+                ) : error ? (
+                    <div className="airova-card p-4 text-center">
+                        <div className="fs-1 text-danger mb-2">
+                            <i className="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h5 className="fw-semibold text-danger">Error al cargar asistencias</h5>
+                        <p className="text-muted small mb-0">{error.message}</p>
+                    </div>
+                ) : Object.keys(turnos).length === 0 ? (
+                    <div className="airova-card p-5 text-center">
+                        <div className="fs-1 text-muted mb-2">
+                            <i className="fa-solid fa-users-slash opacity-50"></i>
+                        </div>
+                        <h5 className="fw-semibold text-secondary">No hay pasajeros o personal registrado en este turno</h5>
+                        <p className="text-muted small mb-0">Puedes asignar personal a este turno desde el módulo de turnos.</p>
+                    </div>
+                ) : (
+                    Object.entries(turnos).map(([turno, asistencias]) => (
+                        <div className="airova-card p-4 mb-4" key={turno}>
+                            <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                                <div className="d-flex align-items-center gap-2">
+                                    <span className="badge bg-primary px-3 py-2 rounded-pill fs-7">
+                                        <i className="fa-solid fa-calendar-day me-1"></i> Turno #{turno}
+                                    </span>
+                                    <span className="text-muted small">Total asignados: {asistencias.length}</span>
+                                </div>
+                            </div>
+
+                            <div className="table-responsive">
+                                <table className="table table-hover align-middle mb-0">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th className="ps-3 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
+                                            <th className="text-secondary text-uppercase fs-7 fw-semibold">Personal / Pasajero</th>
+                                            <th className="text-secondary text-uppercase fs-7 fw-semibold">Estado de Asistencia</th>
+                                            <th className="pe-3 text-secondary text-uppercase fs-7 fw-semibold text-end">Acción Rápida</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {asistencias.map((asistencia) => (
+                                            <tr key={asistencia.Codigo_Asistencia}>
+                                                <td className="ps-3 fw-bold text-secondary">#{asistencia.Codigo_Usuario}</td>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <div
+                                                            className="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
+                                                            style={{ width: "36px", height: "36px", fontSize: "0.85rem" }}
+                                                        >
+                                                            <i className="fa-solid fa-user"></i>
+                                                        </div>
+                                                        <span className="fw-semibold text-dark">{asistencia.Nombre}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {asistencia.Asistencia ? (
+                                                        <span className="badge-status badge-status-activo">
+                                                            <i className="fa-solid fa-circle-check"></i> Asistió
+                                                        </span>
+                                                    ) : (
+                                                        <span className="badge-status badge-status-inactivo">
+                                                            <i className="fa-solid fa-circle-xmark"></i> Faltó
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="pe-3 text-end">
+                                                    <select
+                                                        className="form-select form-select-sm d-inline-block w-auto"
+                                                        value={asistencia.Asistencia ? "1" : "0"}
+                                                        onChange={(e) =>
+                                                            handleAsistenciaChange(
+                                                                asistencia.Codigo_Asistencia,
+                                                                e.target.value === "1",
+                                                                asistencia.Nombre
+                                                            )
+                                                        }
+                                                    >
+                                                        <option value="1">Marcar: Asistió</option>
+                                                        <option value="0">Marcar: Faltó</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
     );
 };

@@ -1,8 +1,7 @@
-// D:\Nueva carpeta\Sistema_Control_Buses\proyecto-ips\src\Usuario\PaginaInsertarUsuario.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fileTypeFromBuffer } from "file-type";
-import style from "./PaginaInsertarUsuario.module.css";
+import Navbar from "../components/Navbar";
+import Swal from "sweetalert2";
 
 const PaginaInsertarUsuario = () => {
   const [usuario, setUsuario] = useState({
@@ -12,19 +11,17 @@ const PaginaInsertarUsuario = () => {
     DNI: "",
     Codigo_Cargo: "",
     Edad: "",
-    Sexo: "", // Inicialmente vacío
+    Sexo: 1,
     Celular: "",
     Email: "",
     Direccion: "",
-    EstadoRegistro: "",
-    img: null, // Añadido para la imagen
+    EstadoRegistro: "Activo",
+    img: null,
   });
   const [cargos, setCargos] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogoClick = () => {
-    navigate("/VistaAdmin/${Codigo_Usuario}");
-  };
   useEffect(() => {
     fetch(`http://localhost:3001/api/cargos`)
       .then((response) => {
@@ -37,24 +34,6 @@ const PaginaInsertarUsuario = () => {
       .catch((error) => console.error("Error al obtener los cargos:", error));
   }, []);
 
-  // Función para manejar la cancelación
-  const handleCancel = () => {
-    setUsuario({
-      Nombre: "",
-      Nombre_Usuario: "",
-      Contrasena: "",
-      DNI: "",
-      Codigo_Cargo: "",
-      Edad: "",
-      Sexo: "", // Inicialmente vacío
-      Celular: "",
-      Email: "",
-      Direccion: "",
-      EstadoRegistro: "",
-      img: null, // Añadido para la imagen
-    });
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUsuario((prevState) => ({
@@ -63,19 +42,10 @@ const PaginaInsertarUsuario = () => {
     }));
   };
 
-  const validateImageFile = async (fileBuffer) => {
-    if (fileBuffer) {
-      const fileType = await fileTypeFromBuffer(fileBuffer);
-      if (!fileType || !fileType.mime.startsWith("image/")) {
-        throw new Error("El archivo subido no es una imagen válida");
-      }
-    }
-  };
-
   const handleFileChange = (e) => {
     setUsuario((prevState) => ({
       ...prevState,
-      img: e.target.files[0], // Guardar el archivo seleccionado
+      img: e.target.files[0],
     }));
   };
 
@@ -87,13 +57,7 @@ const PaginaInsertarUsuario = () => {
   };
 
   const handleSexoChange = (e) => {
-    // Asegúrate de que los valores sean 'Masculino' o 'Femenino'
-    const sexoValue =
-      e.target.value === "Masculino"
-        ? 1
-        : e.target.value === "Femenino"
-        ? 0
-        : 2;
+    const sexoValue = e.target.value === "Masculino" ? 1 : 0;
     setUsuario((prevState) => ({
       ...prevState,
       Sexo: sexoValue,
@@ -102,320 +66,350 @@ const PaginaInsertarUsuario = () => {
 
   const getMaxCodigoUsuario = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/maxCodigoUsuario`
-      );
+      const response = await fetch(`http://localhost:3001/api/maxCodigoUsuario`);
       if (!response.ok) {
-        throw new Error("Error al obtener el máximo código de usuario");
+        throw new Error("Error al obtener el código de usuario");
       }
       const data = await response.json();
-      return data.maxCodigoUsuario;
+      return data.maxCodigoUsuario || 0;
     } catch (error) {
-      console.error("Error al obtener el máximo código de usuario:", error);
-      return null;
+      console.error("Error al obtener el código de usuario:", error);
+      return 0;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (
+      !usuario.Nombre ||
+      !usuario.Nombre_Usuario ||
+      !usuario.Contrasena ||
+      !usuario.DNI ||
+      !usuario.Codigo_Cargo ||
+      !usuario.Edad
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Campos Incompletos",
+        text: "Por favor, completa los campos requeridos."
+      });
+      return;
+    }
+
+    const edad = parseInt(usuario.Edad, 10);
+    if (isNaN(edad) || edad < 18 || edad > 60) {
+      Swal.fire({
+        icon: "warning",
+        title: "Edad No Permitida",
+        text: "La edad debe estar comprendida entre 18 y 60 años."
+      });
+      return;
+    }
+
+    if (usuario.DNI.length !== 8) {
+      Swal.fire({
+        icon: "warning",
+        title: "DNI Inválido",
+        text: "El DNI debe tener exactamente 8 dígitos."
+      });
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      // Validación de campos obligatorios
-      if (
-        !usuario.Nombre ||
-        !usuario.Nombre_Usuario ||
-        !usuario.Contrasena ||
-        !usuario.DNI ||
-        !usuario.Codigo_Cargo ||
-        !usuario.Edad ||
-        usuario.Sexo === "" || // Asegúrate de que el campo Sexo tenga un valor válido
-        !usuario.Celular ||
-        !usuario.Email ||
-        !usuario.Direccion ||
-        !usuario.img ||
-        !usuario.EstadoRegistro
-      ) {
-        throw new Error("Por favor complete todos los campos");
-      }
-
-      // Validación del valor de Sexo
-      if (usuario.Sexo === 2) {
-        throw new Error("El valor del sexo no es válido");
-      }
-
-      // Validación de rango de edad
-      const edad = parseInt(usuario.Edad);
-      if (isNaN(edad) || edad < 18 || edad > 60) {
-        throw new Error("La edad debe estar entre 18 y 60 años");
-      }
-
-      // Validación del archivo de imagen
-      const file = usuario.img;
-      if (file) {
-        const buffer = await file.arrayBuffer();
-        const type = await fileTypeFromBuffer(new Uint8Array(buffer));
-        if (!type || !type.mime.startsWith("image/")) {
-          alert("El archivo subido no es una imagen válida");
-          return;
-        }
-      }
-
-      // Obtener el máximo código de usuario
       const maxCodigoUsuario = await getMaxCodigoUsuario();
-      if (maxCodigoUsuario !== null) {
-        const nuevoCodigoUsuario = maxCodigoUsuario + 1;
+      const nuevoCodigoUsuario = (maxCodigoUsuario || 0) + 1;
 
-        // Crear un FormData para enviar los datos junto con la imagen
-        const formData = new FormData();
-        formData.append("Codigo_Usuario", nuevoCodigoUsuario);
-        for (const key in usuario) {
+      const formData = new FormData();
+      formData.append("Codigo_Usuario", nuevoCodigoUsuario);
+      for (const key in usuario) {
+        if (usuario[key] !== null) {
           formData.append(key, usuario[key]);
         }
-
-        // Realizar la solicitud para insertar el usuario
-        const response = await fetch(`http://localhost:3001/api/insert`, {
-          method: "POST",
-          body: formData,
-        });
-        if (!response.ok) {
-          throw new Error("Error al insertar el usuario");
-        }
-        alert("Usuario insertado exitosamente");
-        navigate("/GestionarUsuarios");
       }
+
+      const response = await fetch(`http://localhost:3001/api/insert`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al insertar en la base de datos");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Usuario Registrado!",
+        text: `${usuario.Nombre} fue agregado correctamente.`,
+        timer: 1800,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        navigate("/GestionarUsuarios");
+      }, 1500);
     } catch (error) {
-      alert(`Error al insertar el usuario: ${error.message}`); // Mostrar error en alerta
-      console.error("Error al insertar el usuario:", error);
+      console.error("Error al insertar usuario:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `No se pudo registrar el usuario: ${error.message}`
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className={style.fondo}>
-      <header className={style.header}>
-        <div className={style.logoairova} onClick={handleLogoClick}>
-        </div>
-        <nav className={style.nav}>
-          <ul className={style.ul}>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorHorarios")}
-              >
-                Horario
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorBuses")}
-              >
-                Bus
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorRuta")}
-              >
-                Ruta
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarUsuarios")}
-              >
-                Usuarios
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarTurno")}
-              >
-                Turnos
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.acrear}
-                onClick={() => navigate("/")}
-              >
-                Logout
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className={style.insertarUsuario}>
-        <form className={style.formInsertarUsuario} onSubmit={handleSubmit}>
-          <h2 className={style.titulo}>Insertar Nuevo Usuario</h2>
-          <div className={style.campos}>
-            <label className={style.label1}>
-              Nombre:
-              <input
-                className={style.input}
-                type="text"
-                name="Nombre"
-                value={usuario.Nombre || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Nombre de Usuario:
-              <input
-                className={style.input}
-                type="text"
-                name="Nombre_Usuario"
-                value={usuario.Nombre_Usuario || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Contraseña:
-              <input
-                className={style.input}
-                type="password"
-                name="Contrasena"
-                value={usuario.Contrasena || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              DNI:
-              <input
-                className={style.input}
-                type="text"
-                name="DNI"
-                value={usuario.DNI || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Código de Cargo:
-              <select
-                className={style.select}
-                name="Codigo_Cargo"
-                value={usuario.Codigo_Cargo}
-                onChange={handleCargoChange}
-                required // Campo obligatorio
-              >
-                <option value="">Seleccione un cargo</option>
-                {cargos.map((cargo) => (
-                  <option key={cargo.Codigo_Cargo} value={cargo.Codigo_Cargo}>
-                    {cargo.Descripcion}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={style.label1}>
-              Edad:
-              <input
-                className={style.input}
-                type="number"
-                name="Edad"
-                value={usuario.Edad || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-                min="18"
-                max="60"
-              />
-            </label>
-            <label className={style.label1}>
-              Sexo:
-              <select
-                className={style.select}
-                name="Sexo"
-                value={
-                  usuario.Sexo === 1
-                    ? "Masculino"
-                    : usuario.Sexo === 0
-                    ? "Femenino"
-                    : ""
-                }
-                onChange={handleSexoChange}
-                required // Campo obligatorio
-              >
-                <option value="">Seleccione el sexo</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
-            </label>
-            <label className={style.label1}>
-              Celular:
-              <input
-                className={style.input}
-                type="text"
-                name="Celular"
-                value={usuario.Celular || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Email:
-              <input
-                className={style.input}
-                type="email"
-                name="Email"
-                value={usuario.Email || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Dirección:
-              <input
-                className={style.input}
-                type="text"
-                name="Direccion"
-                value={usuario.Direccion || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              />
-            </label>
-            <label className={style.label1}>
-              Estado de Registro:
-              <select
-                className={style.select}
-                name="EstadoRegistro"
-                value={usuario.EstadoRegistro || ""}
-                onChange={handleChange}
-                required // Campo obligatorio
-              >
-                <option value="">Seleccione un estado</option>
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-              </select>
-            </label>
-            <label className={style.label1}>
-              Imagen:
-              <input
-                className={style.input}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                required
-              />
-            </label>
-          </div>
-          <div className={style.botones}>
-            <button className={style.boton1} type="submit">
-              Insertar
-            </button>
+    <div className="min-vh-100 bg-light d-flex flex-column">
+      <Navbar />
 
-            <button
-              className={style.boton2}
-              type="button"
-              onClick={() => navigate("/GestionarUsuarios")}
-            >
-              Cancelar
-            </button>
+      <div className="container py-4 px-3 px-md-4">
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <button
+            className="btn btn-link text-decoration-none text-muted p-0"
+            onClick={() => navigate("/GestionarUsuarios")}
+          >
+            <i className="fa-solid fa-arrow-left me-1"></i> Volver a Usuarios
+          </button>
+        </div>
+
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-10 col-lg-8">
+            <div className="airova-card p-4 p-md-5">
+              <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                <div
+                  className="rounded-3 d-flex align-items-center justify-content-center"
+                  style={{ width: "48px", height: "48px", background: "rgba(5, 150, 105, 0.1)", color: "#059669", fontSize: "1.3rem" }}
+                >
+                  <i className="fa-solid fa-user-plus"></i>
+                </div>
+                <div>
+                  <h2 className="h4 fw-bold text-dark mb-0">Registrar Nuevo Usuario</h2>
+                  <p className="text-muted small mb-0">Completa la información laboral y credenciales de acceso</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                <div className="row g-3">
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Nombre Completo <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="Nombre"
+                      placeholder="Ej. Juan Pérez Ramos"
+                      value={usuario.Nombre}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Nombre de Usuario (Login) <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="Nombre_Usuario"
+                      placeholder="Ej. jperez"
+                      value={usuario.Nombre_Usuario}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Contraseña <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="Contrasena"
+                      placeholder="Contraseña segura"
+                      value={usuario.Contrasena}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      DNI <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="DNI"
+                      placeholder="8 dígitos"
+                      maxLength="8"
+                      value={usuario.DNI}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Cargo / Rol <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="Codigo_Cargo"
+                      value={usuario.Codigo_Cargo}
+                      onChange={handleCargoChange}
+                      required
+                    >
+                      <option value="">Seleccione un cargo...</option>
+                      {cargos.map((cargo) => (
+                        <option key={cargo.Codigo_Cargo} value={cargo.Codigo_Cargo}>
+                          {cargo.Descripcion}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-12 col-md-3">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Edad (18-60) <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="Edad"
+                      min="18"
+                      max="60"
+                      value={usuario.Edad}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-3">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Sexo <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="Sexo"
+                      value={usuario.Sexo === 1 ? "Masculino" : "Femenino"}
+                      onChange={handleSexoChange}
+                      required
+                    >
+                      <option value="Masculino">Masculino</option>
+                      <option value="Femenino">Femenino</option>
+                    </select>
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Celular <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="Celular"
+                      placeholder="9 dígitos"
+                      maxLength="9"
+                      value={usuario.Celular}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Correo Electrónico <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="Email"
+                      placeholder="correo@ejemplo.com"
+                      value={usuario.Email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Dirección <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="Direccion"
+                      placeholder="Dirección de residencia"
+                      value={usuario.Direccion}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Estado de Registro <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="EstadoRegistro"
+                      value={usuario.EstadoRegistro}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="Activo">Activo</option>
+                      <option value="Inactivo">Inactivo</option>
+                    </select>
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Foto de Perfil
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary px-4"
+                    onClick={() => navigate("/GestionarUsuarios")}
+                    disabled={submitting}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-airova-primary px-4 d-flex align-items-center gap-2"
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i> Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-floppy-disk"></i> Guardar Usuario
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

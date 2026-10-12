@@ -1,218 +1,166 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap");
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
 
- 
-    body {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-    }
-    .fondo {
-        position: relative;
-        width: 100vw;
-        max-width: 100%;
-        min-width: 500px;
-        height: 100vh;
-        overflow: auto;
-        text-align: left;
-        margin: 0;
-        padding: 0;
-        background-image: url('../../public/vector.svg');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-    }
-     .header {
-        background: rgb(0, 0, 0);
-        width: 100%;
-        min-width: 500px;
-        position: fixed;
-        z-index: 100;
-        display: flex;
-        flex-direction:row;
-        align-items: center;
-        justify-content:space-between;
+.heroBanner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 20px;
+  padding: 2.25rem 2.5rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
-      }
-      .nav {
-        float: right;
-      }
-      .ul{
-        list-style: none;
-        overflow: hidden;
-        display: flex;
-        min-width: 500px;
-      }
-      .li {
-        float: left;
-        font-family: Arial, Helvetica, sans-serif;;
-        font-size: 20px;
-        margin-top: 10px;
-      }
-      .aopciones {
-        font-family: 'Inter', sans-serif;
-        font-size: medium;
-        display: block; 
-        color: #fff;
-        text-decoration: none;
-        width: 150px;
-        text-align: center;
-        margin: 10px;
-        border-radius: 10px;
-        padding: 5px 0px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-      }
-      .aopciones:hover{
-        background-color: #2391ec;
-      }
-      .acrear{
-        font-family: 'Inter', sans-serif;
-        font-size: medium;
-        display: block; 
-        color: #fff;
-        text-decoration: none;
-        width: 150px;
-        text-align: center;
-        margin: 10px;
-        border-radius: 10px;
-        padding: 5px 0px;
-        background-color: dodgerblue;
-      }
-      .acrear:hover{
-        background-color: rgb(20, 92, 163);
-      }
-      .container{
-        padding-top: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding-bottom: 100px;
-    }
-    .tit{
-        font-family: 'Inter', sans-serif;
-        font-size: 50px;
-    }
-.botones{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    
+.heroBadge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  color: #94a3b8;
 }
-.crear,.gestionar{
-    margin-top: 20px;
-    margin-bottom: 15px;
-    display: flex;
-    padding: 5px 10px 5px 5px;
-    font-size: 15px;
-    line-height: 30px;
-    display: block;
-    width: 150px;
-    outline: 0;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    font-weight: bolder;
-    box-shadow: 0px 0px 0px 0px rgba(162, 161, 161, 0.85);
-    font-family: 'Montserrat';
-}
-.crear{
-    margin-right: 10px;
-    background-color: dodgerblue;
-    border-color: dodgerblue;
-    color: white;
-}
-.gestionar{
-    margin-left: 10px;
-    background-color: rgb(218, 218, 218);
-    border-color: rgb(218, 218, 218);
-    color: black;
-}
-.opcion1,.opcion3,.opcion5{
-display: flex;
-flex-direction: row;
-align-items:center;
-justify-content:space-between;
-width: 100%;
-margin-top: 30px;
-}
-.opcion2,.opcion4{
-    display: flex;
-    flex-direction:row-reverse;
-    align-items:center;
-    justify-content:space-between;
-    width: 100%;
-    margin-top: 30px;
-}
-.imghorario{
-    width: 483px;
-    height: 300px;
-    background-image: url(../../public/horario.jpg);
-    margin-left: 50px;
-    margin-right: 50px;
-    border-radius: 10px;
 
+.heroTitle {
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
 }
-.imgbuses{
-    width: 483px;
-    height: 300px;
-    background-image: url(../../public/buses.jpeg);
-    margin-left: 50px;
-    margin-right: 50px;
-    border-radius: 10px;
 
+.heroSubtitle {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  max-width: 600px;
+  margin-bottom: 0;
+  line-height: 1.6;
 }
-.imgrutas{
-    width: 483px;
-    height: 300px;
-    background-image: url(../../public/rutas.jpeg);
-    margin-left: 50px;
-    margin-right: 50px;
-    border-radius: 10px;
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
-.imgusuario{
-  width: 483px;
-  height: 300px;
-  background-image: url(../../public/usuarios.png);
-  margin-left: 50px;
-  margin-right: 50px;
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.moduleCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.75rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.moduleCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.moduleIconBox {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.moduleTag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  background: #f1f5f9;
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+}
+
+.moduleTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.moduleDesc {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.btnPrimaryCustom {
+  color: #ffffff !important;
+  font-weight: 600;
   border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.imgturno{
-  width: 483px;
-  height: 300px;
-  background-image: url(../../public/turnoimg.jpg);
-  margin-left: 50px;
-  margin-right: 50px;
+
+.btnPrimaryCustom:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.btnSecondaryCustom {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
   border-radius: 10px;
+  padding: 0.55rem 0.85rem;
+  transition: all 0.2s ease;
 }
-.opcion11,.opcion31,.opcion51{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items:baseline;
-    margin-left: 50px;
-    margin-right: 50px;
-}
-.opcion21,.opcion41{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items:baseline;
-    margin-left: 50px;
-    margin-right: 50px;
-}
-p{
-    color:gray;
-}
-.logoairova{
-    width: 70px;
-    height: 70px;
-    margin-left: 30px;
-    display: inline-block;
-    cursor: pointer;
-    background-image: url(../../public/logoairova.png);
-    min-width: 70px;
-    min-height: 70px;
+
+.btnSecondaryCustom:hover {
+  background: #e2e8f0;
+  color: #0f172a;
 }

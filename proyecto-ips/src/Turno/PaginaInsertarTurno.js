@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import style from "./PaginaInsertarTurno.module.css";
+import Navbar from "../components/Navbar";
+import Swal from "sweetalert2";
 
 const PaginaInsertarTurno = () => {
   const [turno, setTurno] = useState({
@@ -13,10 +14,9 @@ const PaginaInsertarTurno = () => {
   const [horarios, setHorarios] = useState([]);
   const [rutas, setRutas] = useState([]);
   const [conductores, setConductores] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-  const handleLogoClick = () => {
-    navigate("/VistaAdmin/${Codigo_Usuario}");
-  };
+
   useEffect(() => {
     fetch(`http://localhost:3001/api/buses`)
       .then((response) => response.json())
@@ -56,16 +56,17 @@ const PaginaInsertarTurno = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (
-        !turno.IDRuta ||
-        !turno.IDHorario ||
-        !turno.IDBus ||
-        !turno.Codigo_Cargo
-      ) {
-        throw new Error("Por favor complete todos los campos");
-      }
+    if (!turno.IDRuta || !turno.IDHorario || !turno.IDBus || !turno.Codigo_Cargo) {
+      Swal.fire({
+        icon: "warning",
+        title: "Campos Incompletos",
+        text: "Por favor, selecciona todos los elementos para crear el turno."
+      });
+      return;
+    }
 
+    setSubmitting(true);
+    try {
       const response = await fetch(`http://localhost:3001/api/insertarTurno`, {
         method: "POST",
         headers: {
@@ -75,163 +76,177 @@ const PaginaInsertarTurno = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Error al insertar el turno");
+        throw new Error("Error en la respuesta del servidor");
       }
-      alert("Turno insertado exitosamente");
-      navigate("/GestionarTurno");
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Turno Creado!",
+        text: "El viaje operativo ha sido programado exitosamente.",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        navigate("/GestionarTurno");
+      }, 1500);
     } catch (error) {
-      alert(`Error al insertar el turno: ${error.message}`);
       console.error("Error al insertar el turno:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `No se pudo registrar el turno: ${error.message}`
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className={style.fondo}>
-      <header className={style.header}>
-        <div className={style.logoairova} onClick={handleLogoClick}>
+    <div className="min-vh-100 bg-light d-flex flex-column">
+      <Navbar />
+
+      <div className="container py-4 px-3 px-md-4">
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <button
+            className="btn btn-link text-decoration-none text-muted p-0"
+            onClick={() => navigate("/GestionarTurno")}
+          >
+            <i className="fa-solid fa-arrow-left me-1"></i> Volver a Turnos
+          </button>
         </div>
-        <nav className={style.nav}>
-          <ul className={style.ul}>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorHorarios")}
-              >
-                Horario
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorBuses")}
-              >
-                Bus
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/ComponenteGestorRuta")}
-              >
-                Ruta
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarUsuarios")}
-              >
-                Usuarios
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.aopciones}
-                onClick={() => navigate("/GestionarTurno")}
-              >
-                Turnos
-              </a>
-            </li>
-            <li className={style.li}>
-              <a
-                className={style.acrear}
-                onClick={() => navigate("/")}
-              >
-                Logout
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className={style.insertarTurno}>
-        <form className={style.formInsertarTurno} onSubmit={handleSubmit}>
-          <h2 className={style.titulo}>Insertar Nuevo Turno</h2>
-          <div className={style.campos}>
-            <label className={style.label1}>
-              Bus:
-              <select
-                className={style.select}
-                name="IDBus"
-                value={turno.IDBus}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un bus</option>
-                {buses.map((bus) => (
-                  <option key={bus.IDBus} value={bus.IDBus}>
-                    {bus.Placa} - {bus.Num_Asientos} asientos
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={style.label1}>
-              Horario:
-              <select
-                className={style.select}
-                name="IDHorario"
-                value={turno.IDHorario}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un horario</option>
-                {horarios.map((horario) => (
-                  <option key={horario.IDHorario} value={horario.IDHorario}>
-                    {horario.Fecha} - {horario.Hora_Salida}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={style.label1}>
-              Ruta:
-              <select
-                className={style.select}
-                name="IDRuta"
-                value={turno.IDRuta}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione una ruta</option>
-                {rutas.map((ruta) => (
-                  <option key={ruta.IDRuta} value={ruta.IDRuta}>
-                    {ruta.PuntoSalida} - {ruta.PuntoLlegada}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={style.label1}>
-              Conductor:
-              <select
-                className={style.select}
-                name="Codigo_Cargo"
-                value={turno.Codigo_Cargo}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un conductor</option>
-                {conductores.map((conductor) => (
-                  <option
-                    key={conductor.Codigo_Cargo}
-                    value={conductor.Codigo_Cargo}
+
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-10 col-lg-8">
+            <div className="airova-card p-4 p-md-5">
+              <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                <div
+                  className="rounded-3 d-flex align-items-center justify-content-center"
+                  style={{ width: "48px", height: "48px", background: "rgba(234, 88, 12, 0.1)", color: "#ea580c", fontSize: "1.3rem" }}
+                >
+                  <i className="fa-solid fa-calendar-plus"></i>
+                </div>
+                <div>
+                  <h2 className="h4 fw-bold text-dark mb-0">Programar Nuevo Turno</h2>
+                  <p className="text-muted small mb-0">Asocia una ruta, horario, bus y chofer en una sola asignación de viaje</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                <div className="row g-3">
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Bus Asignado <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="IDBus"
+                      value={turno.IDBus}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Selecciona un bus...</option>
+                      {buses.map((bus) => (
+                        <option key={bus.IDBus} value={bus.IDBus}>
+                          {bus.Placa} ({bus.Modelo}) - {bus.Num_Asientos} asientos
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-12 col-md-6">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Conductor <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="Codigo_Cargo"
+                      value={turno.Codigo_Cargo}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Selecciona un conductor...</option>
+                      {conductores.map((conductor) => (
+                        <option
+                          key={conductor.Codigo_Usuario}
+                          value={conductor.Codigo_Usuario}
+                        >
+                          {conductor.Nombre} (DNI: {conductor.DNI})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Ruta del Trayecto <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="IDRuta"
+                      value={turno.IDRuta}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Selecciona una ruta...</option>
+                      {rutas.map((ruta) => (
+                        <option key={ruta.IDRuta} value={ruta.IDRuta}>
+                          {ruta.PuntoSalida} ➔ {ruta.PuntoLlegada}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold text-secondary small">
+                      Itinerario / Horario <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      name="IDHorario"
+                      value={turno.IDHorario}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Selecciona un horario...</option>
+                      {horarios.map((horario) => (
+                        <option key={horario.IDHorario} value={horario.IDHorario}>
+                          Fecha: {horario.Fecha} | Salida: {horario.Hora_Salida} - Llegada: {horario.Hora_Llegada}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary px-4"
+                    onClick={() => navigate("/GestionarTurno")}
+                    disabled={submitting}
                   >
-                    {conductor.Nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-airova-primary px-4 d-flex align-items-center gap-2"
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i> Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-floppy-disk"></i> Crear Turno
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className={style.botones}>
-            <button className={style.boton1} type="submit">
-              Insertar
-            </button>
-            <button
-              className={style.boton2}
-              type="button"
-              onClick={() => navigate("/GestionarTurno")}
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );

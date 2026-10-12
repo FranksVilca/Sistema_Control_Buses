@@ -1,0 +1,12 @@
+# Archivos internos y datos de MySQL
+mysql-data/
+
+# Dependencias de Node.js
+proyecto-ips/node_modules/
+
+# Archivos de compilación
+proyecto-ips/build/
+
+# Variables de entorno
+.env
+proyecto-ips/.env
