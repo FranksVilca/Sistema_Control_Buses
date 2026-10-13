@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -13,6 +15,7 @@ const ComponenteGestorRutas = () => {
   const [filterLlegada, setFilterLlegada] = useState("todos");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedRuta, setSelectedRuta] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const ComponenteGestorRutas = () => {
   const handleDelete = async (IDRuta, nombreRuta) => {
     const result = await Swal.fire({
       title: "¿Eliminar esta ruta?",
-      text: `¿Estás seguro de eliminar la ruta #${IDRuta} (${nombreRuta})?`,
+      text: `¿Estás seguro de eliminar la ruta ${formatId(IDRuta, "RUT")} (${nombreRuta})?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
@@ -87,7 +90,8 @@ const ComponenteGestorRutas = () => {
   };
 
   const handleEdit = (IDRuta) => {
-    navigate(`/PaginaEdicionRuta/${IDRuta}`);
+    sessionStorage.setItem("airova_edit_ruta_id", IDRuta);
+    navigate("/PaginaEdicionRuta", { state: { idRuta: IDRuta } });
   };
 
   const salidasUnicas = Array.from(
@@ -100,11 +104,13 @@ const ComponenteGestorRutas = () => {
 
   const filteredRutas = rutas.filter((r) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(r.IDRuta, "RUT").toLowerCase();
     const matchesSearch =
       !term ||
       (r.PuntoSalida && r.PuntoSalida.toLowerCase().includes(term)) ||
       (r.PuntoLlegada && r.PuntoLlegada.toLowerCase().includes(term)) ||
-      (r.IDRuta && r.IDRuta.toString().includes(term));
+      (r.IDRuta && r.IDRuta.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const matchesSalida =
       filterSalida === "todos" || r.PuntoSalida === filterSalida;
@@ -174,7 +180,7 @@ const ComponenteGestorRutas = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por origen, destino o ID..."
+                  placeholder="Buscar por código (RUT-001), origen o destino..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -292,7 +298,9 @@ const ComponenteGestorRutas = () => {
                   <tbody>
                     {paginatedRutas.map((r) => (
                       <tr key={r.IDRuta}>
-                        <td className="ps-4 fw-bold text-secondary">#{r.IDRuta}</td>
+                        <td className="ps-4">
+                          <IdBadge prefix="RUT" id={r.IDRuta} />
+                        </td>
                         <td>
                           <div className="d-flex align-items-center gap-2">
                             <span className="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
@@ -315,11 +323,18 @@ const ComponenteGestorRutas = () => {
                         <td className="pe-4 text-end">
                           <div className="btn-group">
                             <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedRuta(r)}
+                              title="Ver detalle de la ruta"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i>
+                            </button>
+                            <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => handleEdit(r.IDRuta)}
                               title="Editar ruta"
                             >
-                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                              <i className="fa-solid fa-pen-to-square me-1"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
@@ -347,6 +362,72 @@ const ComponenteGestorRutas = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedRuta)}
+        onClose={() => setSelectedRuta(null)}
+        title={
+          selectedRuta
+            ? `${selectedRuta.PuntoSalida} → ${selectedRuta.PuntoLlegada}`
+            : "Detalle de Ruta"
+        }
+        subtitle="Información del recorrido y terminales autorizados"
+        icon="fa-route"
+        idBadge={selectedRuta ? { prefix: "RUT", id: selectedRuta.IDRuta } : null}
+        statusBadge={
+          <span className="badge-status badge-status-activo">
+            <i className="fa-solid fa-circle-check"></i> Ruta Operativa
+          </span>
+        }
+        fields={
+          selectedRuta
+            ? [
+                {
+                  label: "Código de Ruta",
+                  value: formatId(selectedRuta.IDRuta, "RUT"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Estado de Trayecto",
+                  value: selectedRuta.EstadoRegistro || "Activa",
+                  icon: "fa-road",
+                },
+                {
+                  label: "Terminal de Salida (Origen)",
+                  value: selectedRuta.PuntoSalida,
+                  icon: "fa-location-dot",
+                },
+                {
+                  label: "Terminal de Llegada (Destino)",
+                  value: selectedRuta.PuntoLlegada,
+                  icon: "fa-flag-checkered",
+                },
+              ]
+            : []
+        }
+        secondaryAction={{
+          label: "Ver Mapa",
+          icon: "fa-map-location-dot",
+          onClick: () => {
+            setSelectedRuta(null);
+            navigate("/TrabajadorRuta");
+          },
+        }}
+        primaryAction={
+          selectedRuta
+            ? {
+                label: "Editar Ruta",
+                icon: "fa-pen-to-square",
+                onClick: () => {
+                  const id = selectedRuta.IDRuta;
+                  setSelectedRuta(null);
+                  handleEdit(id);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

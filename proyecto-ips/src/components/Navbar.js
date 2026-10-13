@@ -31,9 +31,9 @@ const Navbar = () => {
 
   const getHomePath = () => {
     if (!user) return '/';
-    if (user.Codigo_Cargo === 1) return `/VistaAdmin/${user.Codigo_Usuario}`;
-    if (user.Codigo_Cargo === 2) return `/VistaUsuario/${user.Codigo_Usuario}`;
-    if (user.Codigo_Cargo === 3) return `/VistaChofer/${user.Codigo_Usuario}`;
+    if (user.Codigo_Cargo === 1) return '/VistaAdmin';
+    if (user.Codigo_Cargo === 2) return '/VistaUsuario';
+    if (user.Codigo_Cargo === 3) return '/VistaChofer';
     return '/';
   };
 
@@ -134,7 +134,7 @@ const Navbar = () => {
                 <li className="nav-item">
                   <button 
                     className={`nav-link nav-btn ${isActive('/Asistencia') ? 'active' : ''}`}
-                    onClick={() => { setMobileMenuOpen(false); navigate('/Asistencia/1'); }}
+                    onClick={() => { setMobileMenuOpen(false); navigate('/Asistencia', { state: { codigoTurno: 1 } }); }}
                   >
                     <i className="fa-solid fa-clipboard-check me-2"></i>
                     Marcar Asistencia

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from 'sweetalert2';
 
 const ITEMS_PER_PAGE = 10;
@@ -14,7 +16,10 @@ const Asistencia = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { codigoTurno } = useParams(); 
+    const [selectedAsistencia, setSelectedAsistencia] = useState(null);
+    const params = useParams();
+    const location = useLocation();
+    const codigoTurno = params.codigoTurno || location.state?.codigoTurno || 1;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -115,7 +120,7 @@ const Asistencia = () => {
                             <span className="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded">
                                 <i className="fa-solid fa-clipboard-check me-1"></i> Control de Personal
                             </span>
-                            <span className="text-muted small">• Turno #{codigoTurno}</span>
+                            <IdBadge prefix="TRN" id={codigoTurno} />
                         </div>
                         <h1 className="h3 fw-bold text-dark mb-0">Registro de Asistencias</h1>
                     </div>
@@ -135,7 +140,7 @@ const Asistencia = () => {
                                 <input
                                     type="text"
                                     className="form-control border-start-0 ps-0"
-                                    placeholder="Buscar por nombre o ID de usuario..."
+                                    placeholder="Buscar por código (USR-001) o nombre..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
@@ -205,10 +210,12 @@ const Asistencia = () => {
                     Object.entries(turnos).map(([turno, asistencias]) => {
                         const filteredAsistencias = asistencias.filter((a) => {
                             const term = searchTerm.toLowerCase();
+                            const formattedCode = formatId(a.Codigo_Usuario, "USR").toLowerCase();
                             const matchesSearch =
                                 !term ||
                                 (a.Nombre && a.Nombre.toLowerCase().includes(term)) ||
-                                (a.Codigo_Usuario && a.Codigo_Usuario.toString().includes(term));
+                                (a.Codigo_Usuario && a.Codigo_Usuario.toString().includes(term)) ||
+                                formattedCode.includes(term);
 
                             const matchesEstado =
                                 filterAsistencia === "todos" ||
@@ -229,9 +236,7 @@ const Asistencia = () => {
                             <div className="airova-card overflow-hidden mb-4" key={turno}>
                                 <div className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
                                     <div className="d-flex align-items-center gap-2">
-                                        <span className="badge bg-primary text-dark px-3 py-2 rounded-pill fs-7 fw-bold">
-                                            <i className="fa-solid fa-calendar-day me-1"></i> Turno #{turno}
-                                        </span>
+                                        <IdBadge prefix="TRN" id={turno} />
                                         <span className="text-muted small">
                                             Mostrando {filteredAsistencias.length} de {asistencias.length} asignados
                                         </span>
@@ -260,7 +265,9 @@ const Asistencia = () => {
                                                 <tbody>
                                                     {paginatedAsistencias.map((asistencia) => (
                                                         <tr key={asistencia.Codigo_Asistencia}>
-                                                            <td className="ps-4 fw-bold text-secondary">#{asistencia.Codigo_Usuario}</td>
+                                                            <td className="ps-4">
+                                                                <IdBadge prefix="USR" id={asistencia.Codigo_Usuario} />
+                                                            </td>
                                                             <td>
                                                                 <div className="d-flex align-items-center gap-2">
                                                                     <div
@@ -284,20 +291,30 @@ const Asistencia = () => {
                                                                 )}
                                                             </td>
                                                             <td className="pe-4 text-end">
-                                                                <select
-                                                                    className="form-select form-select-sm d-inline-block w-auto"
-                                                                    value={asistencia.Asistencia ? "1" : "0"}
-                                                                    onChange={(e) =>
-                                                                        handleAsistenciaChange(
-                                                                            asistencia.Codigo_Asistencia,
-                                                                            e.target.value === "1",
-                                                                            asistencia.Nombre
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <option value="1">Marcar: Asistió</option>
-                                                                    <option value="0">Marcar: Faltó</option>
-                                                                </select>
+                                                                <div className="d-inline-flex align-items-center gap-2">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm btn-outline-secondary"
+                                                                        onClick={() => setSelectedAsistencia(asistencia)}
+                                                                        title="Ver detalle de asistencia"
+                                                                    >
+                                                                        <i className="fa-solid fa-eye me-1"></i> Detalle
+                                                                    </button>
+                                                                    <select
+                                                                        className="form-select form-select-sm d-inline-block w-auto"
+                                                                        value={asistencia.Asistencia ? "1" : "0"}
+                                                                        onChange={(e) =>
+                                                                            handleAsistenciaChange(
+                                                                                asistencia.Codigo_Asistencia,
+                                                                                e.target.value === "1",
+                                                                                asistencia.Nombre
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <option value="1">Marcar: Asistió</option>
+                                                                        <option value="0">Marcar: Faltó</option>
+                                                                    </select>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -319,6 +336,87 @@ const Asistencia = () => {
                     })
                 )}
             </div>
+
+            {/* Modal de Vista Detalle */}
+            <DetailModal
+                isOpen={Boolean(selectedAsistencia)}
+                onClose={() => setSelectedAsistencia(null)}
+                title={selectedAsistencia?.Nombre || "Detalle de Asistencia"}
+                subtitle="Registro de control de embarque y asistencia de personal"
+                icon="fa-clipboard-check"
+                idBadge={
+                    selectedAsistencia
+                        ? { prefix: "USR", id: selectedAsistencia.Codigo_Usuario }
+                        : null
+                }
+                statusBadge={
+                    selectedAsistencia ? (
+                        selectedAsistencia.Asistencia ? (
+                            <span className="badge-status badge-status-activo">
+                                <i className="fa-solid fa-circle-check"></i> Asistió
+                            </span>
+                        ) : (
+                            <span className="badge-status badge-status-inactivo">
+                                <i className="fa-solid fa-circle-xmark"></i> Faltó
+                            </span>
+                        )
+                    ) : null
+                }
+                fields={
+                    selectedAsistencia
+                        ? [
+                              {
+                                  label: "Código de Trabajador",
+                                  value: formatId(selectedAsistencia.Codigo_Usuario, "USR"),
+                                  icon: "fa-id-badge",
+                              },
+                              {
+                                  label: "Turno Asignado",
+                                  value: formatId(
+                                      selectedAsistencia.Codigo_Turno || codigoTurno,
+                                      "TRN"
+                                  ),
+                                  icon: "fa-calendar-days",
+                              },
+                              {
+                                  label: "Nombre Completo",
+                                  value: selectedAsistencia.Nombre,
+                                  icon: "fa-user",
+                              },
+                              {
+                                  label: "Estado de Embarque",
+                                  value: selectedAsistencia.Asistencia
+                                      ? "Asistencia Confirmada"
+                                      : "Ausente / No Embarcó",
+                                  icon: "fa-clipboard-user",
+                              },
+                          ]
+                        : []
+                }
+                primaryAction={
+                    selectedAsistencia
+                        ? {
+                              label: selectedAsistencia.Asistencia
+                                  ? "Cambiar a Faltó"
+                                  : "Confirmar Asistencia",
+                              icon: selectedAsistencia.Asistencia
+                                  ? "fa-circle-xmark"
+                                  : "fa-circle-check",
+                              onClick: () => {
+                                  const nextState = !selectedAsistencia.Asistencia;
+                                  handleAsistenciaChange(
+                                      selectedAsistencia.Codigo_Asistencia,
+                                      nextState,
+                                      selectedAsistencia.Nombre
+                                  );
+                                  setSelectedAsistencia((prev) =>
+                                      prev ? { ...prev, Asistencia: nextState ? 1 : 0 } : null
+                                  );
+                              },
+                          }
+                        : null
+                }
+            />
         </div>
     );
 };

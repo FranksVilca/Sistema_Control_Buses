@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -12,6 +14,7 @@ const ComponenteGestorUsuarios = () => {
   const [filterCargo, setFilterCargo] = useState("todos");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedUsuario, setSelectedUsuario] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +49,7 @@ const ComponenteGestorUsuarios = () => {
   const handleDelete = async (codigoUsuario, nombre) => {
     const result = await Swal.fire({
       title: "¿Eliminar usuario?",
-      text: `¿Estás seguro de eliminar al usuario ${nombre || `#${codigoUsuario}`}?`,
+      text: `¿Estás seguro de eliminar al usuario ${nombre || ""} (${formatId(codigoUsuario, "USR")})?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
@@ -86,7 +89,8 @@ const ComponenteGestorUsuarios = () => {
   };
 
   const handleEdit = (codigoUsuario) => {
-    navigate(`/editar/${codigoUsuario}`);
+    sessionStorage.setItem("airova_edit_user_id", codigoUsuario);
+    navigate("/editar", { state: { codigoUsuario } });
   };
 
   const getCargoBadge = (codigoCargo) => {
@@ -104,6 +108,7 @@ const ComponenteGestorUsuarios = () => {
 
   const filteredUsuarios = usuarios.filter((u) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(u.Codigo_Usuario, "USR").toLowerCase();
     const matchesSearch =
       !term ||
       (u.Nombre && u.Nombre.toLowerCase().includes(term)) ||
@@ -111,7 +116,8 @@ const ComponenteGestorUsuarios = () => {
       (u.DNI && u.DNI.includes(term)) ||
       (u.Email && u.Email.toLowerCase().includes(term)) ||
       (u.Celular && u.Celular.toString().includes(term)) ||
-      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term));
+      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const matchesCargo =
       filterCargo === "todos" ||
@@ -177,7 +183,7 @@ const ComponenteGestorUsuarios = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por nombre, usuario, DNI, celular o email..."
+                  placeholder="Buscar por código (USR-001), nombre, usuario, DNI o email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -269,7 +275,9 @@ const ComponenteGestorUsuarios = () => {
                   <tbody>
                     {paginatedUsuarios.map((u) => (
                       <tr key={u.Codigo_Usuario}>
-                        <td className="ps-4 fw-bold text-secondary">#{u.Codigo_Usuario}</td>
+                        <td className="ps-4">
+                          <IdBadge prefix="USR" id={u.Codigo_Usuario} />
+                        </td>
                         <td>
                           <div className="fw-semibold text-dark">{u.Nombre}</div>
                           <div className="text-muted small">@{u.Nombre_Usuario}</div>
@@ -293,11 +301,18 @@ const ComponenteGestorUsuarios = () => {
                         <td className="pe-4 text-end">
                           <div className="btn-group">
                             <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedUsuario(u)}
+                              title="Ver detalle del usuario"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i>
+                            </button>
+                            <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => handleEdit(u.Codigo_Usuario)}
                               title="Editar usuario"
                             >
-                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                              <i className="fa-solid fa-pen-to-square me-1"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
@@ -325,6 +340,90 @@ const ComponenteGestorUsuarios = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedUsuario)}
+        onClose={() => setSelectedUsuario(null)}
+        title={selectedUsuario?.Nombre || "Detalle de Usuario"}
+        subtitle={
+          selectedUsuario?.Nombre_Usuario
+            ? `@${selectedUsuario.Nombre_Usuario} • Perfil de Personal AIROVA`
+            : "Perfil de Personal AIROVA"
+        }
+        icon="fa-user-tie"
+        idBadge={
+          selectedUsuario
+            ? { prefix: "USR", id: selectedUsuario.Codigo_Usuario }
+            : null
+        }
+        statusBadge={
+          selectedUsuario ? getCargoBadge(selectedUsuario.Codigo_Cargo) : null
+        }
+        fields={
+          selectedUsuario
+            ? [
+                {
+                  label: "Código de Usuario",
+                  value: formatId(selectedUsuario.Codigo_Usuario, "USR"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Usuario de Acceso",
+                  value: `@${selectedUsuario.Nombre_Usuario || "-"}`,
+                  icon: "fa-at",
+                },
+                {
+                  label: "DNI / Documento",
+                  value: selectedUsuario.DNI || "Sin DNI",
+                  icon: "fa-address-card",
+                },
+                {
+                  label: "Edad y Sexo",
+                  value: `${
+                    selectedUsuario.Edad ? `${selectedUsuario.Edad} años` : "Edad no reg."
+                  } • ${
+                    selectedUsuario.Sexo === 1
+                      ? "Masculino"
+                      : selectedUsuario.Sexo === 0
+                      ? "Femenino"
+                      : "No especificado"
+                  }`,
+                  icon: "fa-venus-mars",
+                },
+                {
+                  label: "Teléfono / Celular",
+                  value: selectedUsuario.Celular || "No registrado",
+                  icon: "fa-phone",
+                },
+                {
+                  label: "Correo Electrónico",
+                  value: selectedUsuario.Email || "No registrado",
+                  icon: "fa-envelope",
+                },
+                {
+                  label: "Dirección de Domicilio",
+                  value: selectedUsuario.Direccion || "No registrada",
+                  icon: "fa-location-dot",
+                  fullWidth: true,
+                },
+              ]
+            : []
+        }
+        primaryAction={
+          selectedUsuario
+            ? {
+                label: "Editar Usuario",
+                icon: "fa-pen-to-square",
+                onClick: () => {
+                  const id = selectedUsuario.Codigo_Usuario;
+                  setSelectedUsuario(null);
+                  handleEdit(id);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

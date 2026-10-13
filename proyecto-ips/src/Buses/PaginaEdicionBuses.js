@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import IdBadge, { formatId } from "../components/IdBadge";
 import Swal from "sweetalert2";
 
 const PaginaEdicionBus = () => {
-  const { idBus } = useParams();
+  const params = useParams();
+  const location = useLocation();
+  const idBus =
+    params.idBus ||
+    location.state?.idBus ||
+    sessionStorage.getItem("airova_edit_bus_id");
   const [bus, setBus] = useState({
     Num_Asientos: "",
     EstadoRegistro: "Activo",
@@ -17,6 +23,10 @@ const PaginaEdicionBus = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!idBus) {
+      navigate("/ComponenteGestorBuses");
+      return;
+    }
     fetch(`http://localhost:3001/api/bus/${idBus}`)
       .then((response) => {
         if (!response.ok) {
@@ -37,7 +47,7 @@ const PaginaEdicionBus = () => {
         });
         setLoading(false);
       });
-  }, [idBus]);
+  }, [idBus, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,7 +80,7 @@ const PaginaEdicionBus = () => {
       Swal.fire({
         icon: "success",
         title: "¡Actualización Exitosa!",
-        text: `El bus #${idBus} ha sido modificado.`,
+        text: `El bus ${formatId(idBus, "BUS")} ha sido modificado.`,
         timer: 1800,
         showConfirmButton: false,
       });
@@ -115,7 +125,10 @@ const PaginaEdicionBus = () => {
                   <i className="fa-solid fa-pen-to-square"></i>
                 </div>
                 <div>
-                  <h2 className="h4 fw-bold text-dark mb-0">Editar Bus #{idBus}</h2>
+                  <div className="d-flex align-items-center gap-2">
+                    <h2 className="h4 fw-bold text-dark mb-0">Editar Bus</h2>
+                    <IdBadge prefix="BUS" id={idBus} />
+                  </div>
                   <p className="text-muted small mb-0">Modifica los detalles técnicos o el estado de la unidad</p>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../components/AuthContext';
+import IdBadge from '../components/IdBadge';
 
 const TrabajadorPerfil = () => {
   const { codigoUsuario: paramId } = useParams();
@@ -84,8 +85,9 @@ const TrabajadorPerfil = () => {
                         {trabajador.Cargo || "Colaborador AIROVA"}
                       </span>
                       <h2 className="h4 fw-bold text-dark mb-1">{trabajador.Nombre}</h2>
-                      <div className="text-muted small">
-                        <i className="fa-solid fa-id-badge me-1"></i> Código: #{trabajador.Codigo_Usuario} • @{trabajador.Nombre_Usuario}
+                      <div className="d-flex align-items-center justify-content-center justify-content-sm-start gap-2 text-muted small">
+                        <IdBadge prefix="USR" id={trabajador.Codigo_Usuario} />
+                        <span>• @{trabajador.Nombre_Usuario}</span>
                       </div>
                     </div>
                   </div>

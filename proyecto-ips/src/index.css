@@ -579,3 +579,200 @@ body.dark-mode .airova-pagination .page-link:hover:not(:disabled) {
   color: var(--airova-text-muted);
 }
 
+/* Enterprise ID Badge Pills (BUS-001, USR-004, RUT-002, TRN-010, HOR-005) */
+.airova-id-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border-radius: 8px;
+  background-color: rgba(64, 222, 65, 0.1);
+  border: 1px solid rgba(64, 222, 65, 0.35);
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  user-select: all;
+  white-space: nowrap;
+}
+
+.airova-id-prefix {
+  color: #1ea020;
+  font-weight: 800;
+}
+
+.airova-id-sep {
+  color: #94a3b8;
+  margin: 0 2px;
+  font-weight: 500;
+}
+
+.airova-id-number {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+[data-bs-theme="dark"] .airova-id-badge,
+[data-theme="dark"] .airova-id-badge,
+body.dark-mode .airova-id-badge {
+  background-color: rgba(64, 222, 65, 0.12);
+  border-color: rgba(64, 222, 65, 0.3);
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .airova-id-prefix,
+[data-theme="dark"] .airova-id-prefix,
+body.dark-mode .airova-id-prefix {
+  color: #40DE41;
+}
+
+[data-bs-theme="dark"] .airova-id-number,
+[data-theme="dark"] .airova-id-number,
+body.dark-mode .airova-id-number {
+  color: #f8fafc;
+}
+
+/* ================= DETAIL MODAL STYLES ================= */
+.airova-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: airovaFadeIn 0.18s ease-out;
+}
+
+.airova-detail-modal {
+  background-color: var(--airova-card);
+  border: 1px solid var(--airova-border);
+  border-radius: 18px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  animation: airovaScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.airova-detail-header {
+  padding: 1.35rem 1.5rem;
+  border-bottom: 1px solid var(--airova-border);
+  background: linear-gradient(135deg, rgba(64, 222, 65, 0.08), transparent);
+}
+
+.airova-detail-icon {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 14px;
+  background: rgba(64, 222, 65, 0.14);
+  border: 1px solid rgba(64, 222, 65, 0.3);
+  color: #25b826;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+[data-bs-theme="dark"] .airova-detail-icon,
+[data-theme="dark"] .airova-detail-icon,
+body.dark-mode .airova-detail-icon {
+  color: #40DE41;
+  background: rgba(64, 222, 65, 0.12);
+}
+
+.airova-detail-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--airova-border);
+  background-color: var(--airova-card);
+  color: var(--airova-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.airova-detail-close:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #ef4444;
+}
+
+[data-bs-theme="dark"] .airova-detail-close:hover,
+[data-theme="dark"] .airova-detail-close:hover,
+body.dark-mode .airova-detail-close:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.airova-detail-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.airova-detail-field {
+  background-color: var(--airova-bg);
+  border: 1px solid var(--airova-border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.airova-detail-field:hover {
+  border-color: rgba(64, 222, 65, 0.45);
+}
+
+.airova-detail-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--airova-text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.airova-detail-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--airova-text-main);
+  word-break: break-word;
+}
+
+.airova-detail-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--airova-border);
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+[data-bs-theme="dark"] .airova-detail-footer,
+[data-theme="dark"] .airova-detail-footer,
+body.dark-mode .airova-detail-footer {
+  background-color: rgba(15, 23, 42, 0.45);
+}
+
+@keyframes airovaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes airovaScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import IdBadge, { formatId } from "../components/IdBadge";
 import Swal from "sweetalert2";
 
 const PaginaEdicionHorario = () => {
-  const { idHorario } = useParams();
+  const params = useParams();
+  const location = useLocation();
+  const idHorario =
+    params.idHorario ||
+    location.state?.idHorario ||
+    sessionStorage.getItem("airova_edit_horario_id");
   const [horario, setHorario] = useState({
     Fecha: "",
     Hora_Salida: "",
@@ -15,6 +21,10 @@ const PaginaEdicionHorario = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!idHorario) {
+      navigate("/ComponenteGestorHorarios");
+      return;
+    }
     fetchHorario();
   }, [idHorario]);
 
@@ -76,7 +86,7 @@ const PaginaEdicionHorario = () => {
       Swal.fire({
         icon: "success",
         title: "¡Horario Actualizado!",
-        text: `El itinerario #${idHorario} ha sido actualizado con éxito.`,
+        text: `El itinerario ${formatId(idHorario, "HOR")} ha sido actualizado con éxito.`,
         timer: 1800,
         showConfirmButton: false,
       });
@@ -116,12 +126,15 @@ const PaginaEdicionHorario = () => {
               <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
                 <div
                   className="rounded-3 d-flex align-items-center justify-content-center"
-                  style={{ width: "48px", height: "48px", background: "rgba(124, 58, 237, 0.1)", color: "#7c3aed", fontSize: "1.3rem" }}
+                  style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                 >
                   <i className="fa-solid fa-pen-to-square"></i>
                 </div>
                 <div>
-                  <h2 className="h4 fw-bold text-dark mb-0">Editar Horario #{idHorario}</h2>
+                  <div className="d-flex align-items-center gap-2">
+                    <h2 className="h4 fw-bold text-dark mb-0">Editar Horario</h2>
+                    <IdBadge prefix="HOR" id={idHorario} />
+                  </div>
                   <p className="text-muted small mb-0">Modifica la fecha programada o los tiempos de viaje</p>
                 </div>
               </div>

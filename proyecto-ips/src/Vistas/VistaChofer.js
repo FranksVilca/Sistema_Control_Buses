@@ -60,7 +60,7 @@ const VistaChofer = () => {
                   </div>
                   <button
                     className="btn btn-airova-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold"
-                    onClick={() => navigate("/Asistencia/1")}
+                    onClick={() => navigate("/Asistencia", { state: { codigoTurno: 1 } })}
                   >
                     <i className="fa-solid fa-check"></i> Marcar Asistencia
                   </button>

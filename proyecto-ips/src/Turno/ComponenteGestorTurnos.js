@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -13,6 +15,7 @@ const ComponenteGestorTurnos = () => {
   const [filterPlaca, setFilterPlaca] = useState("todas");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedTurno, setSelectedTurno] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const ComponenteGestorTurnos = () => {
   const handleDelete = async (codigoTurno) => {
     const result = await Swal.fire({
       title: "¿Inactivar turno?",
-      text: `¿Estás seguro de marcar el turno #${codigoTurno} como inactivo?`,
+      text: `¿Estás seguro de marcar el turno ${formatId(codigoTurno, "TRN")} como inactivo?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#f59e0b",
@@ -90,7 +93,9 @@ const ComponenteGestorTurnos = () => {
   };
 
   const handleAssign = (codigoTurno, numAsientos) => {
-    navigate(`/asignarTurno/${codigoTurno}/${numAsientos}`);
+    sessionStorage.setItem("airova_assign_turno_id", codigoTurno);
+    sessionStorage.setItem("airova_assign_asientos", numAsientos);
+    navigate("/asignarTurno", { state: { codigoTurno, numAsientos } });
   };
 
   const formatDate = (dateStr) => {
@@ -117,12 +122,14 @@ const ComponenteGestorTurnos = () => {
 
   const filteredTurnos = turnos.filter((t) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(t.Codigo_Turno, "TRN").toLowerCase();
     const matchesSearch =
       !term ||
       (t.PuntoSalida && t.PuntoSalida.toLowerCase().includes(term)) ||
       (t.PuntoLlegada && t.PuntoLlegada.toLowerCase().includes(term)) ||
       (t.Placa && t.Placa.toLowerCase().includes(term)) ||
-      (t.Codigo_Turno && t.Codigo_Turno.toString().includes(term));
+      (t.Codigo_Turno && t.Codigo_Turno.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const rutaNombre = `${t.PuntoSalida} - ${t.PuntoLlegada}`;
     const matchesRuta = filterRuta === "todas" || rutaNombre === filterRuta;
@@ -190,7 +197,7 @@ const ComponenteGestorTurnos = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por ruta, placa o código..."
+                  placeholder="Buscar por código (TRN-001), ruta o placa..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -308,7 +315,9 @@ const ComponenteGestorTurnos = () => {
                   <tbody>
                     {paginatedTurnos.map((turno) => (
                       <tr key={turno.Codigo_Turno}>
-                        <td className="ps-4 fw-bold text-secondary">#{turno.Codigo_Turno}</td>
+                        <td className="ps-4">
+                          <IdBadge prefix="TRN" id={turno.Codigo_Turno} />
+                        </td>
                         <td>
                           <div className="fw-semibold text-dark">
                             {turno.PuntoSalida} <i className="fa-solid fa-arrow-right text-primary mx-1 small"></i> {turno.PuntoLlegada}
@@ -332,6 +341,13 @@ const ComponenteGestorTurnos = () => {
                         </td>
                         <td className="pe-4 text-end">
                           <div className="btn-group">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedTurno(turno)}
+                              title="Ver detalle del turno"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i> Detalle
+                            </button>
                             <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => handleAssign(turno.Codigo_Turno, turno.Num_Asientos)}
@@ -365,6 +381,96 @@ const ComponenteGestorTurnos = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedTurno)}
+        onClose={() => setSelectedTurno(null)}
+        title={
+          selectedTurno
+            ? `${selectedTurno.PuntoSalida} → ${selectedTurno.PuntoLlegada}`
+            : "Detalle de Turno"
+        }
+        subtitle="Información de viaje, bus asignado e itinerario operativo"
+        icon="fa-calendar-days"
+        idBadge={
+          selectedTurno
+            ? { prefix: "TRN", id: selectedTurno.Codigo_Turno }
+            : null
+        }
+        statusBadge={
+          <span className="badge-status badge-status-activo">
+            <i className="fa-solid fa-circle-check"></i> Turno Activo
+          </span>
+        }
+        fields={
+          selectedTurno
+            ? [
+                {
+                  label: "Código de Turno",
+                  value: formatId(selectedTurno.Codigo_Turno, "TRN"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Fecha de Viaje",
+                  value: formatDate(selectedTurno.Fecha),
+                  icon: "fa-calendar-day",
+                },
+                {
+                  label: "Punto de Salida (Origen)",
+                  value: selectedTurno.PuntoSalida,
+                  icon: "fa-location-dot",
+                },
+                {
+                  label: "Punto de Llegada (Destino)",
+                  value: selectedTurno.PuntoLlegada,
+                  icon: "fa-flag-checkered",
+                },
+                {
+                  label: "Horario (Salida - Llegada)",
+                  value: `${selectedTurno.Hora_Salida || "-"} - ${
+                    selectedTurno.Hora_Llegada || "-"
+                  }`,
+                  icon: "fa-clock",
+                },
+                {
+                  label: "Unidad de Bus y Capacidad",
+                  value: `${selectedTurno.Placa || "Sin placa"} (${
+                    selectedTurno.Num_Asientos || 0
+                  } asientos)`,
+                  icon: "fa-bus",
+                },
+              ]
+            : []
+        }
+        secondaryAction={
+          selectedTurno
+            ? {
+                label: "Ver Asistencia",
+                icon: "fa-clipboard-check",
+                onClick: () => {
+                  const id = selectedTurno.Codigo_Turno;
+                  setSelectedTurno(null);
+                  navigate("/Asistencia", { state: { codigoTurno: id } });
+                },
+              }
+            : null
+        }
+        primaryAction={
+          selectedTurno
+            ? {
+                label: "Asignar Pasajeros",
+                icon: "fa-user-check",
+                onClick: () => {
+                  const id = selectedTurno.Codigo_Turno;
+                  const seats = selectedTurno.Num_Asientos;
+                  setSelectedTurno(null);
+                  handleAssign(id, seats);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

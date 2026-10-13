@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -13,6 +15,7 @@ const ComponenteGestorBuses = () => {
   const [filterMarca, setFilterMarca] = useState("todas");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedBus, setSelectedBus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const ComponenteGestorBuses = () => {
   const handleDelete = async (idBus, placa) => {
     const result = await Swal.fire({
       title: "¿Eliminar este bus?",
-      text: `¿Estás seguro de eliminar el bus con placa ${placa || idBus}? Esta acción no se puede deshacer.`,
+      text: `¿Estás seguro de eliminar el bus ${formatId(idBus, "BUS")} (${placa || ""})? Esta acción no se puede deshacer.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
@@ -87,7 +90,8 @@ const ComponenteGestorBuses = () => {
   };
 
   const handleEdit = (idBus) => {
-    navigate(`/PaginaEdicionBus/${idBus}`);
+    sessionStorage.setItem("airova_edit_bus_id", idBus);
+    navigate("/PaginaEdicionBus", { state: { idBus } });
   };
 
   const marcasUnicas = Array.from(
@@ -96,12 +100,14 @@ const ComponenteGestorBuses = () => {
 
   const filteredBuses = buses.filter((bus) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(bus.IDBus, "BUS").toLowerCase();
     const matchesSearch =
       !term ||
       (bus.Placa && bus.Placa.toLowerCase().includes(term)) ||
       (bus.Modelo && bus.Modelo.toLowerCase().includes(term)) ||
       (bus.Marca && bus.Marca.toLowerCase().includes(term)) ||
-      (bus.IDBus && bus.IDBus.toString().includes(term));
+      (bus.IDBus && bus.IDBus.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const estadoBus = (bus.EstadoRegistro || "").toLowerCase();
     const matchesEstado =
@@ -186,7 +192,7 @@ const ComponenteGestorBuses = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por placa, modelo, marca o ID..."
+                  placeholder="Buscar por código (BUS-001), placa, modelo o marca..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -305,7 +311,9 @@ const ComponenteGestorBuses = () => {
                   <tbody>
                     {paginatedBuses.map((bus) => (
                       <tr key={bus.IDBus}>
-                        <td className="ps-4 fw-bold text-secondary">#{bus.IDBus}</td>
+                        <td className="ps-4">
+                          <IdBadge prefix="BUS" id={bus.IDBus} />
+                        </td>
                         <td>
                           <span className="badge bg-dark bg-opacity-10 text-dark px-2 py-1 font-monospace fw-bold fs-7">
                             {bus.Placa}
@@ -324,11 +332,18 @@ const ComponenteGestorBuses = () => {
                         <td className="pe-4 text-end">
                           <div className="btn-group">
                             <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedBus(bus)}
+                              title="Ver detalle del bus"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i>
+                            </button>
+                            <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => handleEdit(bus.IDBus)}
                               title="Editar bus"
                             >
-                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                              <i className="fa-solid fa-pen-to-square me-1"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
@@ -356,6 +371,70 @@ const ComponenteGestorBuses = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedBus)}
+        onClose={() => setSelectedBus(null)}
+        title={selectedBus ? `${selectedBus.Marca || "Unidad"} ${selectedBus.Modelo || ""}` : "Detalle de Bus"}
+        subtitle="Ficha técnica e información operativa de la unidad vehicular"
+        icon="fa-bus"
+        idBadge={selectedBus ? { prefix: "BUS", id: selectedBus.IDBus } : null}
+        statusBadge={selectedBus ? getStatusBadge(selectedBus.EstadoRegistro) : null}
+        fields={
+          selectedBus
+            ? [
+                {
+                  label: "Código de Unidad",
+                  value: formatId(selectedBus.IDBus, "BUS"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Placa de Rodaje",
+                  value: (
+                    <span className="badge bg-dark bg-opacity-10 text-dark px-2 py-1 font-monospace fw-bold">
+                      {selectedBus.Placa || "Sin Placa"}
+                    </span>
+                  ),
+                  icon: "fa-id-card",
+                },
+                {
+                  label: "Marca del Fabricante",
+                  value: selectedBus.Marca,
+                  icon: "fa-industry",
+                },
+                {
+                  label: "Modelo",
+                  value: selectedBus.Modelo,
+                  icon: "fa-bus-simple",
+                },
+                {
+                  label: "Capacidad de Pasajeros",
+                  value: `${selectedBus.Num_Asientos || 0} asientos disponibles`,
+                  icon: "fa-chair",
+                },
+                {
+                  label: "Estado de Registro",
+                  value: selectedBus.EstadoRegistro || "Activo",
+                  icon: "fa-circle-check",
+                },
+              ]
+            : []
+        }
+        primaryAction={
+          selectedBus
+            ? {
+                label: "Editar Unidad",
+                icon: "fa-pen-to-square",
+                onClick: () => {
+                  const id = selectedBus.IDBus;
+                  setSelectedBus(null);
+                  handleEdit(id);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

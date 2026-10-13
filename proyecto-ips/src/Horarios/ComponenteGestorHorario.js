@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -13,6 +15,7 @@ const ComponenteGestorHorarios = () => {
   const [filterPeriodo, setFilterPeriodo] = useState("todos");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedHorario, setSelectedHorario] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const ComponenteGestorHorarios = () => {
   const handleDelete = async (idHorario) => {
     const result = await Swal.fire({
       title: "¿Eliminar este horario?",
-      text: `¿Estás seguro de eliminar el horario #${idHorario}?`,
+      text: `¿Estás seguro de eliminar el horario ${formatId(idHorario, "HOR")}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
@@ -87,7 +90,8 @@ const ComponenteGestorHorarios = () => {
   };
 
   const handleEdit = (idHorario) => {
-    navigate(`/PaginaEdicionHorarios/${idHorario}`);
+    sessionStorage.setItem("airova_edit_horario_id", idHorario);
+    navigate("/PaginaEdicionHorarios", { state: { idHorario } });
   };
 
   const formatDate = (dateStr) => {
@@ -102,12 +106,14 @@ const ComponenteGestorHorarios = () => {
 
   const filteredHorarios = horarios.filter((h) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(h.IDHorario, "HOR").toLowerCase();
     const matchesSearch =
       !term ||
       (h.Fecha && h.Fecha.toLowerCase().includes(term)) ||
       (h.Hora_Salida && h.Hora_Salida.toLowerCase().includes(term)) ||
       (h.Hora_Llegada && h.Hora_Llegada.toLowerCase().includes(term)) ||
-      (h.IDHorario && h.IDHorario.toString().includes(term));
+      (h.IDHorario && h.IDHorario.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const fechaISO = h.Fecha ? h.Fecha.substring(0, 10) : "";
     const matchesFecha = !filterFecha || fechaISO === filterFecha;
@@ -184,7 +190,7 @@ const ComponenteGestorHorarios = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por fecha, hora o ID..."
+                  placeholder="Buscar por código (HOR-001), fecha o hora..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -294,7 +300,9 @@ const ComponenteGestorHorarios = () => {
                   <tbody>
                     {paginatedHorarios.map((h) => (
                       <tr key={h.IDHorario}>
-                        <td className="ps-4 fw-bold text-secondary">#{h.IDHorario}</td>
+                        <td className="ps-4">
+                          <IdBadge prefix="HOR" id={h.IDHorario} />
+                        </td>
                         <td>
                           <div className="d-flex align-items-center gap-2">
                             <span className="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
@@ -316,11 +324,18 @@ const ComponenteGestorHorarios = () => {
                         <td className="pe-4 text-end">
                           <div className="btn-group">
                             <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedHorario(h)}
+                              title="Ver detalle del horario"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i>
+                            </button>
+                            <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => handleEdit(h.IDHorario)}
                               title="Editar horario"
                             >
-                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                              <i className="fa-solid fa-pen-to-square me-1"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
@@ -348,6 +363,88 @@ const ComponenteGestorHorarios = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedHorario)}
+        onClose={() => setSelectedHorario(null)}
+        title={
+          selectedHorario
+            ? `Itinerario del ${formatDate(selectedHorario.Fecha)}`
+            : "Detalle de Horario"
+        }
+        subtitle="Programación de salida y llegada para turnos de transporte"
+        icon="fa-clock"
+        idBadge={
+          selectedHorario
+            ? { prefix: "HOR", id: selectedHorario.IDHorario }
+            : null
+        }
+        statusBadge={
+          <span className="badge-status badge-status-activo">
+            <i className="fa-solid fa-calendar-check"></i> Programado
+          </span>
+        }
+        fields={
+          selectedHorario
+            ? [
+                {
+                  label: "Código de Horario",
+                  value: formatId(selectedHorario.IDHorario, "HOR"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Fecha Programada",
+                  value: formatDate(selectedHorario.Fecha),
+                  icon: "fa-calendar-day",
+                },
+                {
+                  label: "Hora de Salida",
+                  value: selectedHorario.Hora_Salida || "-",
+                  icon: "fa-plane-departure",
+                },
+                {
+                  label: "Hora de Llegada",
+                  value: selectedHorario.Hora_Llegada || "-",
+                  icon: "fa-plane-arrival",
+                },
+                {
+                  label: "Turno del Día",
+                  value: (() => {
+                    if (!selectedHorario.Hora_Salida) return "No especificado";
+                    const hour = parseInt(
+                      selectedHorario.Hora_Salida.split(":")[0],
+                      10
+                    );
+                    if (isNaN(hour)) return "General";
+                    if (hour < 12) return "Turno Mañana";
+                    if (hour < 18) return "Turno Tarde";
+                    return "Turno Noche";
+                  })(),
+                  icon: "fa-sun",
+                },
+                {
+                  label: "Estado de Registro",
+                  value: selectedHorario.EstadoRegistro || "Activo",
+                  icon: "fa-circle-check",
+                },
+              ]
+            : []
+        }
+        primaryAction={
+          selectedHorario
+            ? {
+                label: "Editar Horario",
+                icon: "fa-pen-to-square",
+                onClick: () => {
+                  const id = selectedHorario.IDHorario;
+                  setSelectedHorario(null);
+                  handleEdit(id);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

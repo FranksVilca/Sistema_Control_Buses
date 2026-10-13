@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import IdBadge, { formatId } from "../components/IdBadge";
 import Swal from "sweetalert2";
 
 const PaginaEdicionRuta = () => {
-  const { idRuta } = useParams();
+  const params = useParams();
+  const location = useLocation();
+  const idRuta =
+    params.idRuta ||
+    location.state?.idRuta ||
+    sessionStorage.getItem("airova_edit_ruta_id");
   const [ruta, setRuta] = useState({
     PuntoSalida: "",
     PuntoLlegada: "",
@@ -14,7 +20,10 @@ const PaginaEdicionRuta = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!idRuta) return;
+    if (!idRuta) {
+      navigate("/ComponenteGestorRuta");
+      return;
+    }
 
     fetch(`http://localhost:3001/api/ruta/${idRuta}`)
       .then((response) => {
@@ -38,7 +47,7 @@ const PaginaEdicionRuta = () => {
         });
         setLoading(false);
       });
-  }, [idRuta]);
+  }, [idRuta, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,7 +76,7 @@ const PaginaEdicionRuta = () => {
       Swal.fire({
         icon: "success",
         title: "¡Ruta Actualizada!",
-        text: "Los cambios fueron guardados exitosamente.",
+        text: `La ruta ${formatId(idRuta, "RUT")} fue guardada exitosamente.`,
         timer: 1800,
         showConfirmButton: false,
       });
@@ -107,12 +116,15 @@ const PaginaEdicionRuta = () => {
               <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
                 <div
                   className="rounded-3 d-flex align-items-center justify-content-center"
-                  style={{ width: "48px", height: "48px", background: "rgba(8, 145, 178, 0.1)", color: "#0891b2", fontSize: "1.3rem" }}
+                  style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                 >
                   <i className="fa-solid fa-pen-to-square"></i>
                 </div>
                 <div>
-                  <h2 className="h4 fw-bold text-dark mb-0">Editar Ruta #{idRuta}</h2>
+                  <div className="d-flex align-items-center gap-2">
+                    <h2 className="h4 fw-bold text-dark mb-0">Editar Ruta</h2>
+                    <IdBadge prefix="RUT" id={idRuta} />
+                  </div>
                   <p className="text-muted small mb-0">Modifica los terminales de salida y llegada</p>
                 </div>
               </div>

@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import IdBadge, { formatId } from "../components/IdBadge";
+import DetailModal from "../components/DetailModal";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
 
 const AsignarTurno = () => {
-  const { codigoTurno, numAsientos } = useParams();
+  const params = useParams();
+  const location = useLocation();
+  const codigoTurno =
+    params.codigoTurno ||
+    location.state?.codigoTurno ||
+    sessionStorage.getItem("airova_assign_turno_id") ||
+    1;
+  const numAsientos =
+    params.numAsientos ||
+    location.state?.numAsientos ||
+    sessionStorage.getItem("airova_assign_asientos") ||
+    40;
   const [usuarios, setUsuarios] = useState([]);
   const [selectedUsuarios, setSelectedUsuarios] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +28,7 @@ const AsignarTurno = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedTrabajador, setSelectedTrabajador] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,7 +106,7 @@ const AsignarTurno = () => {
       Swal.fire({
         icon: "success",
         title: "¡Asignación Guardada!",
-        text: `Se asignaron ${selectedUsuarios.length} pasajeros al turno #${codigoTurno}.`,
+        text: `Se asignaron ${selectedUsuarios.length} pasajeros al turno ${formatId(codigoTurno, "TRN")}.`,
         timer: 1800,
         showConfirmButton: false,
       });
@@ -116,13 +130,15 @@ const AsignarTurno = () => {
 
   const filteredUsuarios = usuarios.filter((u) => {
     const term = searchTerm.toLowerCase();
+    const formattedCode = formatId(u.Codigo_Usuario, "USR").toLowerCase();
     const matchesSearch =
       !term ||
       (u.Nombre && u.Nombre.toLowerCase().includes(term)) ||
       (u.Nombre_Usuario && u.Nombre_Usuario.toLowerCase().includes(term)) ||
       (u.DNI && u.DNI.toString().includes(term)) ||
       (u.Celular && u.Celular.toString().includes(term)) ||
-      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term));
+      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term)) ||
+      formattedCode.includes(term);
 
     const isSelected = selectedUsuarios.includes(u.Codigo_Usuario);
     const matchesSeleccion =
@@ -166,9 +182,7 @@ const AsignarTurno = () => {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
           <div>
             <div className="d-flex align-items-center gap-2 mb-1">
-              <span className="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded">
-                <i className="fa-solid fa-users me-1"></i> Turno #{codigoTurno}
-              </span>
+              <IdBadge prefix="TRN" id={codigoTurno} />
               <span className="text-muted small">• Capacidad del Bus: {numAsientos} asientos</span>
             </div>
             <h1 className="h3 fw-bold text-dark mb-0">Asignar Pasajeros al Turno</h1>
@@ -311,7 +325,8 @@ const AsignarTurno = () => {
                       <th className="text-secondary text-uppercase fs-7 fw-semibold">ID</th>
                       <th className="text-secondary text-uppercase fs-7 fw-semibold">Nombre y Usuario</th>
                       <th className="text-secondary text-uppercase fs-7 fw-semibold">DNI</th>
-                      <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold">Contacto</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Contacto</th>
+                      <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -332,7 +347,9 @@ const AsignarTurno = () => {
                               onChange={() => {}}
                             />
                           </td>
-                          <td className="fw-bold text-secondary">#{u.Codigo_Usuario}</td>
+                          <td>
+                            <IdBadge prefix="USR" id={u.Codigo_Usuario} />
+                          </td>
                           <td>
                             <div className="fw-semibold text-dark">{u.Nombre}</div>
                             <div className="text-muted small">@{u.Nombre_Usuario}</div>
@@ -342,12 +359,22 @@ const AsignarTurno = () => {
                               {u.DNI || "Sin DNI"}
                             </span>
                           </td>
-                          <td className="pe-4 text-muted small">
+                          <td className="text-muted small">
                             {u.Celular ? (
                               <div><i className="fa-solid fa-phone me-1"></i>{u.Celular}</div>
                             ) : (
                               "-"
                             )}
+                          </td>
+                          <td className="pe-4 text-end" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => setSelectedTrabajador(u)}
+                              title="Ver detalle del trabajador"
+                            >
+                              <i className="fa-solid fa-eye me-1"></i> Detalle
+                            </button>
                           </td>
                         </tr>
                       );
@@ -367,6 +394,75 @@ const AsignarTurno = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Vista Detalle */}
+      <DetailModal
+        isOpen={Boolean(selectedTrabajador)}
+        onClose={() => setSelectedTrabajador(null)}
+        title={selectedTrabajador?.Nombre || "Detalle de Trabajador"}
+        subtitle={`Pasajero elegible para el turno ${formatId(codigoTurno, "TRN")}`}
+        icon="fa-user-check"
+        idBadge={
+          selectedTrabajador
+            ? { prefix: "USR", id: selectedTrabajador.Codigo_Usuario }
+            : null
+        }
+        statusBadge={
+          selectedTrabajador ? (
+            selectedUsuarios.includes(selectedTrabajador.Codigo_Usuario) ? (
+              <span className="badge-status badge-status-activo">
+                <i className="fa-solid fa-circle-check"></i> Seleccionado
+              </span>
+            ) : (
+              <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 rounded-pill">
+                No seleccionado
+              </span>
+            )
+          ) : null
+        }
+        fields={
+          selectedTrabajador
+            ? [
+                {
+                  label: "Código de Trabajador",
+                  value: formatId(selectedTrabajador.Codigo_Usuario, "USR"),
+                  icon: "fa-hashtag",
+                },
+                {
+                  label: "Usuario de Sistema",
+                  value: `@${selectedTrabajador.Nombre_Usuario || "-"}`,
+                  icon: "fa-at",
+                },
+                {
+                  label: "DNI / Documento",
+                  value: selectedTrabajador.DNI || "Sin DNI",
+                  icon: "fa-address-card",
+                },
+                {
+                  label: "Celular de Contacto",
+                  value: selectedTrabajador.Celular || "No registrado",
+                  icon: "fa-phone",
+                },
+              ]
+            : []
+        }
+        primaryAction={
+          selectedTrabajador
+            ? {
+                label: selectedUsuarios.includes(selectedTrabajador.Codigo_Usuario)
+                  ? "Quitar del Turno"
+                  : "Seleccionar para el Turno",
+                icon: selectedUsuarios.includes(selectedTrabajador.Codigo_Usuario)
+                  ? "fa-user-minus"
+                  : "fa-user-plus",
+                onClick: () => {
+                  handleCheckboxChange(selectedTrabajador.Codigo_Usuario);
+                  setSelectedTrabajador(null);
+                },
+              }
+            : null
+        }
+      />
     </div>
   );
 };

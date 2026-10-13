@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import IdBadge, { formatId } from "../components/IdBadge";
 import Swal from "sweetalert2";
 
 const PaginaEdicionUsuario = () => {
-  const { codigoUsuario } = useParams();
+  const params = useParams();
+  const location = useLocation();
+  const codigoUsuario =
+    params.codigoUsuario ||
+    location.state?.codigoUsuario ||
+    sessionStorage.getItem("airova_edit_user_id");
   const [usuario, setUsuario] = useState({
     Nombre: "",
     Nombre_Usuario: "",
@@ -24,6 +30,10 @@ const PaginaEdicionUsuario = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!codigoUsuario) {
+      navigate("/GestionarUsuarios");
+      return;
+    }
     const fetchData = async () => {
       try {
         const [usuarioResponse, cargosResponse] = await Promise.all([
@@ -61,7 +71,7 @@ const PaginaEdicionUsuario = () => {
     };
 
     fetchData();
-  }, [codigoUsuario]);
+  }, [codigoUsuario, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,7 +158,7 @@ const PaginaEdicionUsuario = () => {
       Swal.fire({
         icon: "success",
         title: "¡Usuario Actualizado!",
-        text: `El usuario #${codigoUsuario} fue actualizado con éxito.`,
+        text: `El usuario ${formatId(codigoUsuario, "USR")} fue actualizado con éxito.`,
         timer: 1800,
         showConfirmButton: false,
       });
@@ -188,12 +198,15 @@ const PaginaEdicionUsuario = () => {
               <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
                 <div
                   className="rounded-3 d-flex align-items-center justify-content-center"
-                  style={{ width: "48px", height: "48px", background: "rgba(5, 150, 105, 0.1)", color: "#059669", fontSize: "1.3rem" }}
+                  style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                 >
                   <i className="fa-solid fa-user-pen"></i>
                 </div>
                 <div>
-                  <h2 className="h4 fw-bold text-dark mb-0">Editar Usuario #{codigoUsuario}</h2>
+                  <div className="d-flex align-items-center gap-2">
+                    <h2 className="h4 fw-bold text-dark mb-0">Editar Usuario</h2>
+                    <IdBadge prefix="USR" id={codigoUsuario} />
+                  </div>
                   <p className="text-muted small mb-0">Modifica los datos personales, cargo o credenciales</p>
                 </div>
               </div>

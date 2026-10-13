@@ -113,13 +113,13 @@ const DashboardLogin = ({ className = "" }) => {
   const redirectToPage = (Codigo_Cargo, Codigo_Usuario) => {
     switch (Codigo_Cargo) {
       case 1:
-        navigate(`/VistaAdmin/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
+        navigate('/VistaAdmin', { state: { Codigo_Usuario } });
         break;
       case 2:
-        navigate(`/VistaUsuario/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
+        navigate('/VistaUsuario', { state: { Codigo_Usuario } });
         break;
       case 3:
-        navigate(`/VistaChofer/${Codigo_Usuario}`, { state: { Codigo_Usuario } });
+        navigate('/VistaChofer', { state: { Codigo_Usuario } });
         break;
       default:
         Swal.fire({
