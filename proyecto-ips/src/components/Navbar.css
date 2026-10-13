@@ -18,8 +18,8 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.1));
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, rgba(64, 222, 65, 0.2), rgba(64, 222, 65, 0.08));
+  border: 1px solid rgba(64, 222, 65, 0.35);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -71,10 +71,10 @@
 }
 
 .nav-btn.active {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #ffffff !important;
-  font-weight: 600;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #40DE41, #25b826);
+  color: #0b1120 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(64, 222, 65, 0.35);
 }
 
 /* Theme toggle button */
@@ -105,8 +105,8 @@
 .user-avatar {
   width: 34px;
   height: 34px;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: #ffffff;
+  background: linear-gradient(135deg, #40DE41, #25b826);
+  color: #0b1120;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -122,7 +122,7 @@
 }
 
 .user-role-badge {
-  color: #38bdf8;
+  color: #40DE41;
   font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;

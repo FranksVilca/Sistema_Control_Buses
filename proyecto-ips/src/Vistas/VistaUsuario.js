@@ -49,7 +49,7 @@ const VistaUsuario = () => {
                   <div>
                     <div
                       className="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
-                      style={{ width: "48px", height: "48px", background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontSize: "1.3rem" }}
+                      style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                     >
                       <i className="fa-solid fa-id-card"></i>
                     </div>

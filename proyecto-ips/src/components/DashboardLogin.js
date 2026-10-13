@@ -38,7 +38,7 @@ const DashboardLogin = ({ className = "" }) => {
         icon: 'warning',
         title: 'Verificación requerida',
         text: 'Por favor, marca la casilla del reCAPTCHA para continuar.',
-        confirmButtonColor: '#2563eb'
+        confirmButtonColor: '#40DE41'
       });
       return;
     }
@@ -60,7 +60,7 @@ const DashboardLogin = ({ className = "" }) => {
           icon: 'error',
           title: 'Acceso Denegado',
           text: data.error,
-          confirmButtonColor: '#2563eb'
+          confirmButtonColor: '#40DE41'
         });
       } else {
         const { Codigo_Cargo, Codigo_Usuario, token } = data.user;
@@ -93,7 +93,7 @@ const DashboardLogin = ({ className = "" }) => {
             icon: 'error',
             title: 'Error de servidor',
             text: 'Datos incompletos recibidos del servidor.',
-            confirmButtonColor: '#2563eb'
+            confirmButtonColor: '#40DE41'
           });
         }
       }
@@ -103,7 +103,7 @@ const DashboardLogin = ({ className = "" }) => {
         icon: 'error',
         title: 'Error de conexión',
         text: 'No se pudo conectar con el servidor (puerto 3001). Asegúrate de que node Server.js esté corriendo.',
-        confirmButtonColor: '#2563eb'
+        confirmButtonColor: '#40DE41'
       });
     } finally {
       setLoading(false);

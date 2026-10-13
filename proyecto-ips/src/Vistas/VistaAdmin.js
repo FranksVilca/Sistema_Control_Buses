@@ -13,8 +13,8 @@ const VistaAdmin = () => {
       tag: "Unidades de Transporte",
       description: "Administra las unidades vehiculares, número de asientos, modelo, placas y estado de mantenimiento.",
       icon: "fa-bus",
-      color: "#2563eb",
-      bgGradient: "linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.04))",
+      color: "#40DE41",
+      bgGradient: "linear-gradient(135deg, rgba(64, 222, 65, 0.15), rgba(64, 222, 65, 0.05))",
       primaryAction: { label: "Ver Buses", path: "/ComponenteGestorBuses", icon: "fa-list" },
       secondaryAction: { label: "Registrar Bus", path: "/InsertarBus", icon: "fa-plus" }
     },

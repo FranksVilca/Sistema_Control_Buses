@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
+
+const ITEMS_PER_PAGE = 10;
 
 const ComponenteGestorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterCargo, setFilterCargo] = useState("todos");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCargo]);
 
   const fetchData = async () => {
     try {
@@ -95,14 +104,36 @@ const ComponenteGestorUsuarios = () => {
 
   const filteredUsuarios = usuarios.filter((u) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
+      !term ||
       (u.Nombre && u.Nombre.toLowerCase().includes(term)) ||
       (u.Nombre_Usuario && u.Nombre_Usuario.toLowerCase().includes(term)) ||
       (u.DNI && u.DNI.includes(term)) ||
       (u.Email && u.Email.toLowerCase().includes(term)) ||
-      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term))
-    );
+      (u.Celular && u.Celular.toString().includes(term)) ||
+      (u.Codigo_Usuario && u.Codigo_Usuario.toString().includes(term));
+
+    const matchesCargo =
+      filterCargo === "todos" ||
+      String(u.Codigo_Cargo) === String(filterCargo);
+
+    return matchesSearch && matchesCargo;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsuarios.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedUsuarios = filteredUsuarios.slice(
+    (safePage - 1) * ITEMS_PER_PAGE,
+    safePage * ITEMS_PER_PAGE
+  );
+
+  const hasActiveFilters = searchTerm !== "" || filterCargo !== "todos";
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterCargo("todos");
+    setCurrentPage(1);
+  };
 
   return (
     <div className="min-vh-100 bg-light d-flex flex-column">
@@ -113,7 +144,7 @@ const ComponenteGestorUsuarios = () => {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
           <div>
             <div className="d-flex align-items-center gap-2 mb-1">
-              <span className="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded">
+              <span className="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded">
                 <i className="fa-solid fa-users me-1"></i> Equipo y Personal
               </span>
               <span className="text-muted small">• Total: {usuarios.length} usuarios</span>
@@ -134,8 +165,11 @@ const ComponenteGestorUsuarios = () => {
 
         {/* Filter Card */}
         <div className="airova-card p-3 mb-4">
-          <div className="row g-3 align-items-center">
+          <div className="row g-3 align-items-end">
             <div className="col-12 col-md-6">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-magnifying-glass me-1"></i> Búsqueda rápida
+              </label>
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0 text-muted">
                   <i className="fa-solid fa-magnifying-glass"></i>
@@ -143,13 +177,13 @@ const ComponenteGestorUsuarios = () => {
                 <input
                   type="text"
                   className="form-control border-start-0 ps-0"
-                  placeholder="Buscar por nombre, usuario, DNI o email..."
+                  placeholder="Buscar por nombre, usuario, DNI, celular o email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 {searchTerm && (
                   <button
-                    className="btn btn-outline-secondary border-start-0 border-end-0"
+                    className="btn btn-outline-secondary border-start-0"
                     type="button"
                     onClick={() => setSearchTerm("")}
                   >
@@ -158,8 +192,37 @@ const ComponenteGestorUsuarios = () => {
                 )}
               </div>
             </div>
-            <div className="col-12 col-md-6 text-md-end text-muted small">
-              Mostrando {filteredUsuarios.length} de {usuarios.length} usuarios
+
+            <div className="col-8 col-md-4">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-user-tag me-1"></i> Filtrar por Cargo / Rol
+              </label>
+              <select
+                className="form-select"
+                value={filterCargo}
+                onChange={(e) => setFilterCargo(e.target.value)}
+              >
+                <option value="todos">Todos los cargos</option>
+                <option value="1">Administrador</option>
+                <option value="2">Trabajador</option>
+                <option value="3">Chofer</option>
+              </select>
+            </div>
+
+            <div className="col-4 col-md-2 d-flex justify-content-md-end">
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-1"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-filter-circle-xmark"></i> Limpiar
+                </button>
+              ) : (
+                <div className="text-md-end text-muted small w-100 py-2">
+                  <strong>{filteredUsuarios.length}</strong> usuarios
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -178,69 +241,87 @@ const ComponenteGestorUsuarios = () => {
               </div>
               <h5 className="fw-semibold text-secondary">No se encontraron usuarios</h5>
               <p className="text-muted small">
-                {searchTerm ? "Prueba con otro término de búsqueda." : "Aún no hay usuarios registrados."}
+                {hasActiveFilters ? "No hay usuarios que coincidan con los filtros seleccionados." : "Aún no hay usuarios registrados."}
               </p>
+              {hasActiveFilters && (
+                <button
+                  className="btn btn-outline-secondary btn-sm mt-2"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-rotate-left me-1"></i> Restablecer Filtros
+                </button>
+              )}
             </div>
           ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light border-bottom">
-                  <tr>
-                    <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Nombre y Usuario</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">DNI</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Cargo</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Contacto</th>
-                    <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsuarios.map((u) => (
-                    <tr key={u.Codigo_Usuario}>
-                      <td className="ps-4 fw-bold text-secondary">#{u.Codigo_Usuario}</td>
-                      <td>
-                        <div className="fw-semibold text-dark">{u.Nombre}</div>
-                        <div className="text-muted small">@{u.Nombre_Usuario}</div>
-                      </td>
-                      <td>
-                        <span className="badge bg-secondary bg-opacity-10 text-secondary font-monospace">
-                          {u.DNI || "Sin DNI"}
-                        </span>
-                      </td>
-                      <td>{getCargoBadge(u.Codigo_Cargo)}</td>
-                      <td>
-                        <div className="small text-dark">
-                          {u.Email && (
-                            <div><i className="fa-solid fa-envelope me-1 text-muted"></i>{u.Email}</div>
-                          )}
-                          {u.Celular && (
-                            <div><i className="fa-solid fa-phone me-1 text-muted"></i>{u.Celular}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="pe-4 text-end">
-                        <div className="btn-group">
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => handleEdit(u.Codigo_Usuario)}
-                            title="Editar usuario"
-                          >
-                            <i className="fa-solid fa-pen-to-square me-1"></i> Editar
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(u.Codigo_Usuario, u.Nombre)}
-                            title="Eliminar usuario"
-                          >
-                            <i className="fa-solid fa-trash-can"></i>
-                          </button>
-                        </div>
-                      </td>
+            <>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light border-bottom">
+                    <tr>
+                      <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Nombre y Usuario</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">DNI</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Cargo</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Contacto</th>
+                      <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {paginatedUsuarios.map((u) => (
+                      <tr key={u.Codigo_Usuario}>
+                        <td className="ps-4 fw-bold text-secondary">#{u.Codigo_Usuario}</td>
+                        <td>
+                          <div className="fw-semibold text-dark">{u.Nombre}</div>
+                          <div className="text-muted small">@{u.Nombre_Usuario}</div>
+                        </td>
+                        <td>
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary font-monospace">
+                            {u.DNI || "Sin DNI"}
+                          </span>
+                        </td>
+                        <td>{getCargoBadge(u.Codigo_Cargo)}</td>
+                        <td>
+                          <div className="small text-dark">
+                            {u.Email && (
+                              <div><i className="fa-solid fa-envelope me-1 text-muted"></i>{u.Email}</div>
+                            )}
+                            {u.Celular && (
+                              <div><i className="fa-solid fa-phone me-1 text-muted"></i>{u.Celular}</div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="pe-4 text-end">
+                          <div className="btn-group">
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => handleEdit(u.Codigo_Usuario)}
+                              title="Editar usuario"
+                            >
+                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                            </button>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => handleDelete(u.Codigo_Usuario, u.Nombre)}
+                              title="Eliminar usuario"
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Pagination
+                currentPage={safePage}
+                totalItems={filteredUsuarios.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={setCurrentPage}
+                itemLabel="usuarios"
+              />
+            </>
           )}
         </div>
       </div>

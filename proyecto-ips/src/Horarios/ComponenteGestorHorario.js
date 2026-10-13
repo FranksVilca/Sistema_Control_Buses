@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
+
+const ITEMS_PER_PAGE = 10;
 
 const ComponenteGestorHorarios = () => {
   const [horarios, setHorarios] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterFecha, setFilterFecha] = useState("");
+  const [filterPeriodo, setFilterPeriodo] = useState("todos");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchHorarios();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterFecha, filterPeriodo]);
 
   const fetchHorarios = async () => {
     try {
@@ -92,13 +102,45 @@ const ComponenteGestorHorarios = () => {
 
   const filteredHorarios = horarios.filter((h) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
+      !term ||
       (h.Fecha && h.Fecha.toLowerCase().includes(term)) ||
       (h.Hora_Salida && h.Hora_Salida.toLowerCase().includes(term)) ||
       (h.Hora_Llegada && h.Hora_Llegada.toLowerCase().includes(term)) ||
-      (h.IDHorario && h.IDHorario.toString().includes(term))
-    );
+      (h.IDHorario && h.IDHorario.toString().includes(term));
+
+    const fechaISO = h.Fecha ? h.Fecha.substring(0, 10) : "";
+    const matchesFecha = !filterFecha || fechaISO === filterFecha;
+
+    let matchesPeriodo = true;
+    if (filterPeriodo !== "todos" && h.Hora_Salida) {
+      const hour = parseInt(h.Hora_Salida.split(":")[0], 10);
+      if (!isNaN(hour)) {
+        if (filterPeriodo === "manana") matchesPeriodo = hour < 12;
+        else if (filterPeriodo === "tarde") matchesPeriodo = hour >= 12 && hour < 18;
+        else if (filterPeriodo === "noche") matchesPeriodo = hour >= 18;
+      }
+    }
+
+    return matchesSearch && matchesFecha && matchesPeriodo;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredHorarios.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedHorarios = filteredHorarios.slice(
+    (safePage - 1) * ITEMS_PER_PAGE,
+    safePage * ITEMS_PER_PAGE
+  );
+
+  const hasActiveFilters =
+    searchTerm !== "" || filterFecha !== "" || filterPeriodo !== "todos";
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterFecha("");
+    setFilterPeriodo("todos");
+    setCurrentPage(1);
+  };
 
   return (
     <div className="min-vh-100 bg-light d-flex flex-column">
@@ -109,7 +151,7 @@ const ComponenteGestorHorarios = () => {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
           <div>
             <div className="d-flex align-items-center gap-2 mb-1">
-              <span className="badge bg-purple bg-opacity-10 text-primary px-2 py-1 rounded" style={{ background: "rgba(124, 58, 237, 0.1)", color: "#7c3aed" }}>
+              <span className="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded">
                 <i className="fa-solid fa-clock me-1"></i> Cronograma de Salidas
               </span>
               <span className="text-muted small">• Total: {horarios.length} horarios</span>
@@ -130,8 +172,11 @@ const ComponenteGestorHorarios = () => {
 
         {/* Filter Card */}
         <div className="airova-card p-3 mb-4">
-          <div className="row g-3 align-items-center">
-            <div className="col-12 col-md-6">
+          <div className="row g-3 align-items-end">
+            <div className="col-12 col-md-4">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-magnifying-glass me-1"></i> Búsqueda rápida
+              </label>
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0 text-muted">
                   <i className="fa-solid fa-magnifying-glass"></i>
@@ -145,7 +190,7 @@ const ComponenteGestorHorarios = () => {
                 />
                 {searchTerm && (
                   <button
-                    className="btn btn-outline-secondary border-start-0 border-end-0"
+                    className="btn btn-outline-secondary border-start-0"
                     type="button"
                     onClick={() => setSearchTerm("")}
                   >
@@ -154,8 +199,49 @@ const ComponenteGestorHorarios = () => {
                 )}
               </div>
             </div>
-            <div className="col-12 col-md-6 text-md-end text-muted small">
-              Mostrando {filteredHorarios.length} de {horarios.length} horarios programados
+
+            <div className="col-6 col-md-3">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-calendar-day me-1"></i> Fecha Programada
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={filterFecha}
+                onChange={(e) => setFilterFecha(e.target.value)}
+              />
+            </div>
+
+            <div className="col-6 col-md-3">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-sun me-1"></i> Turno del Día
+              </label>
+              <select
+                className="form-select"
+                value={filterPeriodo}
+                onChange={(e) => setFilterPeriodo(e.target.value)}
+              >
+                <option value="todos">Todos los turnos</option>
+                <option value="manana">Mañana (00:00 - 11:59)</option>
+                <option value="tarde">Tarde (12:00 - 17:59)</option>
+                <option value="noche">Noche (18:00 - 23:59)</option>
+              </select>
+            </div>
+
+            <div className="col-12 col-md-2 d-flex justify-content-md-end">
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-1"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-filter-circle-xmark"></i> Limpiar
+                </button>
+              ) : (
+                <div className="text-md-end text-muted small w-100 py-2">
+                  <strong>{filteredHorarios.length}</strong> horarios
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -174,9 +260,16 @@ const ComponenteGestorHorarios = () => {
               </div>
               <h5 className="fw-semibold text-secondary">No se encontraron horarios</h5>
               <p className="text-muted small">
-                {searchTerm ? "Prueba con otra fecha u hora." : "Aún no hay horarios registrados en el sistema."}
+                {hasActiveFilters ? "No hay horarios que coincidan con los filtros seleccionados." : "Aún no hay horarios registrados en el sistema."}
               </p>
-              {!searchTerm && (
+              {hasActiveFilters ? (
+                <button
+                  className="btn btn-outline-secondary btn-sm mt-2"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-rotate-left me-1"></i> Restablecer Filtros
+                </button>
+              ) : (
                 <button
                   className="btn btn-airova-primary btn-sm mt-2"
                   onClick={() => navigate("/PaginaInsertarHorarios")}
@@ -186,62 +279,72 @@ const ComponenteGestorHorarios = () => {
               )}
             </div>
           ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light border-bottom">
-                  <tr>
-                    <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Fecha Programada</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Hora de Salida</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Hora de Llegada</th>
-                    <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredHorarios.map((h) => (
-                    <tr key={h.IDHorario}>
-                      <td className="ps-4 fw-bold text-secondary">#{h.IDHorario}</td>
-                      <td>
-                        <div className="d-flex align-items-center gap-2">
-                          <span className="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
-                            <i className="fa-solid fa-calendar-day"></i>
-                          </span>
-                          <span className="fw-semibold text-dark">{formatDate(h.Fecha)}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-success bg-opacity-10 text-success px-2 py-1 font-monospace">
-                          <i className="fa-solid fa-clock me-1"></i> {h.Hora_Salida}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 font-monospace">
-                          <i className="fa-solid fa-clock me-1"></i> {h.Hora_Llegada}
-                        </span>
-                      </td>
-                      <td className="pe-4 text-end">
-                        <div className="btn-group">
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => handleEdit(h.IDHorario)}
-                            title="Editar horario"
-                          >
-                            <i className="fa-solid fa-pen-to-square me-1"></i> Editar
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(h.IDHorario)}
-                            title="Eliminar horario"
-                          >
-                            <i className="fa-solid fa-trash-can"></i>
-                          </button>
-                        </div>
-                      </td>
+            <>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light border-bottom">
+                    <tr>
+                      <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Fecha Programada</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Hora de Salida</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Hora de Llegada</th>
+                      <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {paginatedHorarios.map((h) => (
+                      <tr key={h.IDHorario}>
+                        <td className="ps-4 fw-bold text-secondary">#{h.IDHorario}</td>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <span className="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
+                              <i className="fa-solid fa-calendar-day"></i>
+                            </span>
+                            <span className="fw-semibold text-dark">{formatDate(h.Fecha)}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="badge bg-primary bg-opacity-10 text-primary px-2 py-1 font-monospace">
+                            <i className="fa-solid fa-clock me-1"></i> {h.Hora_Salida}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 font-monospace">
+                            <i className="fa-solid fa-clock me-1"></i> {h.Hora_Llegada}
+                          </span>
+                        </td>
+                        <td className="pe-4 text-end">
+                          <div className="btn-group">
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => handleEdit(h.IDHorario)}
+                              title="Editar horario"
+                            >
+                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                            </button>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => handleDelete(h.IDHorario)}
+                              title="Eliminar horario"
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Pagination
+                currentPage={safePage}
+                totalItems={filteredHorarios.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={setCurrentPage}
+                itemLabel="horarios"
+              />
+            </>
           )}
         </div>
       </div>

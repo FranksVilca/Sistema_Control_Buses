@@ -21,10 +21,10 @@ const VistaChofer = () => {
                     style={{
                       width: "90px",
                       height: "90px",
-                      background: "linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.05))",
-                      color: "#2563eb",
+                      background: "linear-gradient(135deg, rgba(64, 222, 65, 0.18), rgba(64, 222, 65, 0.05))",
+                      color: "#40DE41",
                       fontSize: "2.5rem",
-                      border: "2px solid rgba(37, 99, 235, 0.2)"
+                      border: "2px solid rgba(64, 222, 65, 0.25)"
                     }}
                   >
                     <i className="fa-solid fa-id-card"></i>
@@ -49,7 +49,7 @@ const VistaChofer = () => {
                   <div>
                     <div
                       className="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
-                      style={{ width: "48px", height: "48px", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", fontSize: "1.3rem" }}
+                      style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                     >
                       <i className="fa-solid fa-clipboard-check"></i>
                     </div>
@@ -59,7 +59,7 @@ const VistaChofer = () => {
                     </p>
                   </div>
                   <button
-                    className="btn btn-success d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold"
+                    className="btn btn-airova-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold"
                     onClick={() => navigate("/Asistencia/1")}
                   >
                     <i className="fa-solid fa-check"></i> Marcar Asistencia
@@ -72,7 +72,7 @@ const VistaChofer = () => {
                   <div>
                     <div
                       className="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
-                      style={{ width: "48px", height: "48px", background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontSize: "1.3rem" }}
+                      style={{ width: "48px", height: "48px", background: "rgba(64, 222, 65, 0.12)", color: "#40DE41", fontSize: "1.3rem" }}
                     >
                       <i className="fa-solid fa-route"></i>
                     </div>

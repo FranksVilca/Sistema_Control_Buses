@@ -59,7 +59,6 @@ const Navbar = () => {
                 e.target.style.display = 'none';
               }} 
             />
-            <i className="fa-solid fa-bus brand-fallback-icon text-primary"></i>
           </div>
           <div className="d-flex flex-column">
             <span className="brand-name">AIROVA</span>
@@ -169,7 +168,7 @@ const Navbar = () => {
           </ul>
 
           {/* User Profile & Theme Toggle & Logout */}
-          <div className="d-flex align-items-center gap-2 gap-lg-3 pt-3 pt-lg-0 border-top border-lg-0 border-secondary">
+          <div className="d-flex align-items-center gap-2 gap-lg-3 pt-3 pt-lg-0 ">
             {/* Dark Mode Toggle Button */}
             <button
               className="btn btn-theme-toggle d-flex align-items-center justify-content-center"

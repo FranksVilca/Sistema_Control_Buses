@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --airova-primary: #2563eb;
-  --airova-primary-dark: #1d4ed8;
-  --airova-primary-light: #3b82f6;
+  --airova-primary: #40DE41;
+  --airova-primary-dark: #25b826;
+  --airova-primary-light: #68e869;
+  --bs-primary: #40DE41;
+  --bs-primary-rgb: 64, 222, 65;
   --airova-bg: #f8fafc;
   --airova-card: #ffffff;
   --airova-text-main: #0f172a;
@@ -19,6 +21,8 @@
 [data-bs-theme="dark"],
 [data-theme="dark"],
 body.dark-mode {
+  --bs-primary: #40DE41;
+  --bs-primary-rgb: 64, 222, 65;
   --airova-bg: #0b1120;
   --airova-card: #162032;
   --airova-text-main: #f8fafc;
@@ -237,6 +241,12 @@ body.dark-mode .form-select {
   color: #f8fafc !important;
 }
 
+.form-control:focus,
+.form-select:focus {
+  border-color: #40DE41 !important;
+  box-shadow: 0 0 0 3px rgba(64, 222, 65, 0.25) !important;
+}
+
 [data-bs-theme="dark"] .form-control:focus,
 [data-bs-theme="dark"] .form-select:focus,
 [data-theme="dark"] .form-control:focus,
@@ -244,9 +254,9 @@ body.dark-mode .form-select {
 body.dark-mode .form-control:focus,
 body.dark-mode .form-select:focus {
   background-color: #0b1120 !important;
-  border-color: #3b82f6 !important;
+  border-color: #40DE41 !important;
   color: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+  box-shadow: 0 0 0 3px rgba(64, 222, 65, 0.25) !important;
 }
 
 [data-bs-theme="dark"] .form-control::placeholder,
@@ -277,6 +287,11 @@ body.dark-mode .form-check-input {
   border-color: #475569 !important;
 }
 
+.form-check-input:checked {
+  background-color: #40DE41 !important;
+  border-color: #40DE41 !important;
+}
+
 [data-bs-theme="dark"] .form-check-label,
 [data-theme="dark"] .form-check-label,
 body.dark-mode .form-check-label {
@@ -302,7 +317,17 @@ body.dark-mode .border-end {
   border-color: #243248 !important;
 }
 
-/* Badges */
+/* Badges & Primary Accents */
+.text-primary {
+  color: #25b826 !important;
+}
+
+[data-bs-theme="dark"] .text-primary,
+[data-theme="dark"] .text-primary,
+body.dark-mode .text-primary {
+  color: #40DE41 !important;
+}
+
 [data-bs-theme="dark"] .badge.bg-dark,
 [data-theme="dark"] .badge.bg-dark,
 body.dark-mode .badge.bg-dark {
@@ -325,6 +350,31 @@ body.dark-mode .badge.text-dark {
 }
 
 /* Action Buttons & Links */
+.btn-primary {
+  background: linear-gradient(135deg, #40DE41, #25b826) !important;
+  border-color: #25b826 !important;
+  color: #0b1120 !important;
+  font-weight: 700 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: linear-gradient(135deg, #25b826, #1ea020) !important;
+  border-color: #1ea020 !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary {
+  color: #25b826 !important;
+  border-color: #40DE41 !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #40DE41 !important;
+  border-color: #40DE41 !important;
+  color: #0b1120 !important;
+}
+
 [data-bs-theme="dark"] .btn-outline-secondary,
 [data-theme="dark"] .btn-outline-secondary,
 body.dark-mode .btn-outline-secondary {
@@ -342,15 +392,16 @@ body.dark-mode .btn-outline-secondary:hover {
 [data-bs-theme="dark"] .btn-outline-primary,
 [data-theme="dark"] .btn-outline-primary,
 body.dark-mode .btn-outline-primary {
-  color: #60a5fa !important;
-  border-color: #3b82f6 !important;
+  color: #40DE41 !important;
+  border-color: #40DE41 !important;
 }
 
 [data-bs-theme="dark"] .btn-outline-primary:hover,
 [data-theme="dark"] .btn-outline-primary:hover,
 body.dark-mode .btn-outline-primary:hover {
-  background-color: #2563eb !important;
-  color: #ffffff !important;
+  background-color: #40DE41 !important;
+  border-color: #40DE41 !important;
+  color: #0b1120 !important;
 }
 
 [data-bs-theme="dark"] .btn-link,
@@ -362,7 +413,7 @@ body.dark-mode .btn-link {
 [data-bs-theme="dark"] .btn-link:hover,
 [data-theme="dark"] .btn-link:hover,
 body.dark-mode .btn-link:hover {
-  color: #60a5fa !important;
+  color: #40DE41 !important;
 }
 
 /* Modals & SweetAlert2 */
@@ -413,20 +464,20 @@ body.dark-mode .dropdown-item:hover {
 /* Buttons Polish */
 .btn-airova-primary {
   background: linear-gradient(135deg, var(--airova-primary), var(--airova-primary-dark));
-  color: #ffffff;
+  color: #0b1120;
   border: none;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 10px;
   padding: 0.6rem 1.25rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 14px rgba(64, 222, 65, 0.3);
 }
 
 .btn-airova-primary:hover {
-  background: linear-gradient(135deg, var(--airova-primary-dark), #1e40af);
+  background: linear-gradient(135deg, var(--airova-primary-dark), #1ea020);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 18px rgba(64, 222, 65, 0.45);
 }
 
 /* Status Badges */
@@ -478,3 +529,53 @@ body.dark-mode .badge-status-mantenimiento {
   color: #fbbf24;
   border-color: rgba(245, 158, 11, 0.3);
 }
+
+/* Pagination / Hojas Styles */
+.airova-pagination {
+  background-color: rgba(248, 250, 252, 0.6);
+}
+
+[data-bs-theme="dark"] .airova-pagination,
+[data-theme="dark"] .airova-pagination,
+body.dark-mode .airova-pagination {
+  background-color: rgba(15, 23, 42, 0.45);
+  border-top-color: #243248 !important;
+}
+
+.airova-pagination .page-link {
+  color: var(--airova-text-main);
+  background-color: var(--airova-card);
+  border: 1px solid var(--airova-border);
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.airova-pagination .page-link:hover:not(:disabled) {
+  background-color: rgba(64, 222, 65, 0.15);
+  border-color: #40DE41;
+  color: #25b826;
+}
+
+[data-bs-theme="dark"] .airova-pagination .page-link:hover:not(:disabled),
+[data-theme="dark"] .airova-pagination .page-link:hover:not(:disabled),
+body.dark-mode .airova-pagination .page-link:hover:not(:disabled) {
+  background-color: rgba(64, 222, 65, 0.15);
+  border-color: #40DE41;
+  color: #40DE41;
+}
+
+.airova-pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #40DE41, #25b826) !important;
+  border-color: #25b826 !important;
+  color: #0b1120 !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(64, 222, 65, 0.35);
+}
+
+.airova-pagination .page-item.disabled .page-link {
+  opacity: 0.45;
+  background-color: var(--airova-card);
+  border-color: var(--airova-border);
+  color: var(--airova-text-muted);
+}
+

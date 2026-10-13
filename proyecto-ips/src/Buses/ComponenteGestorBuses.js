@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
+
+const ITEMS_PER_PAGE = 10;
 
 const ComponenteGestorBuses = () => {
   const [buses, setBuses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterEstado, setFilterEstado] = useState("todos");
+  const [filterMarca, setFilterMarca] = useState("todas");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchBuses();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterEstado, filterMarca]);
 
   const fetchBuses = async () => {
     try {
@@ -80,20 +90,52 @@ const ComponenteGestorBuses = () => {
     navigate(`/PaginaEdicionBus/${idBus}`);
   };
 
+  const marcasUnicas = Array.from(
+    new Set(buses.map((b) => b.Marca).filter(Boolean))
+  ).sort();
+
   const filteredBuses = buses.filter((bus) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
+      !term ||
       (bus.Placa && bus.Placa.toLowerCase().includes(term)) ||
       (bus.Modelo && bus.Modelo.toLowerCase().includes(term)) ||
       (bus.Marca && bus.Marca.toLowerCase().includes(term)) ||
-      (bus.IDBus && bus.IDBus.toString().includes(term)) ||
-      (bus.EstadoRegistro && bus.EstadoRegistro.toLowerCase().includes(term))
-    );
+      (bus.IDBus && bus.IDBus.toString().includes(term));
+
+    const estadoBus = (bus.EstadoRegistro || "").toLowerCase();
+    const matchesEstado =
+      filterEstado === "todos" ||
+      (filterEstado === "activo" && estadoBus.includes("activo") && !estadoBus.includes("inactivo")) ||
+      (filterEstado === "mantenimiento" && estadoBus.includes("mantenimiento")) ||
+      (filterEstado === "inactivo" && estadoBus.includes("inactivo"));
+
+    const matchesMarca =
+      filterMarca === "todas" || bus.Marca === filterMarca;
+
+    return matchesSearch && matchesEstado && matchesMarca;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredBuses.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedBuses = filteredBuses.slice(
+    (safePage - 1) * ITEMS_PER_PAGE,
+    safePage * ITEMS_PER_PAGE
+  );
+
+  const hasActiveFilters =
+    searchTerm !== "" || filterEstado !== "todos" || filterMarca !== "todas";
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterEstado("todos");
+    setFilterMarca("todas");
+    setCurrentPage(1);
+  };
 
   const getStatusBadge = (estado) => {
     const val = (estado || "").toLowerCase();
-    if (val.includes("activo")) {
+    if (val.includes("activo") && !val.includes("inactivo")) {
       return <span className="badge-status badge-status-activo"><i className="fa-solid fa-circle-check"></i> Activo</span>;
     }
     if (val.includes("mantenimiento")) {
@@ -132,8 +174,11 @@ const ComponenteGestorBuses = () => {
 
         {/* Filter Card */}
         <div className="airova-card p-3 mb-4">
-          <div className="row g-3 align-items-center">
-            <div className="col-12 col-md-6">
+          <div className="row g-3 align-items-end">
+            <div className="col-12 col-md-5">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-magnifying-glass me-1"></i> Búsqueda rápida
+              </label>
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0 text-muted">
                   <i className="fa-solid fa-magnifying-glass"></i>
@@ -147,7 +192,7 @@ const ComponenteGestorBuses = () => {
                 />
                 {searchTerm && (
                   <button
-                    className="btn btn-outline-secondary border-start-0 border-end-0"
+                    className="btn btn-outline-secondary border-start-0"
                     type="button"
                     onClick={() => setSearchTerm("")}
                   >
@@ -156,8 +201,55 @@ const ComponenteGestorBuses = () => {
                 )}
               </div>
             </div>
-            <div className="col-12 col-md-6 text-md-end text-muted small">
-              Mostrando {filteredBuses.length} de {buses.length} unidades registradas
+
+            <div className="col-6 col-md-3">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-filter me-1"></i> Estado
+              </label>
+              <select
+                className="form-select"
+                value={filterEstado}
+                onChange={(e) => setFilterEstado(e.target.value)}
+              >
+                <option value="todos">Todos los estados</option>
+                <option value="activo">Activo</option>
+                <option value="mantenimiento">En Mantenimiento</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <div className="col-6 col-md-2">
+              <label className="form-label small fw-semibold text-secondary mb-1">
+                <i className="fa-solid fa-tag me-1"></i> Marca
+              </label>
+              <select
+                className="form-select"
+                value={filterMarca}
+                onChange={(e) => setFilterMarca(e.target.value)}
+              >
+                <option value="todas">Todas</option>
+                {marcasUnicas.map((marca) => (
+                  <option key={marca} value={marca}>
+                    {marca}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="col-12 col-md-2 d-flex justify-content-md-end">
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-1"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-filter-circle-xmark"></i> Limpiar
+                </button>
+              ) : (
+                <div className="text-md-end text-muted small w-100 py-2">
+                  <strong>{filteredBuses.length}</strong> resultados
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -178,9 +270,16 @@ const ComponenteGestorBuses = () => {
               </div>
               <h5 className="fw-semibold text-secondary">No se encontraron buses</h5>
               <p className="text-muted small">
-                {searchTerm ? "Prueba con otro término de búsqueda." : "Aún no hay buses registrados en el sistema."}
+                {hasActiveFilters ? "No hay coincidencias con los filtros aplicados." : "Aún no hay buses registrados en el sistema."}
               </p>
-              {!searchTerm && (
+              {hasActiveFilters ? (
+                <button
+                  className="btn btn-outline-secondary btn-sm mt-2"
+                  onClick={clearFilters}
+                >
+                  <i className="fa-solid fa-rotate-left me-1"></i> Restablecer Filtros
+                </button>
+              ) : (
                 <button
                   className="btn btn-airova-primary btn-sm mt-2"
                   onClick={() => navigate("/InsertarBus")}
@@ -190,60 +289,70 @@ const ComponenteGestorBuses = () => {
               )}
             </div>
           ) : (
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light border-bottom">
-                  <tr>
-                    <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Placa</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Marca / Modelo</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold text-center">Asientos</th>
-                    <th className="text-secondary text-uppercase fs-7 fw-semibold">Estado</th>
-                    <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredBuses.map((bus) => (
-                    <tr key={bus.IDBus}>
-                      <td className="ps-4 fw-bold text-secondary">#{bus.IDBus}</td>
-                      <td>
-                        <span className="badge bg-dark bg-opacity-10 text-dark px-2 py-1 font-monospace fw-bold fs-7">
-                          {bus.Placa}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="fw-semibold text-dark">{bus.Modelo}</div>
-                        <div className="text-muted small">{bus.Marca}</div>
-                      </td>
-                      <td className="text-center">
-                        <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1">
-                          <i className="fa-solid fa-chair me-1"></i> {bus.Num_Asientos}
-                        </span>
-                      </td>
-                      <td>{getStatusBadge(bus.EstadoRegistro)}</td>
-                      <td className="pe-4 text-end">
-                        <div className="btn-group">
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => handleEdit(bus.IDBus)}
-                            title="Editar bus"
-                          >
-                            <i className="fa-solid fa-pen-to-square me-1"></i> Editar
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(bus.IDBus, bus.Placa)}
-                            title="Eliminar bus"
-                          >
-                            <i className="fa-solid fa-trash-can"></i>
-                          </button>
-                        </div>
-                      </td>
+            <>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light border-bottom">
+                    <tr>
+                      <th className="ps-4 text-secondary text-uppercase fs-7 fw-semibold">ID</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Placa</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Marca / Modelo</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold text-center">Asientos</th>
+                      <th className="text-secondary text-uppercase fs-7 fw-semibold">Estado</th>
+                      <th className="pe-4 text-secondary text-uppercase fs-7 fw-semibold text-end">Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {paginatedBuses.map((bus) => (
+                      <tr key={bus.IDBus}>
+                        <td className="ps-4 fw-bold text-secondary">#{bus.IDBus}</td>
+                        <td>
+                          <span className="badge bg-dark bg-opacity-10 text-dark px-2 py-1 font-monospace fw-bold fs-7">
+                            {bus.Placa}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="fw-semibold text-dark">{bus.Modelo}</div>
+                          <div className="text-muted small">{bus.Marca}</div>
+                        </td>
+                        <td className="text-center">
+                          <span className="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1">
+                            <i className="fa-solid fa-chair me-1"></i> {bus.Num_Asientos}
+                          </span>
+                        </td>
+                        <td>{getStatusBadge(bus.EstadoRegistro)}</td>
+                        <td className="pe-4 text-end">
+                          <div className="btn-group">
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => handleEdit(bus.IDBus)}
+                              title="Editar bus"
+                            >
+                              <i className="fa-solid fa-pen-to-square me-1"></i> Editar
+                            </button>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => handleDelete(bus.IDBus, bus.Placa)}
+                              title="Eliminar bus"
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Pagination
+                currentPage={safePage}
+                totalItems={filteredBuses.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={setCurrentPage}
+                itemLabel="unidades"
+              />
+            </>
           )}
         </div>
       </div>

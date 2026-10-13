@@ -61,7 +61,7 @@ const TrabajadorTurno = () => {
                   <div className="p-4 bg-light rounded-3 border h-100 text-center d-flex flex-column align-items-center justify-content-center">
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center mb-3 bg-white border"
-                      style={{ width: "70px", height: "70px", color: "#2563eb", fontSize: "1.8rem" }}
+                      style={{ width: "70px", height: "70px", color: "#40DE41", fontSize: "1.8rem" }}
                     >
                       <i className="fa-solid fa-id-card"></i>
                     </div>
