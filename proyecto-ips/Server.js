@@ -28,10 +28,11 @@ const upload = multer({ storage: storage });
 
 // Configuración de la conexión a la base de datos
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "1234",
-  database: "airova",
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "1234",
+  database: process.env.DB_NAME || "airova",
+  port: process.env.DB_PORT || 3306,
 });
 
 db.connect((err) => {
