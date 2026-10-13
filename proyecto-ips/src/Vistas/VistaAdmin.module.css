@@ -1,8 +1,9 @@
 .pageWrapper {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--airova-bg);
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease;
 }
 
 .heroBanner {
@@ -82,21 +83,21 @@
 }
 
 .moduleCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--airova-card);
+  border: 1px solid var(--airova-border);
   border-radius: 18px;
   padding: 1.75rem;
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  box-shadow: var(--airova-shadow);
 }
 
 .moduleCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
-  border-color: #cbd5e1;
+  box-shadow: var(--airova-shadow-lg);
+  border-color: #94a3b8;
 }
 
 .moduleIconBox {
@@ -114,9 +115,9 @@
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--airova-text-muted);
   letter-spacing: 0.5px;
-  background: #f1f5f9;
+  background: rgba(100, 116, 139, 0.12);
   padding: 0.3rem 0.65rem;
   border-radius: 8px;
 }
@@ -124,13 +125,13 @@
 .moduleTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--airova-text-main);
   margin-bottom: 0.5rem;
 }
 
 .moduleDesc {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--airova-text-muted);
   line-height: 1.5;
   margin-bottom: 1.25rem;
   flex-grow: 1;
@@ -152,15 +153,15 @@
 }
 
 .btnSecondaryCustom {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #334155;
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid var(--airova-border);
+  color: var(--airova-text-main);
   border-radius: 10px;
   padding: 0.55rem 0.85rem;
   transition: all 0.2s ease;
 }
 
 .btnSecondaryCustom:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: rgba(100, 116, 139, 0.2);
+  color: var(--airova-text-main);
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./components/AuthContext";
+import { ThemeProvider } from "./components/ThemeContext";
 import DashboardLogin from "./components/DashboardLogin";
 import ComponenteGestorUsuarios from "./Usuario/ComponenteGestorUsuarios";
 import PaginaInsertarUsuario from "./Usuario/PaginaInsertarUsuario";
@@ -41,8 +42,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<DashboardLogin />} />
           <Route
@@ -208,6 +210,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+  </ThemeProvider>
   );
 }
 

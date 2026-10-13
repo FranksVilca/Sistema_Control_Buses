@@ -35,6 +35,53 @@
   position: relative;
   z-index: 1;
   animation: fadeIn 0.4s ease-out;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Modo oscuro para la tarjeta de login */
+:global([data-bs-theme="dark"]) .loginCard,
+:global(body.dark-mode) .loginCard {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+:global([data-bs-theme="dark"]) .brandTitle,
+:global(body.dark-mode) .brandTitle {
+  color: #f8fafc;
+}
+
+:global([data-bs-theme="dark"]) .brandSubtitle,
+:global(body.dark-mode) .brandSubtitle {
+  color: #94a3b8;
+}
+
+:global([data-bs-theme="dark"]) .inputLabel,
+:global(body.dark-mode) .inputLabel {
+  color: #cbd5e1;
+}
+
+:global([data-bs-theme="dark"]) .formInput,
+:global(body.dark-mode) .formInput {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-bs-theme="dark"]) .formInput:focus,
+:global(body.dark-mode) .formInput:focus {
+  background-color: #020617;
+  border-color: #3b82f6;
+}
+
+:global([data-bs-theme="dark"]) .checkboxLabel,
+:global(body.dark-mode) .checkboxLabel {
+  color: #94a3b8;
+}
+
+:global([data-bs-theme="dark"]) .cardFooter,
+:global(body.dark-mode) .cardFooter {
+  border-color: #334155;
 }
 
 @keyframes fadeIn {

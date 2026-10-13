@@ -3,6 +3,7 @@ import style from './DashboardLogin.module.css';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useTheme } from './ThemeContext';
 import Swal from 'sweetalert2';
 
 const DashboardLogin = ({ className = "" }) => {
@@ -15,6 +16,7 @@ const DashboardLogin = ({ className = "" }) => {
   const captcha = useRef(null);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { toggleTheme, isDark } = useTheme();
 
   const handleCaptchaChange = (value) => {
     if (value) {
@@ -131,6 +133,23 @@ const DashboardLogin = ({ className = "" }) => {
   return (
     <div className={style.loginBackground}>
       <div className={style.loginCard}>
+        {/* Top bar with theme toggle */}
+        <div className="d-flex justify-content-end mb-2">
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-2"
+            style={{ width: "36px", height: "36px" }}
+            onClick={toggleTheme}
+            title={isDark ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+          >
+            {isDark ? (
+              <i className="fa-solid fa-sun text-warning"></i>
+            ) : (
+              <i className="fa-solid fa-moon text-info"></i>
+            )}
+          </button>
+        </div>
+
         {/* Brand header */}
         <div className={style.brandHeader}>
           <div className={style.brandIconCircle}>

@@ -77,6 +77,23 @@
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
+/* Theme toggle button */
+.btn-theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: rotate(15deg) scale(1.05);
+}
+
 /* User pill */
 .user-info-pill {
   padding: 0.35rem 0.85rem;

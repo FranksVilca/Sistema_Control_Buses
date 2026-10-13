@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useTheme } from './ThemeContext';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { toggleTheme, isDark } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -166,8 +168,23 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* User Profile & Logout */}
-          <div className="d-flex align-items-center gap-3 pt-3 pt-lg-0 border-top border-lg-0 border-secondary">
+          {/* User Profile & Theme Toggle & Logout */}
+          <div className="d-flex align-items-center gap-2 gap-lg-3 pt-3 pt-lg-0 border-top border-lg-0 border-secondary">
+            {/* Dark Mode Toggle Button */}
+            <button
+              className="btn btn-theme-toggle d-flex align-items-center justify-content-center"
+              onClick={toggleTheme}
+              title={isDark ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+              type="button"
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <i className="fa-solid fa-sun text-warning fs-5"></i>
+              ) : (
+                <i className="fa-solid fa-moon text-info fs-5"></i>
+              )}
+            </button>
+
             <div className="user-info-pill d-flex align-items-center gap-2">
               <div className="user-avatar">
                 <i className="fa-solid fa-user"></i>
